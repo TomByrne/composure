@@ -1,0 +1,184 @@
+package org.tbyrne.composure.traits;
+
+import haxe.Log;
+import org.tbyrne.logging.LogMsg;
+
+import org.tbyrne.collections.IndexedList;
+import org.tbyrne.composure.core.ComposeItem;
+
+import event.Dispatcher;
+
+import time.types.ds.ObjectHash;
+
+class TraitCollection
+{
+	
+	public var traitAdded(getTraitAdded, null):Dispatcher<TraitCollection->Dynamic->Void>;
+	private function getTraitAdded():Dispatcher < TraitCollection->Dynamic->Void > {
+		if (_traitAdded == null)_traitAdded = new Dispatcher < TraitCollection->Dynamic->Void >();
+		return _traitAdded;
+	}
+	public var traitRemoved(getTraitRemoved, null):Dispatcher<TraitCollection->Dynamic->Void>;
+	private function getTraitRemoved():Dispatcher<TraitCollection->Dynamic->Void>{
+		if (_traitRemoved == null)_traitRemoved = new Dispatcher < TraitCollection->Dynamic->Void >();
+		return _traitRemoved;
+	}
+
+	private var _traitRemoved:Dispatcher<TraitCollection->Dynamic->Void>;
+	private var _traitAdded:Dispatcher<TraitCollection->Dynamic->Void>;
+	private var _traitTypeCache:Hash < TraitTypeCache<Dynamic> > ;
+	
+	public var traits(default, null):IndexedList<Dynamic>;
+
+
+	public function new()
+	{
+		_traitTypeCache = new Hash< TraitTypeCache<Dynamic>>();
+		traits = new IndexedList<Dynamic>();
+	}
+
+	public function getTrait<TraitType>(TraitType:Class<TraitType>):TraitType{
+		
+		if(TraitType==null){
+			Log.trace("TraitCollection.getTrait must be supplied an ITrait class to match");
+			return null;
+		}else{
+			var cache:TraitTypeCache<TraitType> = validateCache(TraitType);
+			if(cache!=null){
+				return cache.getTrait;
+			}else {
+				return null;
+			}
+		}
+	}
+	public function getTraits<TraitType>(TraitType:Class<TraitType>=null):Array<TraitType>{
+		var cache:TraitTypeCache<TraitType> = validateCache(TraitType);
+		if(cache!=null){
+			return cache.getTraits;
+		}else {
+			return null;
+		}
+	}
+
+	public function validateCache<TraitType>(matchType:Class<TraitType>):TraitTypeCache<TraitType> {
+		#if debug
+		if(matchType==null)Log.trace(new LogMsg("TraitCollection.validateCache must be called with a matchType",[LogType.devError]));
+		#end
+		
+		var typeName:String = Type.getClassName(matchType);
+		
+		var cache:TraitTypeCache<TraitType>;
+		untyped{
+			cache = _traitTypeCache.get(typeName);
+		}
+		var invalid;
+		
+		if(cache!=null){
+			invalid = cache.invalid;
+		}else{
+			cache = new TraitTypeCache<TraitType>();
+			_traitTypeCache.set(typeName, cache);
+			invalid = traits;
+		}
+		if(!cache.methodCachesSafe){
+			for(trait in invalid.list){
+				if(Std.is(trait, matchType)){
+					untyped cache.matched.add(trait);
+				}
+			}
+			cache.invalid.clear();
+			cache.methodCachesSafe = true;
+			cache.getTraits = cache.matched.list;
+			cache.getTrait = cache.getTraits[0];
+		}
+		return cache;
+	}
+	public function callForTraits<TraitType>(func:Dynamic, matchType:Class<TraitType>, thisObj:ComposeItem, ?params:Array<Dynamic>):Void{
+		var matchingType:Bool = (matchType != null);
+		var cache:TraitTypeCache<TraitType>;
+		var typeName:String;
+		if (matchingType) {
+			typeName = Type.getClassName(matchType);
+			untyped cache = _traitTypeCache.get(typeName);
+		}else {
+			cache = null;
+			typeName = null;
+		}
+		
+		var realParams:Array<Dynamic> = [thisObj,null];
+		if(params!=null){
+			realParams = realParams.concat(params);
+		}
+		var invalid;
+		
+		if(cache!=null){
+			for(trait in cache.matched.list){
+				realParams[1] = trait;
+				Reflect.callMethod(thisObj, func, realParams);
+			}
+			invalid = cache.invalid;
+		}else{
+			if(matchingType){
+				cache = new TraitTypeCache();
+				_traitTypeCache.set(typeName, cache);
+			}
+			invalid = traits;
+		}
+		if(matchingType){
+			if(cache!=null && cache.methodCachesSafe==false){
+				for(trait in invalid.list){
+					if(Std.is(trait, matchType)){
+						realParams[1] = trait;
+						if(matchingType)untyped cache.matched.add(trait);
+						Reflect.callMethod(thisObj, func, realParams);
+					}
+				}
+				cache.invalid.clear();
+				cache.methodCachesSafe = true;
+				cache.getTraits = cache.matched.list;
+				cache.getTrait = cache.getTraits[0];
+			}
+		}else{
+			for(trait in invalid.list){
+				realParams[1] = trait;
+				Reflect.callMethod(thisObj, func, realParams);
+			}
+		}
+	}
+	public function addTrait(trait:Dynamic):Void{
+		traits.add(trait);
+		//var type:Class<Dynamic>;
+		for (cache in _traitTypeCache) {
+			//var cache = _traitTypeCache.get(type);
+			cache.invalid.add(trait);
+			cache.methodCachesSafe = false;
+		}
+		if (_traitAdded != null)_traitAdded.call(this,trait);
+	}
+	public function removeTrait(trait:Dynamic):Void{
+		traits.remove(trait);
+		//var type:Class<Dynamic>;
+		for (cache in _traitTypeCache) {
+			//var cache = _traitTypeCache.get(type);
+			cache.matched.remove(trait);
+			cache.invalid.remove(trait);
+			cache.methodCachesSafe = false;
+		}
+		if(_traitRemoved!=null)_traitRemoved.call(this,trait);
+	}
+}
+
+private class TraitTypeCache<TraitType>
+{
+	public var methodCachesSafe:Bool;
+	public var getTrait:TraitType;
+	public var getTraits:Array<TraitType>;
+
+	public var matched:IndexedList<TraitType>;
+	public var invalid:IndexedList<Dynamic>;
+	
+	public function new() {
+		matched = new IndexedList<TraitType>();
+		invalid = new IndexedList<Dynamic>();
+	}
+}

@@ -1,0 +1,9 @@
+<project name="composure-hx" url="http://github.com/TomByrne/composure-hx" license="GPL">
+    <user name="tbyrne"/>
+    <tag v="cross"/>
+    <tag v="utility"/>
+    <tag v="composition"/>
+    <tag v="pattern"/>
+    <description>A haxe library to assist coding in a composition paradigm</description>
+    <version name="0.2">Early release, features are still being added.</version>
+</project>
