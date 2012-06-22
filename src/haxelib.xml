@@ -4,6 +4,8 @@
     <tag v="utility"/>
     <tag v="composition"/>
     <tag v="pattern"/>
+    <tag v="dependency"/>
+    <tag v="injection"/>
     <description>A haxe library to assist coding in a composition paradigm</description>
-    <version name="0.2">Early release, features are still being added.</version>
+    <version name="0.31">Added metadata dependency injection by property (using @inject) or by method (using @injectAdd and @injectRemove).</version>
 </project>

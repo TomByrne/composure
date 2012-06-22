@@ -5,6 +5,7 @@ import org.tbyrne.composure.concerns.ConcernMarrier;
 import org.tbyrne.composure.concerns.IConcern;
 import org.tbyrne.composure.traits.ITrait;
 import org.tbyrne.composure.traits.TraitCollection;
+import org.tbyrne.composure.restrictions.ITraitRestriction;
 
 
 class ComposeItem
@@ -82,18 +83,40 @@ class ComposeItem
 		}
 		}*/
 		var castTrait:ITrait;
+		var restrictions:Array<ITraitRestriction>;
 		if(Std.is(trait,ITrait)){
 			castTrait = cast(trait, ITrait);
 			castTrait.item = this;
+			
+			restrictions = castTrait.getRestrictions();
+			for (restriction in restrictions) {
+				if(!restriction.allowAddTo(trait, this)) {
+					return;
+				}
+			}
 		}else {
 			castTrait = null;
+		}
+		
+		var traits:Array<Dynamic> = _traitCollection.traits.list;
+		for (otherTrait in traits) {
+			if(Std.is(otherTrait, ITrait)){
+				var castTrait:ITrait = cast(otherTrait, ITrait);
+				restrictions = castTrait.getRestrictions();
+				for (restriction in restrictions) {
+					if(!restriction.allowNewSibling(otherTrait, this, trait)) {
+						return;
+					}
+				}
+			}
 		}
 		
 		_traitCollection.addTrait(trait);
 		if (_parentItem != null)_parentItem.addChildTrait(trait);
 		
-		if(castTrait!=null){
-			for(concern in castTrait.concerns){
+		if (castTrait != null) {
+			var castConcerns:Array<IConcern> = castTrait.getConcerns();
+			for(concern in castConcerns){
 				addTraitConcern(concern);
 			}
 		}
@@ -123,7 +146,8 @@ class ComposeItem
 		var castTrait:ITrait;
 		if(Std.is(trait,ITrait)){
 			castTrait = cast(trait, ITrait);
-			for(concern in castTrait.concerns){
+			var castConcerns:Array<IConcern> = castTrait.getConcerns();
+			for(concern in castConcerns){
 				removeTraitConcern(concern);
 			}
 		}else {

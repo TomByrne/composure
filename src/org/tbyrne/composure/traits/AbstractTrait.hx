@@ -5,8 +5,10 @@ import org.tbyrne.collections.IndexedList;
 import org.tbyrne.composure.concerns.IConcern;
 import org.tbyrne.composure.core.ComposeGroup;
 import org.tbyrne.composure.core.ComposeItem;
+import org.tbyrne.composure.restrictions.ITraitRestriction;
 import org.tbyrne.logging.LogMsg;
 
+@:autoBuild(org.tbyrne.composure.macro.ConcernInjector.inject())
 class AbstractTrait implements ITrait
 {
 	public var group(default, null):ComposeGroup;
@@ -53,14 +55,9 @@ class AbstractTrait implements ITrait
 		return value;
 	}
 
-	public var concerns(get_concerns, null):Array<IConcern>;
-	private function get_concerns():Array<IConcern>{
-		if(_concerns==null)_concerns = new IndexedList<IConcern>();
-		return _concerns.list;
-	}
-
 
 	private var _concerns:IndexedList<IConcern>;
+	private var _restrictions:IndexedList<ITraitRestriction>;
 	private var _siblingTraits:IndexedList<Dynamic>;
 	private var _childItems:IndexedList<ComposeItem>;
 
@@ -77,6 +74,15 @@ class AbstractTrait implements ITrait
 	}
 	private function onItemAdd():Void{
 		// override me
+	}
+
+	public function getConcerns():Array<IConcern>{
+		if(_concerns==null)_concerns = new IndexedList<IConcern>();
+		return _concerns.list;
+	}
+	public function getRestrictions():Array<ITraitRestriction>{
+		if(_restrictions==null)_restrictions = new IndexedList<ITraitRestriction>();
+		return _restrictions.list;
 	}
 
 	private function addSiblingTrait(trait:Dynamic):Void{
@@ -147,6 +153,25 @@ class AbstractTrait implements ITrait
 			concern.ownerTrait = null;
 		}#if debug else{
 				Log.trace(new LogMsg("Attempting to remove non-added concern",[LogType.performanceWarning]));
+			}
+		#end
+	}
+
+
+	private function addRestriction(restriction:ITraitRestriction):Void{
+		if(_restrictions==null)_restrictions = new IndexedList<ITraitRestriction>();
+		if(_restrictions.add(restriction)){
+			
+		}#if debug else{
+				Log.trace(new LogMsg("Attempting to add restriction twice",[LogType.performanceWarning]));
+			}
+		#end
+	}
+	private function removeRestriction(restriction:ITraitRestriction):Void{
+		if(_concerns!=null && _restrictions.remove(restriction)){
+			
+		}#if debug else{
+				Log.trace(new LogMsg("Attempting to remove non-added restriction",[LogType.performanceWarning]));
 			}
 		#end
 	}

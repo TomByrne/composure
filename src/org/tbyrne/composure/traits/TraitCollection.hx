@@ -93,7 +93,7 @@ class TraitCollection
 		}
 		return cache;
 	}
-	public function callForTraits<TraitType>(func:Dynamic, matchType:Class<TraitType>, thisObj:ComposeItem, ?params:Array<Dynamic>):Void{
+	public function callForTraits<TraitType>(func:Dynamic, matchType:Class<TraitType>, thisObj:ComposeItem, ?params:Array<Dynamic>, ?collectReturns:Array<Dynamic>):Void{
 		var matchingType:Bool = (matchType != null);
 		var cache:TraitTypeCache<TraitType>;
 		var typeName:String;
@@ -129,8 +129,12 @@ class TraitCollection
 				for(trait in invalid.list){
 					if(Std.is(trait, matchType)){
 						realParams[1] = trait;
-						if(matchingType)untyped cache.matched.add(trait);
-						Reflect.callMethod(thisObj, func, realParams);
+						if (matchingType) untyped cache.matched.add(trait);
+						if (collectReturns != null){
+							collectReturns.push(Reflect.callMethod(thisObj, func, realParams));
+						}else {
+							Reflect.callMethod(thisObj, func, realParams);
+						}
 					}
 				}
 				cache.invalid.clear();
@@ -141,7 +145,11 @@ class TraitCollection
 		}else{
 			for(trait in invalid.list){
 				realParams[1] = trait;
-				Reflect.callMethod(thisObj, func, realParams);
+				if (collectReturns != null){
+					collectReturns.push(Reflect.callMethod(thisObj, func, realParams));
+				}else {
+					Reflect.callMethod(thisObj, func, realParams);
+				}
 			}
 		}
 	}
