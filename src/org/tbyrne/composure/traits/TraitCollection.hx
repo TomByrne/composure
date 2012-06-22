@@ -6,26 +6,27 @@ import org.tbyrne.logging.LogMsg;
 import org.tbyrne.collections.IndexedList;
 import org.tbyrne.composure.core.ComposeItem;
 
-import event.Dispatcher;
+import hsl.haxe.Signaler;
+import hsl.haxe.DirectSignaler;
 
 import time.types.ds.ObjectHash;
 
 class TraitCollection
 {
 	
-	public var traitAdded(getTraitAdded, null):Dispatcher<TraitCollection->Dynamic->Void>;
-	private function getTraitAdded():Dispatcher < TraitCollection->Dynamic->Void > {
-		if (_traitAdded == null)_traitAdded = new Dispatcher < TraitCollection->Dynamic->Void >();
+	public var traitAdded(getTraitAdded, null):Signaler<Dynamic>;
+	private function getTraitAdded():Signaler < Dynamic> {
+		if (_traitAdded == null)_traitAdded = new DirectSignaler(this);
 		return _traitAdded;
 	}
-	public var traitRemoved(getTraitRemoved, null):Dispatcher<TraitCollection->Dynamic->Void>;
-	private function getTraitRemoved():Dispatcher<TraitCollection->Dynamic->Void>{
-		if (_traitRemoved == null)_traitRemoved = new Dispatcher < TraitCollection->Dynamic->Void >();
+	public var traitRemoved(getTraitRemoved, null):Signaler<Dynamic>;
+	private function getTraitRemoved():Signaler<Dynamic>{
+		if (_traitRemoved == null)_traitRemoved = new DirectSignaler(this);
 		return _traitRemoved;
 	}
 
-	private var _traitRemoved:Dispatcher<TraitCollection->Dynamic->Void>;
-	private var _traitAdded:Dispatcher<TraitCollection->Dynamic->Void>;
+	private var _traitRemoved:Signaler<Dynamic>;
+	private var _traitAdded:Signaler<Dynamic>;
 	private var _traitTypeCache:Hash < TraitTypeCache<Dynamic> > ;
 	
 	public var traits(default, null):IndexedList<Dynamic>;
@@ -161,7 +162,7 @@ class TraitCollection
 			cache.invalid.add(trait);
 			cache.methodCachesSafe = false;
 		}
-		if (_traitAdded != null)_traitAdded.call(this,trait);
+		if (_traitAdded != null)_traitAdded.dispatch(trait);
 	}
 	public function removeTrait(trait:Dynamic):Void{
 		traits.remove(trait);
@@ -172,7 +173,7 @@ class TraitCollection
 			cache.invalid.remove(trait);
 			cache.methodCachesSafe = false;
 		}
-		if(_traitRemoved!=null)_traitRemoved.call(this,trait);
+		if(_traitRemoved!=null)_traitRemoved.dispatch(trait);
 	}
 }
 

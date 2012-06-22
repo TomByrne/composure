@@ -18,13 +18,13 @@ class ConcernMarrier
 	private function set_traits(value:TraitCollection):TraitCollection{
 		if(_traits!=value){
 			if(_traits!=null){
-				_traits.traitAdded.unbind(this,onTraitAdded);
-				_traits.traitRemoved.unbind(this,onTraitRemoved);
+				_traits.traitAdded.unbind(onTraitAdded);
+				_traits.traitRemoved.unbind(onTraitRemoved);
 			}
 			_traits = value;
 			if(_traits!=null){
-				_traits.traitAdded.bind(this,onTraitAdded);
-				_traits.traitRemoved.bind(this,onTraitRemoved);
+				_traits.traitAdded.bind(onTraitAdded);
+				_traits.traitRemoved.bind(onTraitRemoved);
 			}
 		}
 		return value;
@@ -117,14 +117,14 @@ class ConcernMarrier
 		}
 	}*/
 
-	private function onTraitAdded(from:TraitCollection, trait:Dynamic):Void{
+	private function onTraitAdded(trait:Dynamic):Void{
 		for(traitConcern in _traitConcerns.list){
 			compareTrait(trait, traitConcern);
 		}
 		//testCheck();
 	}
 
-	private function onTraitRemoved(from:TraitCollection, trait:Dynamic):Void{
+	private function onTraitRemoved(trait:Dynamic):Void{
 		var concerns:IndexedList<IConcern> = _traitLookup.get(trait);
 		if(concerns!=null){
 			for(traitConcern in concerns.list){

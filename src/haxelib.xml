@@ -7,5 +7,7 @@
     <tag v="dependency"/>
     <tag v="injection"/>
     <description>A haxe library to assist coding in a composition paradigm</description>
-    <version name="0.31">Added metadata dependency injection by property (using @inject) or by method (using @injectAdd and @injectRemove).</version>
+    <version name="0.32">Switched from event.Dispatcher to hsl.haxe.Signaler for events.</version>
+
+    <depends name="hsl-1"/>
 </project>
