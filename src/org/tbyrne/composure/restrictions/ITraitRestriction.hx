@@ -9,6 +9,6 @@ import org.tbyrne.composure.traits.ITrait;
 
 interface ITraitRestriction 
 {
-	function allowNewSibling(owner:ITrait, item:ComposeItem, newTrait:Dynamic):Bool;
-	function allowAddTo(owner:ITrait, item:ComposeItem):Bool;
+	function allowNewSibling(owner:Dynamic, item:ComposeItem, newTrait:Dynamic):Bool;
+	function allowAddTo(owner:Dynamic, item:ComposeItem):Bool;
 }

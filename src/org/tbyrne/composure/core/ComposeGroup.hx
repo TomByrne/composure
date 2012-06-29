@@ -2,16 +2,10 @@ package org.tbyrne.composure.core;
 
 import haxe.Log;
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.logging.LogMsg;
-//import org.tbyrne.composure.ComposeNamespace;
 import org.tbyrne.composure.concerns.ConcernMarrier;
 import org.tbyrne.composure.concerns.IConcern;
-import org.tbyrne.composure.traits.ITrait;
 import org.tbyrne.composure.traits.TraitCollection;
-
-//
-//#use namespace ComposeNamespace;
-//using away3d.namespace.ComposeNamespace;
+import org.tbyrne.logging.LogMsg;
 
 
 class ComposeGroup extends ComposeItem

@@ -65,9 +65,15 @@ class AbstractTrait implements ITrait
 	 * Set to true to force Trait to only be added for groups.
 	 */
 	private var _groupOnly:Bool;
+	private var _ownerTrait:Dynamic;
 
-	public function new() {
-		_groupOnly = false;	
+	public function new(ownerTrait:Dynamic=null) {
+		_groupOnly = false;
+		if (ownerTrait != null) {
+			_ownerTrait = ownerTrait;
+		}else {
+			_ownerTrait = this;
+		}
 	}
 	private function onItemRemove():Void{
 		// override me
@@ -139,16 +145,16 @@ class AbstractTrait implements ITrait
 		}
 	}
 
-	private function addConcern(concern:IConcern):Void{
+	public function addConcern(concern:IConcern):Void{
 		if(_concerns==null)_concerns = new IndexedList<IConcern>();
 		if(_concerns.add(concern)){
-			concern.ownerTrait = this;
+			concern.ownerTrait = _ownerTrait;
 		}#if debug else{
 				Log.trace(new LogMsg("Attempting to add concern twice",[LogType.performanceWarning]));
 			}
 		#end
 	}
-	private function removeConcern(concern:IConcern):Void{
+	public function removeConcern(concern:IConcern):Void{
 		if(_concerns!=null && _concerns.remove(concern)){
 			concern.ownerTrait = null;
 		}#if debug else{

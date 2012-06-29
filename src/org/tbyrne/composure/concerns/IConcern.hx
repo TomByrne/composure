@@ -12,7 +12,7 @@ interface IConcern
 	public var descendants(default, null):Bool;
 	public var acceptOwnerTrait(default, null):Bool;
 
-	public var ownerTrait:ITrait;
+	public var ownerTrait:Dynamic;
 
 	function concernAdded(trait:Dynamic, item:ComposeItem):Void;
 	function concernRemoved(trait:Dynamic, item:ComposeItem):Void;

@@ -4,8 +4,10 @@ import org.tbyrne.collections.IndexedList;
 import org.tbyrne.composure.concerns.ConcernMarrier;
 import org.tbyrne.composure.concerns.IConcern;
 import org.tbyrne.composure.traits.ITrait;
+import org.tbyrne.composure.traits.ITraitProxy;
 import org.tbyrne.composure.traits.TraitCollection;
 import org.tbyrne.composure.restrictions.ITraitRestriction;
+import time.types.ds.ObjectHash;
 
 
 class ComposeItem
@@ -39,11 +41,13 @@ class ComposeItem
 	private var _siblingMarrier:ConcernMarrier; // Marries traits owned by this Item to siblings' concerns
 	private var _parentMarrier:ConcernMarrier; // Marries traits owned by this Item to ascendants' concerns
 	private var _ascConcerns:IndexedList<IConcern>;
+	private var _traitToCast:ObjectHash<Dynamic,ITrait>;
 
 	public function new(initTraits:Array<Dynamic>=null){
 		_traitCollection = new TraitCollection();
 		_siblingMarrier = new ConcernMarrier(this,_traitCollection);
-		_parentMarrier = new ConcernMarrier(this,_traitCollection);
+		_parentMarrier = new ConcernMarrier(this, _traitCollection);
+		_traitToCast = new ObjectHash();
 		if(initTraits!=null){
 			for(trait in initTraits){
 				addTrait(trait);
@@ -77,15 +81,24 @@ class ComposeItem
 		}
 	}
 	private function _addTrait(trait:Dynamic):Void{
-		/*CONFIG::debug{
+		/*#if debug
 		if(_root && _root!=this){
 			Log.trace("WARNING:: ITrait being added while ComposeItem added to root");
 		}
-		}*/
-		var castTrait:ITrait;
+		#end*/
+		
+		var castTrait:ITrait = null;
 		var restrictions:Array<ITraitRestriction>;
-		if(Std.is(trait,ITrait)){
+		
+		var getProxyTrait = Reflect.field(trait, "getProxiedTrait");
+		if (getProxyTrait != null) {
+			var proxy = trait.getProxiedTrait();
+			if (Std.is(proxy, ITrait)) castTrait = cast(proxy, ITrait);
+		}
+		if (castTrait == null && Std.is(trait, ITrait)) {
 			castTrait = cast(trait, ITrait);
+		}
+		if (castTrait != null) {
 			castTrait.item = this;
 			
 			restrictions = castTrait.getRestrictions();
@@ -94,15 +107,13 @@ class ComposeItem
 					return;
 				}
 			}
-		}else {
-			castTrait = null;
+			_traitToCast.set(trait, castTrait);
 		}
-		
 		var traits:Array<Dynamic> = _traitCollection.traits.list;
 		for (otherTrait in traits) {
-			if(Std.is(otherTrait, ITrait)){
-				var castTrait:ITrait = cast(otherTrait, ITrait);
-				restrictions = castTrait.getRestrictions();
+			var otherCast:ITrait = _traitToCast.get(otherTrait);
+			if(otherCast!=null){
+				restrictions = otherCast.getRestrictions();
 				for (restriction in restrictions) {
 					if(!restriction.allowNewSibling(otherTrait, this, trait)) {
 						return;
@@ -137,23 +148,21 @@ class ComposeItem
 		}
 	}
 	private function _removeTrait(trait:Dynamic):Void{
-		/*#id debug
+		/*#if debug
 		if(_root){
 			Log.trace("WARNING:: ITrait being removed while ComposeItem added to root");
 		}
 		#end*/
 		
-		var castTrait:ITrait;
-		if(Std.is(trait,ITrait)){
+		var castTrait:ITrait = _traitToCast.get(trait);
+		if(castTrait!=null){
 			castTrait = cast(trait, ITrait);
 			var castConcerns:Array<IConcern> = castTrait.getConcerns();
 			for(concern in castConcerns){
 				removeTraitConcern(concern);
 			}
-		}else {
-			castTrait = null;
+			_traitToCast.remove(trait);
 		}
-		
 		
 		_traitCollection.removeTrait(trait);
 		if(_parentItem!=null)_parentItem.removeChildTrait(trait);
@@ -164,7 +173,7 @@ class ComposeItem
 	}
 
 
-	private function addTraitConcern(concern:IConcern):Void{
+	private function addTraitConcern(concern:IConcern):Void {
 		if(concern.siblings){
 			_siblingMarrier.addConcern(concern);
 		}

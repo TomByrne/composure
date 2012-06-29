@@ -65,7 +65,6 @@ class ConcernMarrier
 			return;
 		}*/
 		#end
-		
 		if(_traitConcerns.add(traitConcern)){
 			
 			for(trait in _traits.traits.list){
@@ -140,7 +139,7 @@ class ConcernMarrier
 	}
 
 
-	private function compareTrait(trait:Dynamic, traitConcern:IConcern):Void{
+	private function compareTrait(trait:Dynamic, traitConcern:IConcern):Void {
 		if((trait!=traitConcern.ownerTrait || traitConcern.acceptOwnerTrait) && traitConcern.isInterestedIn(trait)){
 		
 			// add to concern lookup

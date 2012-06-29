@@ -34,7 +34,7 @@ class SingularTraitRestriction implements ITraitRestriction
 	private function new(restrictSubclasses:Bool) {
 		this.restrictSubclasses = restrictSubclasses;
 	}
-	public function allowNewSibling(owner:ITrait, item:ComposeItem, newTrait:*):Bool {
+	public function allowNewSibling(owner:Dynamic, item:ComposeItem, newTrait:Dynamic):Bool {
 		validateForOwner(owner);
 		if (restrictSubclasses) {
 			return !Std.is(newTrait, lastClass);
@@ -42,7 +42,7 @@ class SingularTraitRestriction implements ITraitRestriction
 			return (Type.getClass(newTrait) != lastClass);
 		}
 	}
-	public function allowAddTo(owner:ITrait, item:ComposeItem):Bool {
+	public function allowAddTo(owner:Dynamic, item:ComposeItem):Bool {
 		validateForOwner(owner);
 		var traits:Array<*> = item.getTraits(lastClass);
 		if (restrictSubclasses) {

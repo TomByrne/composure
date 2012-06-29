@@ -20,7 +20,7 @@ class AbstractConcern implements IConcern
 	public var interestedTraitType:Class<Dynamic>;
 
 
-	public var ownerTrait:ITrait;
+	public var ownerTrait:Dynamic;
 	public var passThroughConcern:Bool;
 	public var passThroughItem:Bool;
 
@@ -41,7 +41,7 @@ class AbstractConcern implements IConcern
 
 
 
-	public function concernAdded(trait:Dynamic, item:ComposeItem):Void{
+	public function concernAdded(trait:Dynamic, item:ComposeItem):Void {
 		if (_addedTraits.add(trait) && addHandler != null) {
 			if (passThroughConcern) {
 				if(passThroughItem){	
@@ -52,7 +52,7 @@ class AbstractConcern implements IConcern
 			}else {
 				if(passThroughItem){	
 					addHandler(trait, item);
-				}else {
+				}else {	
 					addHandler(trait);
 				}
 			}

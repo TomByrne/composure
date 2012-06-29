@@ -5,7 +5,6 @@ import org.tbyrne.composure.concerns.Concern;
 import org.tbyrne.composure.core.ComposeGroup;
 import org.tbyrne.composure.core.ComposeItem;
 import org.tbyrne.composure.traits.AbstractTrait;
-import org.tbyrne.composure.traits.ITrait;
 import org.tbyrne.logging.LogMsg;
 import time.types.ds.ObjectHash;
 

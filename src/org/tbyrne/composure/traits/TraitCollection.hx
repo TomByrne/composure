@@ -154,7 +154,7 @@ class TraitCollection
 			}
 		}
 	}
-	public function addTrait(trait:Dynamic):Void{
+	public function addTrait(trait:Dynamic):Void {
 		traits.add(trait);
 		//var type:Class<Dynamic>;
 		for (cache in _traitTypeCache) {

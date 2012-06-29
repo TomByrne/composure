@@ -36,8 +36,15 @@ class Concern extends AbstractConcern
 		}
 	}
 	override public function isInterestedIn(trait:Dynamic):Bool {
-		var item:ComposeItem;
-		if (Std.is(trait, ITrait)) {
+		var item:ComposeItem = null;
+		
+		var getProxyTrait = Reflect.field(trait, "getProxiedTrait");
+		if (getProxyTrait != null) {
+			var proxy = trait.getProxiedTrait();
+			if (Std.is(proxy, ITrait)) item = cast(proxy, ITrait).item;
+		}
+		
+		if (item==null && Std.is(trait, ITrait)) {
 			item = trait.item;
 		}else {
 			item = null;
