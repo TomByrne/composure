@@ -2,13 +2,13 @@ package org.tbyrne.composure.traits;
 
 import haxe.Log;
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.concerns.IConcern;
+import org.tbyrne.composure.injectors.IInjector;
 import org.tbyrne.composure.core.ComposeGroup;
 import org.tbyrne.composure.core.ComposeItem;
 import org.tbyrne.composure.restrictions.ITraitRestriction;
 import org.tbyrne.logging.LogMsg;
 
-@:autoBuild(org.tbyrne.composure.macro.ConcernInjector.inject())
+@:autoBuild(org.tbyrne.composure.macro.InjectorMacro.inject())
 class AbstractTrait implements ITrait
 {
 	public var group(default, null):ComposeGroup;
@@ -56,7 +56,7 @@ class AbstractTrait implements ITrait
 	}
 
 
-	private var _concerns:IndexedList<IConcern>;
+	private var _injectors:IndexedList<IInjector>;
 	private var _restrictions:IndexedList<ITraitRestriction>;
 	private var _siblingTraits:IndexedList<Dynamic>;
 	private var _childItems:IndexedList<ComposeItem>;
@@ -82,9 +82,9 @@ class AbstractTrait implements ITrait
 		// override me
 	}
 
-	public function getConcerns():Array<IConcern>{
-		if(_concerns==null)_concerns = new IndexedList<IConcern>();
-		return _concerns.list;
+	public function getInjectors():Array<IInjector>{
+		if(_injectors==null)_injectors = new IndexedList<IInjector>();
+		return _injectors.list;
 	}
 	public function getRestrictions():Array<ITraitRestriction>{
 		if(_restrictions==null)_restrictions = new IndexedList<ITraitRestriction>();
@@ -145,20 +145,20 @@ class AbstractTrait implements ITrait
 		}
 	}
 
-	public function addConcern(concern:IConcern):Void{
-		if(_concerns==null)_concerns = new IndexedList<IConcern>();
-		if(_concerns.add(concern)){
-			concern.ownerTrait = _ownerTrait;
+	public function addInjector(injector:IInjector):Void{
+		if(_injectors==null)_injectors = new IndexedList<IInjector>();
+		if(_injectors.add(injector)){
+			injector.ownerTrait = _ownerTrait;
 		}#if debug else{
-				Log.trace(new LogMsg("Attempting to add concern twice",[LogType.performanceWarning]));
+				Log.trace(new LogMsg("Attempting to add injector twice",[LogType.performanceWarning]));
 			}
 		#end
 	}
-	public function removeConcern(concern:IConcern):Void{
-		if(_concerns!=null && _concerns.remove(concern)){
-			concern.ownerTrait = null;
+	public function removeInjector(injector:IInjector):Void{
+		if(_injectors!=null && _injectors.remove(injector)){
+			injector.ownerTrait = null;
 		}#if debug else{
-				Log.trace(new LogMsg("Attempting to remove non-added concern",[LogType.performanceWarning]));
+				Log.trace(new LogMsg("Attempting to remove non-added injector",[LogType.performanceWarning]));
 			}
 		#end
 	}
@@ -174,7 +174,7 @@ class AbstractTrait implements ITrait
 		#end
 	}
 	private function removeRestriction(restriction:ITraitRestriction):Void{
-		if(_concerns!=null && _restrictions.remove(restriction)){
+		if(_injectors!=null && _restrictions.remove(restriction)){
 			
 		}#if debug else{
 				Log.trace(new LogMsg("Attempting to remove non-added restriction",[LogType.performanceWarning]));

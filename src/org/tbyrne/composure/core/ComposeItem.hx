@@ -1,8 +1,8 @@
 package org.tbyrne.composure.core;
 
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.concerns.ConcernMarrier;
-import org.tbyrne.composure.concerns.IConcern;
+import org.tbyrne.composure.injectors.InjectorMarrier;
+import org.tbyrne.composure.injectors.IInjector;
 import org.tbyrne.composure.traits.ITrait;
 import org.tbyrne.composure.traits.ITraitProxy;
 import org.tbyrne.composure.traits.TraitCollection;
@@ -38,15 +38,15 @@ class ComposeItem
 	private var _parentItem:ComposeGroup;
 	private var _root:ComposeRoot;
 	private var _traitCollection:TraitCollection;
-	private var _siblingMarrier:ConcernMarrier; // Marries traits owned by this Item to siblings' concerns
-	private var _parentMarrier:ConcernMarrier; // Marries traits owned by this Item to ascendants' concerns
-	private var _ascConcerns:IndexedList<IConcern>;
+	private var _siblingMarrier:InjectorMarrier; // Marries traits owned by this Item to siblings' injectors
+	private var _parentMarrier:InjectorMarrier; // Marries traits owned by this Item to ascendants' injectors
+	private var _ascInjectors:IndexedList<IInjector>;
 	private var _traitToCast:ObjectHash<Dynamic,ITrait>;
 
 	public function new(initTraits:Array<Dynamic>=null){
 		_traitCollection = new TraitCollection();
-		_siblingMarrier = new ConcernMarrier(this,_traitCollection);
-		_parentMarrier = new ConcernMarrier(this, _traitCollection);
+		_siblingMarrier = new InjectorMarrier(this,_traitCollection);
+		_parentMarrier = new InjectorMarrier(this, _traitCollection);
 		_traitToCast = new ObjectHash();
 		if(initTraits!=null){
 			for(trait in initTraits){
@@ -126,9 +126,9 @@ class ComposeItem
 		if (_parentItem != null)_parentItem.addChildTrait(trait);
 		
 		if (castTrait != null) {
-			var castConcerns:Array<IConcern> = castTrait.getConcerns();
-			for(concern in castConcerns){
-				addTraitConcern(concern);
+			var castInjectors:Array<IInjector> = castTrait.getInjectors();
+			for(injector in castInjectors){
+				addTraitInjector(injector);
 			}
 		}
 	}
@@ -157,9 +157,9 @@ class ComposeItem
 		var castTrait:ITrait = _traitToCast.get(trait);
 		if(castTrait!=null){
 			castTrait = cast(trait, ITrait);
-			var castConcerns:Array<IConcern> = castTrait.getConcerns();
-			for(concern in castConcerns){
-				removeTraitConcern(concern);
+			var castInjectors:Array<IInjector> = castTrait.getInjectors();
+			for(injector in castInjectors){
+				removeTraitInjector(injector);
 			}
 			_traitToCast.remove(trait);
 		}
@@ -173,23 +173,23 @@ class ComposeItem
 	}
 
 
-	private function addTraitConcern(concern:IConcern):Void {
-		if(concern.siblings){
-			_siblingMarrier.addConcern(concern);
+	private function addTraitInjector(injector:IInjector):Void {
+		if(injector.siblings){
+			_siblingMarrier.addInjector(injector);
 		}
-		if(concern.ascendants){
-			if(_ascConcerns==null)_ascConcerns = new IndexedList();
-			_ascConcerns.add(concern);
-			if(_parentItem!=null)_parentItem.addAscendingConcern(concern);
+		if(injector.ascendants){
+			if(_ascInjectors==null)_ascInjectors = new IndexedList();
+			_ascInjectors.add(injector);
+			if(_parentItem!=null)_parentItem.addAscendingInjector(injector);
 		}
 	}
-	private function removeTraitConcern(concern:IConcern):Void{
-		if(concern.siblings){
-			_siblingMarrier.removeConcern(concern);
+	private function removeTraitInjector(injector:IInjector):Void{
+		if(injector.siblings){
+			_siblingMarrier.removeInjector(injector);
 		}
-		if(concern.ascendants){
-			_ascConcerns.remove(concern);
-			if(_parentItem!=null)_parentItem.removeAscendingConcern(concern);
+		if(injector.ascendants){
+			_ascInjectors.remove(injector);
+			if(_parentItem!=null)_parentItem.removeAscendingInjector(injector);
 		}
 	}
 
@@ -198,9 +198,9 @@ class ComposeItem
 		for(trait in _traitCollection.traits.list){
 			_parentItem.addChildTrait(trait);
 		}
-		if(_ascConcerns!=null){
-			for(concern in _ascConcerns.list){
-				_parentItem.addAscendingConcern(concern);
+		if(_ascInjectors!=null){
+			for(injector in _ascInjectors.list){
+				_parentItem.addAscendingInjector(injector);
 			}
 		}
 	}
@@ -208,19 +208,19 @@ class ComposeItem
 		for(trait in _traitCollection.traits.list){
 			_parentItem.removeChildTrait(trait);
 		}
-		if(_ascConcerns!=null){
-			for(concern in _ascConcerns.list){
-				_parentItem.removeAscendingConcern(concern);
+		if(_ascInjectors!=null){
+			for(injector in _ascInjectors.list){
+				_parentItem.removeAscendingInjector(injector);
 			}
 		}
 	}
 
 
-	private function addParentConcern(concern:IConcern):Void{
-		_parentMarrier.addConcern(concern);
+	private function addParentInjector(injector:IInjector):Void{
+		_parentMarrier.addInjector(injector);
 	}
 
-	private function removeParentConcern(concern:IConcern):Void{
-		_parentMarrier.removeConcern(concern);
+	private function removeParentInjector(injector:IInjector):Void{
+		_parentMarrier.removeInjector(injector);
 	}
 }

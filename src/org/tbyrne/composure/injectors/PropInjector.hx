@@ -1,11 +1,11 @@
-package org.tbyrne.composure.concerns;
+package org.tbyrne.composure.injectors;
 
 /**
  * ...
  * @author Tom Byrne
  */
 
-class PropConcern extends Concern
+class PropInjector extends Injector
 {
 	private var subject:Dynamic;
 	private var prop:String;

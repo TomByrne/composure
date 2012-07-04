@@ -2,8 +2,8 @@ package org.tbyrne.composure.core;
 
 import haxe.Log;
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.concerns.ConcernMarrier;
-import org.tbyrne.composure.concerns.IConcern;
+import org.tbyrne.composure.injectors.InjectorMarrier;
+import org.tbyrne.composure.injectors.IInjector;
 import org.tbyrne.composure.traits.TraitCollection;
 import org.tbyrne.logging.LogMsg;
 
@@ -14,20 +14,20 @@ class ComposeGroup extends ComposeItem
 	private var _descendantTraits:TraitCollection;
 	private var _children:IndexedList<ComposeItem>;
 	
-	private var _childAscConcerns:IndexedList<IConcern>;
-	private var _ignoredChildAscConcerns:IndexedList<IConcern>;
-	private var _childAscendingMarrier:ConcernMarrier;
+	private var _childAscInjectors:IndexedList<IInjector>;
+	private var _ignoredChildAscInjectors:IndexedList<IInjector>;
+	private var _childAscendingMarrier:InjectorMarrier;
 	
-	private var _descConcerns:IndexedList<IConcern>;
-	private var _parentDescConcerns:IndexedList<IConcern>;
-	private var _ignoredParentDescConcerns:IndexedList<IConcern>;
+	private var _descInjectors:IndexedList<IInjector>;
+	private var _parentDescInjectors:IndexedList<IInjector>;
+	private var _ignoredParentDescInjectors:IndexedList<IInjector>;
 
 	public function new(initTraits:Array<Dynamic> = null) {
 		_descendantTraits = new TraitCollection();
 		_children = new IndexedList<ComposeItem>();
-		_descConcerns = new IndexedList<IConcern>();
+		_descInjectors = new IndexedList<IInjector>();
 		super(initTraits);
-		_childAscendingMarrier = new ConcernMarrier(this,_traitCollection);
+		_childAscendingMarrier = new InjectorMarrier(this,_traitCollection);
 	}
 	override private function setRoot(game:ComposeRoot):Void{
 		super.setRoot(game);
@@ -51,12 +51,12 @@ class ComposeGroup extends ComposeItem
 		
 		item.parentItem = this;
 		
-		for(traitConcern in _descConcerns.list){
-			item.addParentConcern(traitConcern);
+		for(traitInjector in _descInjectors.list){
+			item.addParentInjector(traitInjector);
 		}
-		if(_parentDescConcerns!=null){
-			for(traitConcern in _parentDescConcerns.list){
-				item.addParentConcern(traitConcern);
+		if(_parentDescInjectors!=null){
+			for(traitInjector in _parentDescInjectors.list){
+				item.addParentInjector(traitInjector);
 			}
 		}
 		item.setRoot(_root);
@@ -76,12 +76,12 @@ class ComposeGroup extends ComposeItem
 		_children.remove(item);
 		item.parentItem = null;
 		
-		for(traitConcern in _descConcerns.list){
-			item.removeParentConcern(traitConcern);
+		for(traitInjector in _descInjectors.list){
+			item.removeParentInjector(traitInjector);
 		}
-		if(_parentDescConcerns!=null){
-			for(traitConcern in _parentDescConcerns.list){
-				item.removeParentConcern(traitConcern);
+		if(_parentDescInjectors!=null){
+			for(traitInjector in _parentDescInjectors.list){
+				item.removeParentInjector(traitInjector);
 			}
 		}
 		
@@ -102,39 +102,39 @@ class ComposeGroup extends ComposeItem
 	}
 	override public function addTrait(trait:Dynamic):Void{
 		super.addTrait(trait);
-		checkForNewlyIgnoredConcerns();
+		checkForNewlyIgnoredInjectors();
 	}
 	override public function addTraits(traits:Array<Dynamic>):Void{
 		super.addTraits(traits);
-		checkForNewlyIgnoredConcerns();
+		checkForNewlyIgnoredInjectors();
 	}
 	override public function removeTrait(trait:Dynamic):Void{
 		super.removeTrait(trait);
-		checkForNewlyUnignoredConcerns();
+		checkForNewlyUnignoredInjectors();
 	}
 	override public function removeTraits(traits:Array<Dynamic>):Void{
 		super.removeTraits(traits);
-		checkForNewlyUnignoredConcerns();
+		checkForNewlyUnignoredInjectors();
 	}
 	override public function removeAllTraits():Void{
 		super.removeAllTraits();
-		checkForNewlyUnignoredConcerns();
+		checkForNewlyUnignoredInjectors();
 	}
-	override private function addTraitConcern(concern:IConcern):Void{
-		super.addTraitConcern(concern);
-		if(concern.descendants){
-			_descConcerns.add(concern);
+	override private function addTraitInjector(injector:IInjector):Void{
+		super.addTraitInjector(injector);
+		if(injector.descendants){
+			_descInjectors.add(injector);
 			for(child in _children.list){
-				child.addParentConcern(concern);
+				child.addParentInjector(injector);
 			}
 		}
 	}
-	override private function removeTraitConcern(concern:IConcern):Void{
-		super.removeTraitConcern(concern);
-		if(_descConcerns.containsItem(concern)){
-			_descConcerns.remove(concern);
+	override private function removeTraitInjector(injector:IInjector):Void{
+		super.removeTraitInjector(injector);
+		if(_descInjectors.containsItem(injector)){
+			_descInjectors.remove(injector);
 			for(child in _children.list){
-				child.removeParentConcern(concern);
+				child.removeParentInjector(injector);
 			}
 		}
 	}
@@ -152,9 +152,9 @@ class ComposeGroup extends ComposeItem
 		for(trait in _descendantTraits.traits.list){
 			_parentItem.addChildTrait(trait);
 		}
-		if(_childAscConcerns!=null){
-			for(concern in _childAscConcerns.list){
-				_parentItem.addAscendingConcern(concern);
+		if(_childAscInjectors!=null){
+			for(injector in _childAscInjectors.list){
+				_parentItem.addAscendingInjector(injector);
 			}
 		}
 	}
@@ -163,107 +163,107 @@ class ComposeGroup extends ComposeItem
 		for(trait in _descendantTraits.traits.list){
 			_parentItem.removeChildTrait(trait);
 		}
-		if(_childAscConcerns!=null){
-			for(concern in _childAscConcerns.list){
-				_parentItem.removeAscendingConcern(concern);
+		if(_childAscInjectors!=null){
+			for(injector in _childAscInjectors.list){
+				_parentItem.removeAscendingInjector(injector);
 			}
 		}
 	}
-	public function addAscendingConcern(concern:IConcern):Void {
-		_childAscendingMarrier.addConcern(concern);
-		if(concern.shouldAscend(this)){
-			_addAscendingConcern(concern);
+	public function addAscendingInjector(injector:IInjector):Void {
+		_childAscendingMarrier.addInjector(injector);
+		if(injector.shouldAscend(this)){
+			_addAscendingInjector(injector);
 		}else {
-			if(_ignoredChildAscConcerns==null)_ignoredChildAscConcerns = new IndexedList<IConcern>();
-			_ignoredChildAscConcerns.add(concern);
+			if(_ignoredChildAscInjectors==null)_ignoredChildAscInjectors = new IndexedList<IInjector>();
+			_ignoredChildAscInjectors.add(injector);
 		}
 	}
-	public function _addAscendingConcern(concern:IConcern):Void {
-		if(_childAscConcerns==null)_childAscConcerns = new IndexedList();
-		_childAscConcerns.add(concern);
-		if (_parentItem != null)_parentItem.addAscendingConcern(concern);
+	public function _addAscendingInjector(injector:IInjector):Void {
+		if(_childAscInjectors==null)_childAscInjectors = new IndexedList();
+		_childAscInjectors.add(injector);
+		if (_parentItem != null)_parentItem.addAscendingInjector(injector);
 	}
-	public function removeAscendingConcern(concern:IConcern):Void {
-		_childAscendingMarrier.removeConcern(concern);
-		if (_childAscConcerns!=null && _childAscConcerns.containsItem(concern)) {
-			_removeAscendingConcern(concern);	
+	public function removeAscendingInjector(injector:IInjector):Void {
+		_childAscendingMarrier.removeInjector(injector);
+		if (_childAscInjectors!=null && _childAscInjectors.containsItem(injector)) {
+			_removeAscendingInjector(injector);	
 		}else {
-			_ignoredChildAscConcerns.remove(concern);
+			_ignoredChildAscInjectors.remove(injector);
 		}
 	}
-	private function _removeAscendingConcern(concern:IConcern):Void {
-		_childAscConcerns.remove(concern);
-		if (_parentItem != null)_parentItem.removeAscendingConcern(concern);
+	private function _removeAscendingInjector(injector:IInjector):Void {
+		_childAscInjectors.remove(injector);
+		if (_parentItem != null)_parentItem.removeAscendingInjector(injector);
 	}
 
-	override private function addParentConcern(concern:IConcern):Void{
-		super.addParentConcern(concern);
-		if(concern.shouldDescend(this)){
-			addDescParentConcern(concern);
+	override private function addParentInjector(injector:IInjector):Void{
+		super.addParentInjector(injector);
+		if(injector.shouldDescend(this)){
+			addDescParentInjector(injector);
 		}else{
-			if(_ignoredParentDescConcerns==null)_ignoredParentDescConcerns = new IndexedList<IConcern>();
-			_ignoredParentDescConcerns.add(concern);
+			if(_ignoredParentDescInjectors==null)_ignoredParentDescInjectors = new IndexedList<IInjector>();
+			_ignoredParentDescInjectors.add(injector);
 		}
 	}
 
-	override private function removeParentConcern(concern:IConcern):Void{
-		super.removeParentConcern(concern);
+	override private function removeParentInjector(injector:IInjector):Void{
+		super.removeParentInjector(injector);
 		
-		if(_parentDescConcerns!=null && _parentDescConcerns.containsItem(concern)){
-			removeDescParentConcern(concern);
-		}else if(_ignoredParentDescConcerns!=null){
-			_ignoredParentDescConcerns.remove(concern);
+		if(_parentDescInjectors!=null && _parentDescInjectors.containsItem(injector)){
+			removeDescParentInjector(injector);
+		}else if(_ignoredParentDescInjectors!=null){
+			_ignoredParentDescInjectors.remove(injector);
 		}
 	}
 
-	private function checkForNewlyIgnoredConcerns():Void {
+	private function checkForNewlyIgnoredInjectors():Void {
 		var	i:Int = 0;
-		if(_parentDescConcerns!=null){
-			while(i<_parentDescConcerns.list.length){
-				var concern:IConcern = _parentDescConcerns.list[i];
-				if(!concern.shouldDescend(this)){
-					removeDescParentConcern(concern);
-					if(_ignoredParentDescConcerns==null)_ignoredParentDescConcerns = new IndexedList<IConcern>();
-					_ignoredParentDescConcerns.add(concern);
+		if(_parentDescInjectors!=null){
+			while(i<_parentDescInjectors.list.length){
+				var injector:IInjector = _parentDescInjectors.list[i];
+				if(!injector.shouldDescend(this)){
+					removeDescParentInjector(injector);
+					if(_ignoredParentDescInjectors==null)_ignoredParentDescInjectors = new IndexedList<IInjector>();
+					_ignoredParentDescInjectors.add(injector);
 				}else{
 					++i;
 				}
 			}
 		}
-		if(_childAscConcerns!=null){
+		if(_childAscInjectors!=null){
 			i = 0;
-			while(i<_childAscConcerns.list.length){
-				var concern:IConcern = _childAscConcerns.list[i];
-				if(!concern.shouldAscend(this)){
-					_removeAscendingConcern(concern);	
-					if(_ignoredChildAscConcerns==null)_ignoredChildAscConcerns = new IndexedList<IConcern>();
-					_ignoredChildAscConcerns.add(concern);
+			while(i<_childAscInjectors.list.length){
+				var injector:IInjector = _childAscInjectors.list[i];
+				if(!injector.shouldAscend(this)){
+					_removeAscendingInjector(injector);	
+					if(_ignoredChildAscInjectors==null)_ignoredChildAscInjectors = new IndexedList<IInjector>();
+					_ignoredChildAscInjectors.add(injector);
 				}else{
 					++i;
 				}
 			}
 		}
 	}
-	private function checkForNewlyUnignoredConcerns():Void{
+	private function checkForNewlyUnignoredInjectors():Void{
 		var	i:Int = 0;
-		if(_ignoredParentDescConcerns!=null){
-			while(i<_ignoredParentDescConcerns.list.length){
-				var concern:IConcern = _ignoredParentDescConcerns.list[i];
-				if(concern.shouldDescend(this)){
-					addDescParentConcern(concern);
-					_ignoredParentDescConcerns.remove(concern);
+		if(_ignoredParentDescInjectors!=null){
+			while(i<_ignoredParentDescInjectors.list.length){
+				var injector:IInjector = _ignoredParentDescInjectors.list[i];
+				if(injector.shouldDescend(this)){
+					addDescParentInjector(injector);
+					_ignoredParentDescInjectors.remove(injector);
 				}else{
 					++i;
 				}
 			}
 		}
-		if(_ignoredChildAscConcerns!=null){
+		if(_ignoredChildAscInjectors!=null){
 			i = 0;
-			while(i<_ignoredChildAscConcerns.list.length){
-				var concern:IConcern = _ignoredChildAscConcerns.list[i];
-				if (concern.shouldAscend(this)) {
-					_addAscendingConcern(concern);
-					_ignoredChildAscConcerns.remove(concern);
+			while(i<_ignoredChildAscInjectors.list.length){
+				var injector:IInjector = _ignoredChildAscInjectors.list[i];
+				if (injector.shouldAscend(this)) {
+					_addAscendingInjector(injector);
+					_ignoredChildAscInjectors.remove(injector);
 				}else{
 					++i;
 				}
@@ -272,17 +272,17 @@ class ComposeGroup extends ComposeItem
 	}
 
 
-	private function addDescParentConcern(concern:IConcern):Void{
-		if(_parentDescConcerns==null)_parentDescConcerns = new IndexedList<IConcern>();
-		_parentDescConcerns.add(concern);
+	private function addDescParentInjector(injector:IInjector):Void{
+		if(_parentDescInjectors==null)_parentDescInjectors = new IndexedList<IInjector>();
+		_parentDescInjectors.add(injector);
 		for(child in _children.list){
-			child.addParentConcern(concern);
+			child.addParentInjector(injector);
 		}
 	}
-	private function removeDescParentConcern(concern:IConcern):Void{
-		_parentDescConcerns.remove(concern);
+	private function removeDescParentInjector(injector:IInjector):Void{
+		_parentDescInjectors.remove(injector);
 		for(child in _children.list){
-			child.removeParentConcern(concern);
+			child.removeParentInjector(injector);
 		}
 	}
 }

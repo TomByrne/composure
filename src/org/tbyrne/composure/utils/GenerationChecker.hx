@@ -1,7 +1,7 @@
 package org.tbyrne.composure.utils;
 import haxe.Log;
 import org.tbyrne.composure.core.ComposeItem;
-import org.tbyrne.composure.concerns.Concern;
+import org.tbyrne.composure.injectors.Injector;
 import org.tbyrne.logging.LogMsg;
 
 /**
@@ -12,12 +12,12 @@ import org.tbyrne.logging.LogMsg;
 class GenerationChecker 
 {
 
-	public static function createTraitCheck(maxGenerations:Int=-1, relatedItem:ItemType):ComposeItem->Concern->Bool {
-		return function(item:ComposeItem, from:Concern):Bool {
+	public static function createTraitCheck(maxGenerations:Int=-1, relatedItem:ItemType):ComposeItem->Injector->Bool {
+		return function(item:ComposeItem, from:Injector):Bool {
 			var compare:ComposeItem;
 			switch(relatedItem) {
 				case specific(other): compare = other;
-				case concernItem: compare = from.ownerTrait.item;
+				case injectorItem: compare = from.ownerTrait.item;
 				case root: compare = item.root;
 				default: Log.trace(new LogMsg(
 			}
@@ -29,6 +29,6 @@ class GenerationChecker
 
 enum ItemType {
 	specific(ItemType:ComposeItem);
-	concernItem;
+	injectorItem;
 	root;
 }

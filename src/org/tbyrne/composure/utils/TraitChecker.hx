@@ -1,7 +1,7 @@
 package org.tbyrne.composure.utils;
 import org.tbyrne.composure.core.ComposeItem;
 import org.tbyrne.composure.traits.ITrait;
-import org.tbyrne.composure.concerns.Concern;
+import org.tbyrne.composure.injectors.Injector;
 
 /**
  * ...
@@ -11,9 +11,9 @@ import org.tbyrne.composure.concerns.Concern;
 class TraitChecker 
 {
 
-	public static function createTraitCheck(types:Array<Dynamic>, ?useOrCheck:Bool):ComposeItem->Concern->Bool {
+	public static function createTraitCheck(types:Array<Dynamic>, ?useOrCheck:Bool):ComposeItem->Injector->Bool {
 		if (useOrCheck) {
-			return function(item:ComposeItem, from:Concern):Bool {
+			return function(item:ComposeItem, from:Injector):Bool {
 				for (type in types) {
 					if (item.getTrait(type) != null) {
 						return true;
@@ -22,7 +22,7 @@ class TraitChecker
 				return false;
 			}
 		}else {
-			return function(item:ComposeItem, from:Concern):Bool {
+			return function(item:ComposeItem, from:Injector):Bool {
 				for (type in types) {
 					if (item.getTrait(type) == null) {
 						return false;

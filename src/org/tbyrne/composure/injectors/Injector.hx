@@ -1,15 +1,15 @@
-package org.tbyrne.composure.concerns;
+package org.tbyrne.composure.injectors;
 
 import org.tbyrne.composure.core.ComposeItem;
 import org.tbyrne.composure.traits.ITrait;
 
-class Concern extends AbstractConcern
+class Injector extends AbstractInjector
 {
 
 	public var unlessHasTraits:Array<Class<Dynamic>>;
 	public var additionalTraits:Array<Class<Dynamic>>;
-	public var stopDescendingAt:ComposeItem->Concern->Bool;
-	public var stopAscendingAt:ComposeItem->Concern->Bool;
+	public var stopDescendingAt:ComposeItem->Injector->Bool;
+	public var stopAscendingAt:ComposeItem->Injector->Bool;
 
 	public var matchProps:Hash<Dynamic>;
 	public var maxMatches:Int;

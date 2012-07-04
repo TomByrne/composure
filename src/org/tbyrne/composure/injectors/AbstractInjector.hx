@@ -1,11 +1,11 @@
-package org.tbyrne.composure.concerns;
+package org.tbyrne.composure.injectors;
 
 import org.tbyrne.collections.IndexedList;
 import org.tbyrne.composure.core.ComposeItem;
 import org.tbyrne.composure.traits.ITrait;
 
 
-class AbstractConcern implements IConcern
+class AbstractInjector implements IInjector
 {
 
 	
@@ -21,7 +21,7 @@ class AbstractConcern implements IConcern
 
 
 	public var ownerTrait:Dynamic;
-	public var passThroughConcern:Bool;
+	public var passThroughInjector:Bool;
 	public var passThroughItem:Bool;
 
 	private var _addedTraits:IndexedList<Dynamic>;
@@ -35,15 +35,15 @@ class AbstractConcern implements IConcern
 		this.ascendants = ascendants;
 		this.interestedTraitType = interestedTraitType;
 		_addedTraits = new IndexedList<Dynamic>();
-		passThroughConcern = false;
+		passThroughInjector = false;
 		passThroughItem = false;
 	}
 
 
 
-	public function concernAdded(trait:Dynamic, item:ComposeItem):Void {
+	public function injectorAdded(trait:Dynamic, item:ComposeItem):Void {
 		if (_addedTraits.add(trait) && addHandler != null) {
-			if (passThroughConcern) {
+			if (passThroughInjector) {
 				if(passThroughItem){	
 					addHandler(this, trait, item);
 				}else {
@@ -59,9 +59,9 @@ class AbstractConcern implements IConcern
 		}
 	}
 
-	public function concernRemoved(trait:Dynamic, item:ComposeItem):Void{
+	public function injectorRemoved(trait:Dynamic, item:ComposeItem):Void{
 		if (_addedTraits.remove(trait) && removeHandler!=null) {
-			if (passThroughConcern) {
+			if (passThroughInjector) {
 				if (passThroughItem) {
 					removeHandler(this, trait, item);
 				}else{

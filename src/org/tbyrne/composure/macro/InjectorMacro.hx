@@ -10,7 +10,7 @@ import haxe.macro.Compiler;
  * @author Tom Byrne
  */
 
-class ConcernInjector
+class InjectorMacro
 {
 
 	@:macro public static function inject() : Array<Field> {
@@ -27,11 +27,11 @@ class ConcernInjector
 		var type:Type = Context.getLocalType();
 		var isTrait:Bool = doesTypeInherit("org.tbyrne.composure.traits.ITrait", type);
 		
-		var addConcernMethod:Expr;
+		var addInjectorMethod:Expr;
 		if (isTrait) {
-			addConcernMethod = { expr : EConst(CIdent("addConcern")), pos : fields[0].pos };
+			addInjectorMethod = { expr : EConst(CIdent("addInjector")), pos : fields[0].pos };
 		}else {
-			addConcernMethod = { expr : EField( { expr : EConst(CIdent("_proxiedTrait")), pos : fields[0].pos }, "addConcern"), pos :fields[0].pos };
+			addInjectorMethod = { expr : EField( { expr : EConst(CIdent("_proxiedTrait")), pos : fields[0].pos }, "addInjector"), pos :fields[0].pos };
 		}
 		
 		for (field in fields) {
@@ -48,9 +48,9 @@ class ConcernInjector
 						if (addExpr == null) addExpr = [];
 						switch(field.kind) {
 							case FVar( t , e  ):
-								createPropConcern(field.name, getTypeExpr(t, pos), false, meta, addExpr, pos, addConcernMethod);
+								createPropInjector(field.name, getTypeExpr(t, pos), false, meta, addExpr, pos, addInjectorMethod);
 							case FProp( get , set , t , e  ):
-								createPropConcern(field.name, getTypeExpr(t, pos), (get=="null" || get=="never"), meta, addExpr, pos, addConcernMethod);
+								createPropInjector(field.name, getTypeExpr(t, pos), (get=="null" || get=="never"), meta, addExpr, pos, addInjectorMethod);
 							default:
 								//ignore
 						}
@@ -80,7 +80,7 @@ class ConcernInjector
 					if(remMethods!=null){
 						remMeth = remMethods.get(typePath);
 					}
-					createMethConcern(field, remMeth, typePathToExpr.get(typePath), addExpr, field.pos, addConcernMethod);
+					createMethInjector(field, remMeth, typePathToExpr.get(typePath), addExpr, field.pos, addInjectorMethod);
 				}
 			}
 			for (typePath in remMethods.keys()) {
@@ -88,7 +88,7 @@ class ConcernInjector
 					done.set(typePath, true);
 					
 					var field = remMethods.get(typePath);
-					createMethConcern(null, field, typePathToExpr.get(typePath), addExpr, field.pos, addConcernMethod);
+					createMethInjector(null, field, typePathToExpr.get(typePath), addExpr, field.pos, addInjectorMethod);
 				}
 			}
 		}
@@ -104,7 +104,7 @@ class ConcernInjector
 							classType.interfaces.push( { params : [], t : Ref. (proxyInterface) } );
 						
 						default:
-							throw new Error("ConcernInjector can't operate on non-classes that don't extend ITrait", Context.getLocalClass().get().pos);
+							throw new Error("InjectorMacro can't operate on non-classes that don't extend ITrait", Context.getLocalClass().get().pos);
 					}*/
 					// add _proxiedTrait variable
 					fields.push({ kind : FVar(TPath( { name : "AbstractTrait", pack : ["org", "tbyrne", "composure", "traits"], params : [], sub : null } ), null), meta : [], name : "_proxiedTrait", doc : null, pos : constructor.expr.pos, access : [APrivate] });
@@ -123,7 +123,7 @@ class ConcernInjector
 						constructor.expr.expr = EBlock(addExpr);
 				}
 			}else {
-				throw new Error("ConcernInjector can't operate on classes without a constructor", Context.getLocalClass().get().pos);
+				throw new Error("InjectorMacro can't operate on classes without a constructor", Context.getLocalClass().get().pos);
 			}
 		}
 		
@@ -173,13 +173,13 @@ class ConcernInjector
 				//ignore
 		}
 	}
-	private static function createMethConcern(addMeth:Field, remMeth:Field, typeExpr:ExprDef, addTo:Array<Expr>, pos:Position, addConcernMeth:Expr):Void {
-		var concernAccess:ConcernAccess = new ConcernAccess();
+	private static function createMethInjector(addMeth:Field, remMeth:Field, typeExpr:ExprDef, addTo:Array<Expr>, pos:Position, addInjectorMeth:Expr):Void {
+		var injectorAccess:InjectorAccess = new InjectorAccess();
 		var remExpr:ExprDef;
 		if(remMeth!=null){
 			for (meta in remMeth.meta) {
 				if(meta.name == "injectRemove" || meta.name == "injectRem"){
-					checkMetaAccess(concernAccess, meta);
+					checkMetaAccess(injectorAccess, meta);
 				}
 			}
 			remExpr = EConst(CIdent(remMeth.name));
@@ -190,33 +190,33 @@ class ConcernInjector
 		if(addMeth!=null){
 			for (meta in addMeth.meta) {
 				if(meta.name == "injectAdd"){
-					checkMetaAccess(concernAccess, meta);
+					checkMetaAccess(injectorAccess, meta);
 				}
 			}
 			addExpr = EConst(CIdent(addMeth.name));
 		}else {
 			addExpr = EConst(CIdent("null"));
 		}
-		var expr:Expr = { expr : ECall( addConcernMeth, [ { expr : ENew( { name : "Concern", pack : ["org", "tbyrne", "composure", "concerns"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : addExpr, pos :pos}, { expr : remExpr, pos :pos}, { expr : EConst(CIdent(concernAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(concernAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(concernAccess.ascendants?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
+		var expr:Expr = { expr : ECall( addInjectorMeth, [ { expr : ENew( { name : "Injector", pack : ["org", "tbyrne", "composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : addExpr, pos :pos}, { expr : remExpr, pos :pos}, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
 		addTo.push(expr);
 	}
-	private static function createPropConcern(fieldName:String, typeExpr:ExprDef, writeOnly:Bool, meta:{ name : String, params : Array<Expr>, pos : Position }, addTo:Array<Expr>, pos:Position, addConcernMethod:Expr):Void {
-		var concernAccess:ConcernAccess = new ConcernAccess();
-		checkMetaAccess(concernAccess, meta);
-		var expr:Expr = { expr : ECall( addConcernMethod, [ { expr : ENew( { name : "PropConcern", pack : ["org", "tbyrne", "composure", "concerns"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : EConst(CIdent("this")), pos : pos }, { expr : EConst(CString(fieldName)), pos : pos }, { expr : EConst(CIdent(concernAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(concernAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(concernAccess.ascendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(writeOnly?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
+	private static function createPropInjector(fieldName:String, typeExpr:ExprDef, writeOnly:Bool, meta:{ name : String, params : Array<Expr>, pos : Position }, addTo:Array<Expr>, pos:Position, addInjectorMethod:Expr):Void {
+		var injectorAccess:InjectorAccess = new InjectorAccess();
+		checkMetaAccess(injectorAccess, meta);
+		var expr:Expr = { expr : ECall( addInjectorMethod, [ { expr : ENew( { name : "PropInjector", pack : ["org", "tbyrne", "composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : EConst(CIdent("this")), pos : pos }, { expr : EConst(CString(fieldName)), pos : pos }, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(writeOnly?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
 		addTo.push(expr);
 	}
-	private static function checkMetaAccess(concernAccess:ConcernAccess, meta: { name : String, params : Array<Expr>, pos : Position } ):Void {
+	private static function checkMetaAccess(injectorAccess:InjectorAccess, meta: { name : String, params : Array<Expr>, pos : Position } ):Void {
 		for (metaExpr in meta.params) {
 			switch(metaExpr.expr) {
 				case EObjectDecl(metaFields):
 					for (metaField in metaFields) {
 						if (metaField.field == "sibl" || metaField.field == "siblings") {
-							concernAccess.siblings = getBool(metaField.expr, meta.pos, metaField.field);
+							injectorAccess.siblings = getBool(metaField.expr, meta.pos, metaField.field);
 						}else if (metaField.field == "desc" || metaField.field == "descendants") {
-							concernAccess.descendants = getBool(metaField.expr, meta.pos, metaField.field);
+							injectorAccess.descendants = getBool(metaField.expr, meta.pos, metaField.field);
 						}else if (metaField.field == "asc" || metaField.field == "ascendants") {
-							concernAccess.ascendants = getBool(metaField.expr, meta.pos, metaField.field);
+							injectorAccess.ascendants = getBool(metaField.expr, meta.pos, metaField.field);
 						}
 					}
 				default:
@@ -285,7 +285,7 @@ class ConcernInjector
 	
 	#end
 }
-class ConcernAccess {
+class InjectorAccess {
 	public var siblings:Bool;
 	public var descendants:Bool;
 	public var ascendants:Bool;

@@ -1,7 +1,7 @@
 package org.tbyrne.composure.utils;
 import haxe.Log;
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.concerns.Concern;
+import org.tbyrne.composure.injectors.Injector;
 import org.tbyrne.composure.core.ComposeGroup;
 import org.tbyrne.composure.core.ComposeItem;
 import org.tbyrne.composure.traits.AbstractTrait;
@@ -15,47 +15,47 @@ import time.types.ds.ObjectHash;
 
 class TraitFurnisher extends AbstractTrait
 {
-	public var concernedTraitType(default, set_concernedTraitType):Class<Dynamic>;
-	private function set_concernedTraitType(value:Class<Dynamic>):Class<Dynamic> {
-		if (_concern == null) {
-			_concern = new Concern(value, onConcernedTraitAdded, onConcernedTraitRemoved, searchSiblings, searchDescendants, searchAscendants);
-			_concern.passThroughItem = true;
+	public var injectoredTraitType(default, set_injectoredTraitType):Class<Dynamic>;
+	private function set_injectoredTraitType(value:Class<Dynamic>):Class<Dynamic> {
+		if (_injector == null) {
+			_injector = new Injector(value, onInjectoredTraitAdded, onInjectoredTraitRemoved, searchSiblings, searchDescendants, searchAscendants);
+			_injector.passThroughItem = true;
 		}else {
-			removeConcern(_concern);
-			_concern.interestedTraitType = value;
+			removeInjector(_injector);
+			_injector.interestedTraitType = value;
 		}
-		concernedTraitType = value;
-		if (concernedTraitType != null) {
-			addConcern(_concern);
+		injectoredTraitType = value;
+		if (injectoredTraitType != null) {
+			addInjector(_injector);
 		}
 		return value;
 	}
 	public var searchSiblings(default, set_searchSiblings):Bool;
 	private function set_searchSiblings(value:Bool):Bool{
-		if (_concern != null) {
-			removeConcern(_concern);
-			_concern.siblings = value;
-			addConcern(_concern);
+		if (_injector != null) {
+			removeInjector(_injector);
+			_injector.siblings = value;
+			addInjector(_injector);
 		}
 		searchSiblings = value;
 		return value;
 	}
 	public var searchDescendants(default, set_searchDescendants):Bool;
 	private function set_searchDescendants(value:Bool):Bool{
-		if (_concern != null) {
-			removeConcern(_concern);
-			_concern.descendants = value;
-			addConcern(_concern);
+		if (_injector != null) {
+			removeInjector(_injector);
+			_injector.descendants = value;
+			addInjector(_injector);
 		}
 		searchDescendants = value;
 		return value;
 	}
 	public var searchAscendants(default, set_searchAscendants):Bool;
 	private function set_searchAscendants(value:Bool):Bool{
-		if (_concern != null) {
-			removeConcern(_concern);
-			_concern.ascendants = value;
-			addConcern(_concern);
+		if (_injector != null) {
+			removeInjector(_injector);
+			_injector.ascendants = value;
+			addInjector(_injector);
 		}
 		searchAscendants = value;
 		return value;
@@ -88,7 +88,7 @@ class TraitFurnisher extends AbstractTrait
 	}
 	
 	private var _addType:AddType;
-	private var _concern:Concern;
+	private var _injector:Injector;
 	private var _traits:IndexedList<Dynamic>;
 	private var _traitTypes:IndexedList<Dynamic>;
 	private var _traitFactories:IndexedList<Void->Dynamic>;
@@ -100,7 +100,7 @@ class TraitFurnisher extends AbstractTrait
 	
 	private var _ignoreTraitChanges:Bool;
 
-	public function new(addType:AddType, ?concernedTraitType:Class<Dynamic>,?traitTypes:Array<Dynamic>,?traitFactories:Array<Void->Dynamic>,searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false,?adoptTrait:Bool) 
+	public function new(addType:AddType, ?injectoredTraitType:Class<Dynamic>,?traitTypes:Array<Dynamic>,?traitFactories:Array<Void->Dynamic>,searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false,?adoptTrait:Bool) 
 	{
 		super();
 		
@@ -115,11 +115,11 @@ class TraitFurnisher extends AbstractTrait
 		this.searchSiblings = searchSiblings;
 		this.searchDescendants = searchDescendants;
 		this.searchAscendants = searchAscendants;
-		this.concernedTraitType = concernedTraitType;
+		this.injectoredTraitType = injectoredTraitType;
 		
 	}
 	
-	private function onConcernedTraitAdded(trait:Dynamic, origItem:ComposeItem):Void {
+	private function onInjectoredTraitAdded(trait:Dynamic, origItem:ComposeItem):Void {
 		if (_ignoreTraitChanges) return;
 		_ignoreTraitChanges = true;
 		
@@ -161,7 +161,7 @@ class TraitFurnisher extends AbstractTrait
 		_addedTraits.set(trait, traitsAdded);
 		_ignoreTraitChanges = false;
 	}
-	private function onConcernedTraitRemoved(trait:Dynamic, currItem:ComposeItem):Void {
+	private function onInjectoredTraitRemoved(trait:Dynamic, currItem:ComposeItem):Void {
 		if (_ignoreTraitChanges) return;
 			_ignoreTraitChanges = true;
 		

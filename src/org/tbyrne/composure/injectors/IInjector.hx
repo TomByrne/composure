@@ -1,10 +1,10 @@
-package org.tbyrne.composure.concerns;
+package org.tbyrne.composure.injectors;
 
 import org.tbyrne.composure.core.ComposeItem;
 import org.tbyrne.composure.traits.ITrait;
 
 
-interface IConcern
+interface IInjector
 {
 
 	public var siblings(default, null):Bool;
@@ -14,8 +14,8 @@ interface IConcern
 
 	public var ownerTrait:Dynamic;
 
-	function concernAdded(trait:Dynamic, item:ComposeItem):Void;
-	function concernRemoved(trait:Dynamic, item:ComposeItem):Void;
+	function injectorAdded(trait:Dynamic, item:ComposeItem):Void;
+	function injectorRemoved(trait:Dynamic, item:ComposeItem):Void;
 
 	function shouldDescend(item:ComposeItem):Bool;
 	function shouldAscend(item:ComposeItem):Bool;
