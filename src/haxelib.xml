@@ -6,7 +6,7 @@
     <tag v="pattern"/>
     <tag v="dependency"/>
     <tag v="injection"/>
-    <description><![CDATA[A haxe library to assist coding in a composition design pattern. The library also allows for dependency injection via metadata.<br/><a href='http://www.tbyrne.org/introducing-composure-for-haxe-with-dependency-injection'>Intro to Composure - with Hello World</a>]]></description>
+    <description><![CDATA[A haxe library to assist coding in a composition design pattern. The library also allows for dependency injection via metadata.<br/><a href='http://www.tbyrne.org/introducing-composure-for-haxe-with-dependency-injection' target='_blank'>Intro to Composure - with Hello World</a><br/><a href='https://github.com/TomByrne/composure-hx/wiki' target='_blank'>Composure Wiki</a>]]></description>
     <version name="0.41">Refactored Concerns to Injectors</version>
 
     <depends name="hsl-1"/>
