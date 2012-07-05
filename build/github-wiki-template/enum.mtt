@@ -25,6 +25,8 @@
 
 $$typeDocs()
 
+
+
 ##Constructors##
 ::foreach c constructorInfo::
 $$enumConstructor(::c::)

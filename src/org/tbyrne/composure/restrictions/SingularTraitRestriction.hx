@@ -1,7 +1,6 @@
 package org.tbyrne.composure.restrictions;
 
 /**
- * ...
  * @author Tom Byrne
  */
 

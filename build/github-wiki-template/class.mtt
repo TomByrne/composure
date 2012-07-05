@@ -25,7 +25,7 @@
 
 
 > Implements:
-::foreach i interfaces::* **$$classLink(::i::)::end::**
+::foreach i interfaces::* $$classLink(::i::)::end::
 ::end::
 
 ::if subclasses.length == 1::
@@ -50,6 +50,7 @@
 ::end::
 
 $$typeDocs()
+
 ::if staticVars.length > 0::
 ##Static Variables:##
 ::foreach f staticVars::
@@ -66,8 +67,9 @@ $$methodDocs(::m::)
 ::end::
 ::end::
 
+::if constructor != null::
 ##Constructor:##
-::if constructor != null::#####$$showAccess(::constructor::)**::raw constructor.name::**(::if constructor.args != null::::raw constructor.args::::end::)#####
+#####$$showAccess(::constructor::)**::raw constructor.name::**(::if constructor.args != null::::raw constructor.args::::end::)#####
 $$methodDocs(::constructor::)
 
 ::end::

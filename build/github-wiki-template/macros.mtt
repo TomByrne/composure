@@ -1,15 +1,15 @@
 <macros>
 <macro name="typeDocs()">
-::if docs != null::
-<!-- Comment block -->
-::if docs.comments != null::
+::if docs != null && docs.comments != null::
 > Comments:
-> ```hx ::raw docs.comments::```
-::end::
+> ```hx ::raw docs.comments::
+```
+
+
 ::end::
 </macro>
 
-<macro name="classLink(ctx)">**[::raw ctx.nameDots::](http://github.com/TomByrne/composure-hx/wiki/::raw ctx.name::)**</macro>
+<macro name="classLink(ctx)">**[::raw ctx.nameDots::](::raw ctx.name::)**</macro>
 
 <macro name="methodHeader(m)">
 #####$$showAccess(::m::)$$showDynamic(::m::)$$showInline(::m::)**::raw m.name::** ::m.params::(::if m.args != null::::raw m.args::::end::) : ::raw m.returns::#####
@@ -70,7 +70,8 @@
 ::end::
 ::end::
 ::if m.docs != null && m.docs.comments != null::> Comments:
-> ```hx ::raw m.docs.comments::```::end::
+> ```hx ::raw m.docs.comments::
+```::end::
 </macro>
 
 <macro name="varHeader(f)">#####$$showAccess(::f::) **::f.name::** ::raw f.rights:: : ::raw f.returns::#####
@@ -83,7 +84,8 @@
 Platforms: ::foreach p m.platforms::::if !repeat.p.first::, ::end::::p::::end::
 ::end::
 ::end::
-::if m.docs != null && m.docs.comments != null::> ```hx ::raw m.docs.comments::```::end::
+::if m.docs != null && m.docs.comments != null::> ```hx ::raw m.docs.comments::
+```::end::
 </macro>
 
 <macro name="enumConstructor(m)">

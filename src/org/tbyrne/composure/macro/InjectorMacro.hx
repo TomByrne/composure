@@ -6,7 +6,6 @@ import haxe.macro.Context;
 import haxe.macro.Compiler;
 
 /**
- * ...
  * @author Tom Byrne
  */
 

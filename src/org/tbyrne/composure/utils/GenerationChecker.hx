@@ -5,7 +5,6 @@ import org.tbyrne.composure.injectors.Injector;
 import org.tbyrne.logging.LogMsg;
 
 /**
- * ...
  * @author Tom Byrne
  */
 

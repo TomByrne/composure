@@ -3517,14 +3517,13 @@
  </haxe_doc>
 	</class>
 	<class path="org.tbyrne.composure.macro.InjectorMacro" params="" file="../src/org/tbyrne/composure/macro/InjectorMacro.hx"><haxe_doc>
- * ...
  * @author Tom Byrne
  </haxe_doc></class>
 	<class path="org.tbyrne.composure.macro.InjectorAccess" params="" file="../src/org/tbyrne/composure/macro/InjectorMacro.hx" module="org.tbyrne.composure.macro.InjectorMacro">
 		<siblings public="1"><e path="Bool"/></siblings>
 		<descendants public="1"><e path="Bool"/></descendants>
 		<ascendants public="1"><e path="Bool"/></ascendants>
-		<new public="1" set="method" line="293"><f a=""><e path="Void"/></f></new>
+		<new public="1" set="method" line="292"><f a=""><e path="Void"/></f></new>
 	</class>
 	<class path="org.tbyrne.composure.restrictions.ITraitRestriction" params="" file="../src/org/tbyrne/composure/restrictions/ITraitRestriction.hx" interface="1">
 		<allowNewSibling public="1" set="method"><f a="owner:item:newTrait">
@@ -3539,40 +3538,38 @@
 	<e path="Bool"/>
 </f></allowAddTo>
 		<haxe_doc>
- * ...
  * @author Tom Byrne
  </haxe_doc>
 	</class>
 	<class path="org.tbyrne.composure.restrictions.SingularTraitRestriction" params="" file="../src/org/tbyrne/composure/restrictions/SingularTraitRestriction.hx">
 		<implements path="org.tbyrne.composure.restrictions.ITraitRestriction"/>
-		<getInheritedRestrictor public="1" set="method" line="15" static="1"><f a=""><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></f></getInheritedRestrictor>
-		<getNonInheritedRestrictor public="1" set="method" line="21" static="1"><f a=""><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></f></getNonInheritedRestrictor>
+		<getInheritedRestrictor public="1" set="method" line="14" static="1"><f a=""><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></f></getInheritedRestrictor>
+		<getNonInheritedRestrictor public="1" set="method" line="20" static="1"><f a=""><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></f></getNonInheritedRestrictor>
 		<_inheritedRestrictor static="1"><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></_inheritedRestrictor>
 		<_nonInheritedRestrictor static="1"><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></_nonInheritedRestrictor>
 		<restrictSubclasses public="1"><e path="Bool"/></restrictSubclasses>
 		<lastOwner><c path="org.tbyrne.composure.traits.ITrait"/></lastOwner>
 		<lastClass><c path="Class"><d/></c></lastClass>
-		<allowNewSibling public="1" set="method" line="39"><f a="owner:item:newTrait">
+		<allowNewSibling public="1" set="method" line="38"><f a="owner:item:newTrait">
 	<d/>
 	<c path="org.tbyrne.composure.core.ComposeItem"/>
 	<d/>
 	<e path="Bool"/>
 </f></allowNewSibling>
-		<allowAddTo public="1" set="method" line="47"><f a="owner:item">
+		<allowAddTo public="1" set="method" line="46"><f a="owner:item">
 	<d/>
 	<c path="org.tbyrne.composure.core.ComposeItem"/>
 	<e path="Bool"/>
 </f></allowAddTo>
-		<validateForOwner set="method" line="62"><f a="owner">
+		<validateForOwner set="method" line="61"><f a="owner">
 	<c path="org.tbyrne.composure.traits.ITrait"/>
 	<e path="Void"/>
 </f></validateForOwner>
-		<new set="method" line="36"><f a="restrictSubclasses">
+		<new set="method" line="35"><f a="restrictSubclasses">
 	<e path="Bool"/>
 	<e path="Void"/>
 </f></new>
 		<haxe_doc>
- * ...
  * @author Tom Byrne
  </haxe_doc>
 	</class>
@@ -3698,7 +3695,7 @@
 		<new public="1" set="method" line="189"><f a=""><e path="Void"/></f></new>
 	</class>
 	<class path="org.tbyrne.composure.utils.GenerationChecker" params="" file="../src/org/tbyrne/composure/utils/GenerationChecker.hx">
-		<createTraitCheck public="1" set="method" line="15" static="1"><f a="?maxGenerations:relatedItem">
+		<createTraitCheck public="1" set="method" line="14" static="1"><f a="?maxGenerations:relatedItem">
 	<c path="Int"/>
 	<e path="org.tbyrne.composure.utils.ItemType"/>
 	<f a=":">
@@ -3708,7 +3705,6 @@
 	</f>
 </f></createTraitCheck>
 		<haxe_doc>
- * ...
  * @author Tom Byrne
  </haxe_doc>
 	</class>

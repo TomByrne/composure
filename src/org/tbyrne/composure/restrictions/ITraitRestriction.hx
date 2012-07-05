@@ -3,7 +3,6 @@ package org.tbyrne.composure.restrictions;
 import org.tbyrne.composure.core.ComposeItem;
 import org.tbyrne.composure.traits.ITrait;
 /**
- * ...
  * @author Tom Byrne
  */
 
