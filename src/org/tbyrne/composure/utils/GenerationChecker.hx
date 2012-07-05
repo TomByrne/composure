@@ -19,7 +19,6 @@ class GenerationChecker
 				case specific(other): compare = other;
 				case injectorItem: compare = from.ownerTrait.item;
 				case root: compare = item.root;
-				default: Log.trace(new LogMsg(
 			}
 			return false;
 		}

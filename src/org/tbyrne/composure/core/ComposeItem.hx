@@ -1,13 +1,12 @@
 package org.tbyrne.composure.core;
 
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.injectors.InjectorMarrier;
 import org.tbyrne.composure.injectors.IInjector;
+import org.tbyrne.composure.injectors.InjectorMarrier;
 import org.tbyrne.composure.traits.ITrait;
-import org.tbyrne.composure.traits.ITraitProxy;
 import org.tbyrne.composure.traits.TraitCollection;
-import org.tbyrne.composure.restrictions.ITraitRestriction;
 import time.types.ds.ObjectHash;
+import org.tbyrne.composure.restrictions.ITraitRestriction;
 
 
 class ComposeItem

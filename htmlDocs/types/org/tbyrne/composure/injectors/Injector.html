@@ -1,0 +1,138 @@
+> Classpath: **org.tbyrne.composure.injectors.Injector**
+
+
+
+> Type: **class**
+
+> Extends: **[org.tbyrne.composure.injectors.AbstractInjector](http://github.com/TomByrne/composure-hx/wiki/AbstractInjector)**
+
+> Implements:
+* ****[org.tbyrne.composure.injectors.IInjector](http://github.com/TomByrne/composure-hx/wiki/IInjector)****
+
+> Subclasses: **org.tbyrne.composure.injectors.PropInjector**
+
+
+
+
+
+
+
+##Constructor:##
+#####**new**(interestedTraitType : Class&lt;Dynamic&gt;, addHandler : Dynamic, removeHandler : Dynamic, ?siblings : Bool, ?descendants : Bool, ?ascendants : Bool)#####
+
+
+
+
+##Instance Variables:##
+
+##### **acceptOwnerTrait**  : Bool#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **addHandler**  : Dynamic#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **additionalTraits**  : Array&lt;Class&lt;Dynamic&gt;&gt;#####
+
+
+
+
+##### **ascendants**  : Bool#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **descendants**  : Bool#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **interestedTraitType**  : Class&lt;Dynamic&gt;#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **matchProps**  : Hash&lt;Dynamic&gt;#####
+
+
+
+
+##### **maxMatches**  : Int#####
+
+
+
+
+##### **ownerTrait**  : Dynamic#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **passThroughInjector**  : Bool#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **passThroughItem**  : Bool#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **removeHandler**  : Dynamic#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **siblings**  : Bool#####
+> Inherited from (org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]
+
+
+
+##### **stopAscendingAt**  : <a href="../../../../org/tbyrne/composure/core/ComposeItem.html" class="type">org.tbyrne.composure.core.ComposeItem</a> -> <a href="../../../../org/tbyrne/composure/injectors/Injector.html" class="type">Injector</a> -> Bool#####
+
+
+
+
+##### **stopDescendingAt**  : <a href="../../../../org/tbyrne/composure/core/ComposeItem.html" class="type">org.tbyrne.composure.core.ComposeItem</a> -> <a href="../../../../org/tbyrne/composure/injectors/Injector.html" class="type">Injector</a> -> Bool#####
+
+
+
+
+##### **unlessHasTraits**  : Array&lt;Class&lt;Dynamic&gt;&gt;#####
+
+
+
+
+##Instance Methods:##
+
+
+#####**injectorAdded** (trait : Dynamic, item : <a href="../../../../org/tbyrne/composure/core/ComposeItem.html" class="type">org.tbyrne.composure.core.ComposeItem</a>) : Void#####
+> Inherited from: **(org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]**
+
+
+
+#####**injectorRemoved** (trait : Dynamic, item : <a href="../../../../org/tbyrne/composure/core/ComposeItem.html" class="type">org.tbyrne.composure.core.ComposeItem</a>) : Void#####
+> Inherited from: **(org.tbyrne.composure.injectors.AbstractInjector)[org.tbyrne.composure.injectors.AbstractInjector]**
+
+
+
+#####**isInterestedIn** (trait : Dynamic) : Bool#####
+> Overrides: **org.tbyrne.composure.injectors.AbstractInjector**
+
+
+
+
+#####**shouldAscend** (item : <a href="../../../../org/tbyrne/composure/core/ComposeItem.html" class="type">org.tbyrne.composure.core.ComposeItem</a>) : Bool#####
+> Overrides: **org.tbyrne.composure.injectors.AbstractInjector**
+
+
+
+
+#####**shouldDescend** (item : <a href="../../../../org/tbyrne/composure/core/ComposeItem.html" class="type">org.tbyrne.composure.core.ComposeItem</a>) : Bool#####
+> Overrides: **org.tbyrne.composure.injectors.AbstractInjector**
+
+
+
+

@@ -178,7 +178,7 @@ class ComposeGroup extends ComposeItem
 			_ignoredChildAscInjectors.add(injector);
 		}
 	}
-	public function _addAscendingInjector(injector:IInjector):Void {
+	private function _addAscendingInjector(injector:IInjector):Void {
 		if(_childAscInjectors==null)_childAscInjectors = new IndexedList();
 		_childAscInjectors.add(injector);
 		if (_parentItem != null)_parentItem.addAscendingInjector(injector);

@@ -1,0 +1,3 @@
+::foreach i config.allTypes::
+* (::i.name::)[/::i.name::]
+::end::

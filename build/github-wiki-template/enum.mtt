@@ -1,0 +1,34 @@
+> Classpath: **::nameDots::::params::**
+::if isPrivate::
+
+
+> Type: **Private ::type::**
+::else::
+
+
+> Type: **::type::**
+::end::
+
+::if module != null && module.length > 0::
+
+
+> Defined in: **::module::**
+::end::
+
+::if platforms.length > 0::
+
+
+> Available in:
+::foreach p platforms::> * **::p::**
+::end::
+::end::
+
+$$typeDocs()
+
+##Constructors##
+::foreach c constructorInfo::
+$$enumConstructor(::c::)
+$$methodDocs(::c::)
+::end::
+
+::if config.footerText != null::::raw config.footerText::::end::

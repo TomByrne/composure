@@ -1,3 +1,5 @@
+package org.tbyrne.composure.restrictions;
+
 /**
  * ...
  * @author Tom Byrne
@@ -22,8 +24,8 @@ class SingularTraitRestriction implements ITraitRestriction
 		}
 		return _nonInheritedRestrictor;
 	}
-	private var _inheritedRestrictor:SingularTraitRestriction;
-	private var _nonInheritedRestrictor:SingularTraitRestriction;
+	private static var _inheritedRestrictor:SingularTraitRestriction;
+	private static var _nonInheritedRestrictor:SingularTraitRestriction;
 	
 	
 	public var restrictSubclasses:Bool;
@@ -44,7 +46,7 @@ class SingularTraitRestriction implements ITraitRestriction
 	}
 	public function allowAddTo(owner:Dynamic, item:ComposeItem):Bool {
 		validateForOwner(owner);
-		var traits:Array<*> = item.getTraits(lastClass);
+		var traits:Array<Dynamic> = item.getTraits(lastClass);
 		if (restrictSubclasses) {
 			return false;
 		}else{

@@ -146,7 +146,8 @@ class ObjectHash<Key, Val>
 	#elseif cs
 			return obj.GetHashCode();
 	#else
-			UnsupportedPlatform
+			return null;
+			//UnsupportedPlatform
 	#end
 		}
 	}
