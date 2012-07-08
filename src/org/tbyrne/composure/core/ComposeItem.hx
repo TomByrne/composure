@@ -6,13 +6,24 @@ import org.tbyrne.composure.injectors.InjectorMarrier;
 import org.tbyrne.composure.traits.ITrait;
 import org.tbyrne.composure.traits.TraitCollection;
 import time.types.ds.ObjectHash;
-import org.tbyrne.composure.restrictions.ITraitRestriction;
 
 
+/**
+ * ComposeItem forms is the base class of all conceptual items in Composure.
+ * It allows traits to be added and removed.<br/>
+ * ComposeItem should only be used for performance critical items, it is recommended
+ * that most items be represented by the subclass ComposeGroup, which adds the ability
+ * to add/remove child items.
+ * @author		Tom Byrne
+ */
 class ComposeItem
 {
 
 
+	/**
+	 * The ComposeGroup to which this item is added, if this is the root 'parentItem' will be a self-reference.
+	 * This value is set automatically and shouldn't be manually changed.
+	 */
 	public var parentItem(getParentItem, setParentItem):ComposeGroup;
 	private function getParentItem():ComposeGroup{
 		return _parentItem;
@@ -29,6 +40,10 @@ class ComposeItem
 		}
 		return value;
 	}
+	/**
+	 * The ComposeRoot which is the top-level parent, if this is the root 'root' will be a self-reference.
+	 * This value is set automatically and shouldn't be manually changed.
+	 */
 	public var root(getRoot, null):ComposeRoot;
 	private function getRoot():ComposeRoot{
 		return _root;
@@ -42,6 +57,9 @@ class ComposeItem
 	private var _ascInjectors:IndexedList<IInjector>;
 	private var _traitToCast:ObjectHash<Dynamic,ITrait>;
 
+	/**
+	 * @param	initTraits		A list of traits to add to this ComposeItem initially.
+	 */
 	public function new(initTraits:Array<Dynamic>=null){
 		_traitCollection = new TraitCollection();
 		_siblingMarrier = new InjectorMarrier(this,_traitCollection);
@@ -56,9 +74,22 @@ class ComposeItem
 	private function setRoot(root:ComposeRoot):Void{
 		_root = root;
 	}
+	/**
+	 * Gets the first trait of a certain type.
+	 * @param	TraitType		The type which the returned trait must implement.
+	 * @return		A trait object, returns null if no matching trait is found.
+	 */
 	public function getTrait<TraitType>(TraitType:Class<TraitType>):TraitType{
 		return _traitCollection.getTrait(TraitType);
 	}
+	/**
+	 * Gets a list of traits of a certain type.
+	 * @param	TraitType		The type which the returned traits must implement.
+	 * 							If no type is passed in, all traits are returned.
+	 * @return		An array of traits, returns null if no matching traits are found.
+	 * 				CAUTION: Do not modify the returned Array, for performance reasons,
+	 * 				it is passed out by reference and reused internally.
+	 */
 	public function getTraits<TraitType>(TraitType:Class<TraitType>=null):Array<TraitType>{
 		return _traitCollection.getTraits(TraitType);
 	}
@@ -66,14 +97,33 @@ class ComposeItem
 
 
 	/**
-	 * handler(composeItem:ComposeItem, trait:ITrait);
+	 * Calls a function once for each trait that matches a certain type. The ComposeItem and
+	 * trait are passed through as arguments. A function should have a signature like:<br/>
+	 * <code>
+	 * function myTraitFunction(item:ComposeItem, trait:ITrait):Void;
+	 * </code>
+	 * @param	func		The function to call.
+	 * @param	TraitType	The type which the returned traits must implement.
+	 * 						If no type is passed in, the function is called for all traits.
 	 */
-	public function callForTraits(func:ComposeItem->ITrait->Void, ifMatches:Class<ITrait>=null/*, params:Array=null*/):Void{
-		_traitCollection.callForTraits(func,ifMatches,this/*,params*/);
+	public function callForTraits<TraitType>(func:ComposeItem->TraitType->Void, TraitType:Class<TraitType>=null):Void{
+		_traitCollection.callForTraits(func,TraitType,this);
 	}
+	/**
+	 * Adds a trait to this item. Any type of object can be added, but if it implements ITrait
+	 * it will have access to more information about the item and it's other traits. If, for structural reasons,
+	 * it is inconvenient to implement ITrait, the object can expose a method called 'getProxiedTrait()' which should
+	 * return an ITrait object to operate as it's proxy regarding other traits etc.
+	 * @param	trait		The trait to add to this item.
+	 */
 	public function addTrait(trait:Dynamic):Void{
 		_addTrait(trait);
 	}
+	/**
+	 * Adds multiple traits to this item.
+	 * @see					addTrait
+	 * @param	traits		The traits to add to this item.
+	 */
 	public function addTraits(traits:Array<Dynamic>):Void{
 		for(trait in traits){
 			_addTrait(trait);
@@ -87,7 +137,6 @@ class ComposeItem
 		#end*/
 		
 		var castTrait:ITrait = null;
-		var restrictions:Array<ITraitRestriction>;
 		
 		var getProxyTrait = Reflect.field(trait, "getProxiedTrait");
 		if (getProxyTrait != null) {
@@ -99,26 +148,7 @@ class ComposeItem
 		}
 		if (castTrait != null) {
 			castTrait.item = this;
-			
-			restrictions = castTrait.getRestrictions();
-			for (restriction in restrictions) {
-				if(!restriction.allowAddTo(trait, this)) {
-					return;
-				}
-			}
 			_traitToCast.set(trait, castTrait);
-		}
-		var traits:Array<Dynamic> = _traitCollection.traits.list;
-		for (otherTrait in traits) {
-			var otherCast:ITrait = _traitToCast.get(otherTrait);
-			if(otherCast!=null){
-				restrictions = otherCast.getRestrictions();
-				for (restriction in restrictions) {
-					if(!restriction.allowNewSibling(otherTrait, this, trait)) {
-						return;
-					}
-				}
-			}
 		}
 		
 		_traitCollection.addTrait(trait);
@@ -132,14 +162,27 @@ class ComposeItem
 		}
 	}
 
+	/**
+	 * Removes a trait from this item.
+	 * @see					addTrait
+	 * @param	trait		The trait to remove from this item.
+	 */
 	public function removeTrait(trait:Dynamic):Void{
 		_removeTrait(trait);
 	}
+	/**
+	 * Removes a list of traits from this item.
+	 * @see					addTrait
+	 * @param	trait		The list of traits to remove from this item.
+	 */
 	public function removeTraits(traits:Array<Dynamic>):Void{
 		for(trait in traits){
 			_removeTrait(trait);
 		}
 	}
+	/**
+	 * Removes all traits from this item.
+	 */
 	public function removeAllTraits():Void{
 		var list:Array<Dynamic> = _traitCollection.traits.list;
 		while(list.length>0){

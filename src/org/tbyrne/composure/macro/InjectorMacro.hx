@@ -284,7 +284,7 @@ class InjectorMacro
 	
 	#end
 }
-class InjectorAccess {
+private class InjectorAccess {
 	public var siblings:Bool;
 	public var descendants:Bool;
 	public var ascendants:Bool;

@@ -1,6 +1,9 @@
 composure-hx
 ============
 
+	Composure can be installed via haxelib using the commandline:
+	haxelib install composure-hx
+
 **Basics**
 * [Intro to Composure](http://github.com/TomByrne/composure-hx/wiki)
 * [Hello World](http://github.com/TomByrne/composure-hx/wiki/Hello-World)

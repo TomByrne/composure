@@ -3099,14 +3099,26 @@
 </f></new>
 	</class>
 	<class path="org.tbyrne.composure.core.ComposeItem" params="" file="../src/org/tbyrne/composure/core/ComposeItem.hx">
-		<parentItem public="1" get="getParentItem" set="setParentItem"><c path="org.tbyrne.composure.core.ComposeGroup"/></parentItem>
-		<getParentItem set="method" line="17"><f a=""><c path="org.tbyrne.composure.core.ComposeGroup"/></f></getParentItem>
-		<setParentItem set="method" line="20"><f a="value">
+		<parentItem public="1" get="getParentItem" set="setParentItem">
+			<c path="org.tbyrne.composure.core.ComposeGroup"/>
+			<haxe_doc>
+	 * The ComposeGroup to which this item is added, if this is the root 'parentItem' will be a self-reference.
+	 * This value is set automatically and shouldn't be manually changed.
+	 </haxe_doc>
+		</parentItem>
+		<getParentItem set="method" line="28"><f a=""><c path="org.tbyrne.composure.core.ComposeGroup"/></f></getParentItem>
+		<setParentItem set="method" line="31"><f a="value">
 	<c path="org.tbyrne.composure.core.ComposeGroup"/>
 	<c path="org.tbyrne.composure.core.ComposeGroup"/>
 </f></setParentItem>
-		<root public="1" get="getRoot" set="null"><c path="org.tbyrne.composure.core.ComposeRoot"/></root>
-		<getRoot set="method" line="33"><f a=""><c path="org.tbyrne.composure.core.ComposeRoot"/></f></getRoot>
+		<root public="1" get="getRoot" set="null">
+			<c path="org.tbyrne.composure.core.ComposeRoot"/>
+			<haxe_doc>
+	 * The ComposeRoot which is the top-level parent, if this is the root 'root' will be a self-reference.
+	 * This value is set automatically and shouldn't be manually changed.
+	 </haxe_doc>
+		</root>
+		<getRoot set="method" line="48"><f a=""><c path="org.tbyrne.composure.core.ComposeRoot"/></f></getRoot>
 		<_parentItem><c path="org.tbyrne.composure.core.ComposeGroup"/></_parentItem>
 		<_root><c path="org.tbyrne.composure.core.ComposeRoot"/></_root>
 		<_traitCollection><c path="org.tbyrne.composure.traits.TraitCollection"/></_traitCollection>
@@ -3117,79 +3129,151 @@
 	<d/>
 	<c path="org.tbyrne.composure.traits.ITrait"/>
 </c></_traitToCast>
-		<setRoot set="method" line="56"><f a="root">
+		<setRoot set="method" line="74"><f a="root">
 	<c path="org.tbyrne.composure.core.ComposeRoot"/>
 	<e path="Void"/>
 </f></setRoot>
-		<getTrait public="1" params="TraitType" set="method" line="59"><f a="TraitType">
-	<c path="Class"><c path="getTrait.TraitType"/></c>
-	<c path="getTrait.TraitType"/>
-</f></getTrait>
-		<getTraits public="1" params="TraitType" set="method" line="62"><f a="?TraitType">
-	<c path="Class"><c path="getTraits.TraitType"/></c>
-	<c path="Array"><c path="getTraits.TraitType"/></c>
-</f></getTraits>
-		<callForTraits public="1" set="method" line="71">
-			<f a="func:?ifMatches">
+		<getTrait public="1" params="TraitType" set="method" line="82">
+			<f a="TraitType">
+				<c path="Class"><c path="getTrait.TraitType"/></c>
+				<c path="getTrait.TraitType"/>
+			</f>
+			<haxe_doc>
+	 * Gets the first trait of a certain type.
+	 * @param	TraitType		The type which the returned trait must implement.
+	 * @return		A trait object, returns null if no matching trait is found.
+	 </haxe_doc>
+		</getTrait>
+		<getTraits public="1" params="TraitType" set="method" line="93">
+			<f a="?TraitType">
+				<c path="Class"><c path="getTraits.TraitType"/></c>
+				<c path="Array"><c path="getTraits.TraitType"/></c>
+			</f>
+			<haxe_doc>
+	 * Gets a list of traits of a certain type.
+	 * @param	TraitType		The type which the returned traits must implement.
+	 * 							If no type is passed in, all traits are returned.
+	 * @return		An array of traits, returns null if no matching traits are found.
+	 * 				CAUTION: Do not modify the returned Array, for performance reasons,
+	 * 				it is passed out by reference and reused internally.
+	 </haxe_doc>
+		</getTraits>
+		<callForTraits public="1" params="TraitType" set="method" line="109">
+			<f a="func:?TraitType">
 				<f a=":">
 					<c path="org.tbyrne.composure.core.ComposeItem"/>
-					<c path="org.tbyrne.composure.traits.ITrait"/>
+					<c path="callForTraits.TraitType"/>
 					<e path="Void"/>
 				</f>
-				<c path="Class"><c path="org.tbyrne.composure.traits.ITrait"/></c>
+				<c path="Class"><c path="callForTraits.TraitType"/></c>
+				<e path="Void"/>
+			</f>
+			<haxe_doc><![CDATA[
+	 * Calls a function once for each trait that matches a certain type. The ComposeItem and
+	 * trait are passed through as arguments. A function should have a signature like:<br/>
+	 * <code>
+	 * function myTraitFunction(item:ComposeItem, trait:ITrait):Void;
+	 * </code>
+	 * @param	func		The function to call.
+	 * @param	TraitType	The type which the returned traits must implement.
+	 * 						If no type is passed in, the function is called for all traits.
+	 ]]></haxe_doc>
+		</callForTraits>
+		<addTrait public="1" set="method" line="119">
+			<f a="trait">
+				<d/>
 				<e path="Void"/>
 			</f>
 			<haxe_doc>
-	 * handler(composeItem:ComposeItem, trait:ITrait);
+	 * Adds a trait to this item. Any type of object can be added, but if it implements ITrait
+	 * it will have access to more information about the item and it's other traits. If, for structural reasons,
+	 * it is inconvenient to implement ITrait, the object can expose a method called 'getProxiedTrait()' which should
+	 * return an ITrait object to operate as it's proxy regarding other traits etc.
+	 * @param	trait		The trait to add to this item.
 	 </haxe_doc>
-		</callForTraits>
-		<addTrait public="1" set="method" line="74"><f a="trait">
-	<d/>
-	<e path="Void"/>
-</f></addTrait>
-		<addTraits public="1" set="method" line="77"><f a="traits">
-	<c path="Array"><d/></c>
-	<e path="Void"/>
-</f></addTraits>
-		<_addTrait set="method" line="82"><f a="trait">
+		</addTrait>
+		<addTraits public="1" set="method" line="127">
+			<f a="traits">
+				<c path="Array"><d/></c>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * Adds multiple traits to this item.
+	 * @see					addTrait
+	 * @param	traits		The traits to add to this item.
+	 </haxe_doc>
+		</addTraits>
+		<_addTrait set="method" line="132"><f a="trait">
 	<d/>
 	<e path="Void"/>
 </f></_addTrait>
-		<removeTrait public="1" set="method" line="135"><f a="trait">
-	<d/>
-	<e path="Void"/>
-</f></removeTrait>
-		<removeTraits public="1" set="method" line="138"><f a="traits">
-	<c path="Array"><d/></c>
-	<e path="Void"/>
-</f></removeTraits>
-		<removeAllTraits public="1" set="method" line="143"><f a=""><e path="Void"/></f></removeAllTraits>
-		<_removeTrait set="method" line="149"><f a="trait">
+		<removeTrait public="1" set="method" line="170">
+			<f a="trait">
+				<d/>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * Removes a trait from this item.
+	 * @see					addTrait
+	 * @param	trait		The trait to remove from this item.
+	 </haxe_doc>
+		</removeTrait>
+		<removeTraits public="1" set="method" line="178">
+			<f a="traits">
+				<c path="Array"><d/></c>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * Removes a list of traits from this item.
+	 * @see					addTrait
+	 * @param	trait		The list of traits to remove from this item.
+	 </haxe_doc>
+		</removeTraits>
+		<removeAllTraits public="1" set="method" line="186">
+			<f a=""><e path="Void"/></f>
+			<haxe_doc>
+	 * Removes all traits from this item.
+	 </haxe_doc>
+		</removeAllTraits>
+		<_removeTrait set="method" line="192"><f a="trait">
 	<d/>
 	<e path="Void"/>
 </f></_removeTrait>
-		<addTraitInjector set="method" line="175"><f a="injector">
+		<addTraitInjector set="method" line="218"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></addTraitInjector>
-		<removeTraitInjector set="method" line="185"><f a="injector">
+		<removeTraitInjector set="method" line="228"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></removeTraitInjector>
-		<onParentAdd set="method" line="196"><f a=""><e path="Void"/></f></onParentAdd>
-		<onParentRemove set="method" line="206"><f a=""><e path="Void"/></f></onParentRemove>
-		<addParentInjector set="method" line="218"><f a="injector">
+		<onParentAdd set="method" line="239"><f a=""><e path="Void"/></f></onParentAdd>
+		<onParentRemove set="method" line="249"><f a=""><e path="Void"/></f></onParentRemove>
+		<addParentInjector set="method" line="261"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></addParentInjector>
-		<removeParentInjector set="method" line="222"><f a="injector">
+		<removeParentInjector set="method" line="265"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></removeParentInjector>
-		<new public="1" set="method" line="45"><f a="?initTraits">
-	<c path="Array"><d/></c>
-	<e path="Void"/>
-</f></new>
+		<new public="1" set="method" line="63">
+			<f a="?initTraits">
+				<c path="Array"><d/></c>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * @param	initTraits		A list of traits to add to this ComposeItem initially.
+	 </haxe_doc>
+		</new>
+		<haxe_doc><![CDATA[
+ * ComposeItem forms is the base class of all conceptual items in Composure.
+ * It allows traits to be added and removed.<br/>
+ * ComposeItem should only be used for performance critical items, it is recommended
+ * that most items be represented by the subclass ComposeGroup, which adds the ability
+ * to add/remove child items.
+ * @author		Tom Byrne
+ ]]></haxe_doc>
 	</class>
 	<class path="org.tbyrne.composure.core.ComposeGroup" params="" file="../src/org/tbyrne/composure/core/ComposeGroup.hx">
 		<extends path="org.tbyrne.composure.core.ComposeItem"/>
@@ -3201,116 +3285,231 @@
 		<_descInjectors><c path="org.tbyrne.collections.IndexedList"><c path="org.tbyrne.composure.injectors.IInjector"/></c></_descInjectors>
 		<_parentDescInjectors><c path="org.tbyrne.collections.IndexedList"><c path="org.tbyrne.composure.injectors.IInjector"/></c></_parentDescInjectors>
 		<_ignoredParentDescInjectors><c path="org.tbyrne.collections.IndexedList"><c path="org.tbyrne.composure.injectors.IInjector"/></c></_ignoredParentDescInjectors>
-		<setRoot set="method" line="32" override="1"><f a="game">
+		<setRoot set="method" line="44" override="1"><f a="game">
 	<c path="org.tbyrne.composure.core.ComposeRoot"/>
 	<e path="Void"/>
 </f></setRoot>
-		<addItem public="1" set="method" line="38"><f a="item">
-	<c path="org.tbyrne.composure.core.ComposeItem"/>
-	<e path="Void"/>
-</f></addItem>
-		<removeItem public="1" set="method" line="64"><f a="item">
-	<c path="org.tbyrne.composure.core.ComposeItem"/>
-	<e path="Void"/>
-</f></removeItem>
-		<removeAllItem public="1" set="method" line="90"><f a=""><e path="Void"/></f></removeAllItem>
-		<addChildTrait public="1" set="method" line="95"><f a="trait">
-	<d/>
-	<e path="Void"/>
-</f></addChildTrait>
-		<removeChildTrait public="1" set="method" line="99"><f a="trait">
-	<d/>
-	<e path="Void"/>
-</f></removeChildTrait>
-		<addTrait public="1" set="method" line="103" override="1"><f a="trait">
-	<d/>
-	<e path="Void"/>
-</f></addTrait>
-		<addTraits public="1" set="method" line="107" override="1"><f a="traits">
-	<c path="Array"><d/></c>
-	<e path="Void"/>
-</f></addTraits>
-		<removeTrait public="1" set="method" line="111" override="1"><f a="trait">
-	<d/>
-	<e path="Void"/>
-</f></removeTrait>
-		<removeTraits public="1" set="method" line="115" override="1"><f a="traits">
-	<c path="Array"><d/></c>
-	<e path="Void"/>
-</f></removeTraits>
-		<removeAllTraits public="1" set="method" line="119" override="1"><f a=""><e path="Void"/></f></removeAllTraits>
-		<addTraitInjector set="method" line="123" override="1"><f a="injector">
+		<addItem public="1" set="method" line="54">
+			<f a="item">
+				<c path="org.tbyrne.composure.core.ComposeItem"/>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * Adds a child ComposeItem to this ComposeGroup.
+	 * @param	item		A ComposeItem object to add as a child to this group.
+	 </haxe_doc>
+		</addItem>
+		<removeItem public="1" set="method" line="84">
+			<f a="item">
+				<c path="org.tbyrne.composure.core.ComposeItem"/>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * Removes a child ComposeItem from this ComposeGroup.
+	 * @param	item		A ComposeItem object to remove as a child from this group.
+	 </haxe_doc>
+		</removeItem>
+		<removeAllItem public="1" set="method" line="113">
+			<f a=""><e path="Void"/></f>
+			<haxe_doc>
+	 * Removes all children from this ComposeGroup.
+	 </haxe_doc>
+		</removeAllItem>
+		<addChildTrait public="1" set="method" line="121">
+			<f a="trait">
+				<d/>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * This is an interal function of Composure. Do not call this method.
+	 </haxe_doc>
+		</addChildTrait>
+		<removeChildTrait public="1" set="method" line="128">
+			<f a="trait">
+				<d/>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * This is an interal function of Composure. Do not call this method.
+	 </haxe_doc>
+		</removeChildTrait>
+		<addTrait public="1" set="method" line="135" override="1">
+			<f a="trait">
+				<d/>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * @inheritDoc
+	 </haxe_doc>
+		</addTrait>
+		<addTraits public="1" set="method" line="142" override="1">
+			<f a="traits">
+				<c path="Array"><d/></c>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * @inheritDoc
+	 </haxe_doc>
+		</addTraits>
+		<removeTrait public="1" set="method" line="149" override="1">
+			<f a="trait">
+				<d/>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * @inheritDoc
+	 </haxe_doc>
+		</removeTrait>
+		<removeTraits public="1" set="method" line="156" override="1">
+			<f a="traits">
+				<c path="Array"><d/></c>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * @inheritDoc
+	 </haxe_doc>
+		</removeTraits>
+		<removeAllTraits public="1" set="method" line="163" override="1">
+			<f a=""><e path="Void"/></f>
+			<haxe_doc>
+	 * @inheritDoc
+	 </haxe_doc>
+		</removeAllTraits>
+		<addTraitInjector set="method" line="167" override="1"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></addTraitInjector>
-		<removeTraitInjector set="method" line="132" override="1"><f a="injector">
+		<removeTraitInjector set="method" line="176" override="1"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></removeTraitInjector>
-		<getDescTrait public="1" set="method" line="141"><f a="matchType">
-	<c path="Class"><d/></c>
-	<d/>
-</f></getDescTrait>
-		<getDescTraits public="1" set="method" line="144"><f a="?ifMatches">
-	<c path="Class"><d/></c>
-	<c path="Array"><d/></c>
-</f></getDescTraits>
-		<callForDescTraits public="1" set="method" line="147"><f a="func:?ifMatches">
-	<f a=":">
-		<c path="org.tbyrne.composure.core.ComposeItem"/>
-		<d/>
-		<e path="Void"/>
-	</f>
-	<c path="Class"><d/></c>
-	<e path="Void"/>
-</f></callForDescTraits>
-		<onParentAdd set="method" line="150" override="1"><f a=""><e path="Void"/></f></onParentAdd>
-		<onParentRemove set="method" line="161" override="1"><f a=""><e path="Void"/></f></onParentRemove>
-		<addAscendingInjector public="1" set="method" line="172"><f a="injector">
-	<c path="org.tbyrne.composure.injectors.IInjector"/>
-	<e path="Void"/>
-</f></addAscendingInjector>
-		<_addAscendingInjector set="method" line="181"><f a="injector">
+		<getDescTrait public="1" params="TraitType" set="method" line="190">
+			<f a="TraitType">
+				<c path="Class"><c path="getDescTrait.TraitType"/></c>
+				<c path="getDescTrait.TraitType"/>
+			</f>
+			<haxe_doc>
+	 * Gets the first trait of a certain type from any of this groups descendant items.
+	 * @param	TraitType		The type which the returned trait must implement.
+	 * @return		A trait object, returns null if no matching trait is found.
+	 </haxe_doc>
+		</getDescTrait>
+		<getDescTraits public="1" params="TraitType" set="method" line="198">
+			<f a="?TraitType">
+				<c path="Class"><c path="getDescTraits.TraitType"/></c>
+				<c path="Array"><c path="getDescTraits.TraitType"/></c>
+			</f>
+			<haxe_doc>
+	 * Gets a list of traits of a certain type from any of this groups descendant items.
+	 * @param	TraitType		The type which the returned trait must implement.
+	 * @return		A trait object, returns null if no matching trait is found.
+	 </haxe_doc>
+		</getDescTraits>
+		<callForDescTraits public="1" params="TraitType" set="method" line="212">
+			<f a="func:?TraitType">
+				<f a=":">
+					<c path="org.tbyrne.composure.core.ComposeItem"/>
+					<d/>
+					<e path="Void"/>
+				</f>
+				<c path="Class"><c path="callForDescTraits.TraitType"/></c>
+				<e path="Void"/>
+			</f>
+			<haxe_doc><![CDATA[
+	 * Calls a function once for each descendant trait that matches a certain type. This ComposeGroup and
+	 * the matched trait are passed through as arguments. A function should have a signature like:<br/>
+	 * <code>
+	 * function myTraitFunction(item:ComposeItem, trait:ITrait):Void;
+	 * </code>
+	 * @see					callForTraits
+	 * @param	func		The function to call.
+	 * @param	TraitType	The type which the returned traits must implement.
+	 * 						If no type is passed in, the function is called for all traits.
+	 ]]></haxe_doc>
+		</callForDescTraits>
+		<onParentAdd set="method" line="215" override="1"><f a=""><e path="Void"/></f></onParentAdd>
+		<onParentRemove set="method" line="226" override="1"><f a=""><e path="Void"/></f></onParentRemove>
+		<addAscendingInjector public="1" set="method" line="240">
+			<f a="injector">
+				<c path="org.tbyrne.composure.injectors.IInjector"/>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * This is an interal function of Composure. Do not call this method.
+	 </haxe_doc>
+		</addAscendingInjector>
+		<_addAscendingInjector set="method" line="249"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></_addAscendingInjector>
-		<removeAscendingInjector public="1" set="method" line="186"><f a="injector">
-	<c path="org.tbyrne.composure.injectors.IInjector"/>
-	<e path="Void"/>
-</f></removeAscendingInjector>
-		<_removeAscendingInjector set="method" line="194"><f a="injector">
+		<removeAscendingInjector public="1" set="method" line="257">
+			<f a="injector">
+				<c path="org.tbyrne.composure.injectors.IInjector"/>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * This is an interal function of Composure. Do not call this method.
+	 </haxe_doc>
+		</removeAscendingInjector>
+		<_removeAscendingInjector set="method" line="265"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></_removeAscendingInjector>
-		<addParentInjector set="method" line="199" override="1"><f a="injector">
+		<addParentInjector set="method" line="270" override="1"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></addParentInjector>
-		<removeParentInjector set="method" line="209" override="1"><f a="injector">
+		<removeParentInjector set="method" line="280" override="1"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></removeParentInjector>
-		<checkForNewlyIgnoredInjectors set="method" line="219"><f a=""><e path="Void"/></f></checkForNewlyIgnoredInjectors>
-		<checkForNewlyUnignoredInjectors set="method" line="247"><f a=""><e path="Void"/></f></checkForNewlyUnignoredInjectors>
-		<addDescParentInjector set="method" line="275"><f a="injector">
+		<checkForNewlyIgnoredInjectors set="method" line="290"><f a=""><e path="Void"/></f></checkForNewlyIgnoredInjectors>
+		<checkForNewlyUnignoredInjectors set="method" line="318"><f a=""><e path="Void"/></f></checkForNewlyUnignoredInjectors>
+		<addDescParentInjector set="method" line="346"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></addDescParentInjector>
-		<removeDescParentInjector set="method" line="282"><f a="injector">
+		<removeDescParentInjector set="method" line="353"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></removeDescParentInjector>
-		<new public="1" set="method" line="25"><f a="?initTraits">
-	<c path="Array"><d/></c>
-	<e path="Void"/>
-</f></new>
+		<new public="1" set="method" line="37">
+			<f a="?initTraits">
+				<c path="Array"><d/></c>
+				<e path="Void"/>
+			</f>
+			<haxe_doc>
+	 * @param	initTraits		A list of traits to add to this ComposeItem initially.
+	 </haxe_doc>
+		</new>
+		<haxe_doc><![CDATA[
+ * ComposeGroup is the core item used in Composure. It represents one conceptual object.
+ * It shouldn't be directly overriden, instead it should be instantiated and then
+ * populated with traits, each adding one atomic piece of behaviour.<br/>
+ * ComposeGroup adds to the functionality of ComposeItem by allowing child items. For
+ * performance critical items that will never need to house children, ComposeItem can
+ * be used instead.
+ * @author		Tom Byrne
+ ]]></haxe_doc>
 	</class>
 	<class path="org.tbyrne.composure.core.ComposeRoot" params="" file="../src/org/tbyrne/composure/core/ComposeRoot.hx">
 		<extends path="org.tbyrne.composure.core.ComposeGroup"/>
-		<new public="1" set="method" line="6"><f a="?initTraits">
+		<new public="1" set="method" line="18"><f a="?initTraits">
 	<c path="Array"><c path="org.tbyrne.composure.traits.ITrait"/></c>
 	<e path="Void"/>
 </f></new>
+		<haxe_doc><![CDATA[
+ * ComposeRoot is the root item for the Composure library.
+ * When using Composure, one top-level ComposeRoot object should be
+ * created. All other objects should then be added to this object or one
+ * of it's descendants.<br/>
+ * It is recommended that you do not add traits directly to the root object.
+ * Adding them to some 'stage' or 'controller' item instead will allow your app
+ * to coexist and interrelate with other Composure apps in future.<br/>
+ * The only functional change ComposeRoot adds to ComposeGroup is that it's
+ * 'root' property is a reference to itself.
+ * @author		Tom Byrne
+ ]]></haxe_doc>
 	</class>
 	<class path="org.tbyrne.composure.injectors.IInjector" params="" file="../src/org/tbyrne/composure/injectors/IInjector.hx" interface="1">
 		<siblings public="1" set="null"><e path="Bool"/></siblings>
@@ -3519,76 +3718,26 @@
 	<class path="org.tbyrne.composure.macro.InjectorMacro" params="" file="../src/org/tbyrne/composure/macro/InjectorMacro.hx"><haxe_doc>
  * @author Tom Byrne
  </haxe_doc></class>
-	<class path="org.tbyrne.composure.macro.InjectorAccess" params="" file="../src/org/tbyrne/composure/macro/InjectorMacro.hx" module="org.tbyrne.composure.macro.InjectorMacro">
+	<class path="org.tbyrne.composure.macro._InjectorMacro.InjectorAccess" params="" file="../src/org/tbyrne/composure/macro/InjectorMacro.hx" private="1" module="org.tbyrne.composure.macro.InjectorMacro">
 		<siblings public="1"><e path="Bool"/></siblings>
 		<descendants public="1"><e path="Bool"/></descendants>
 		<ascendants public="1"><e path="Bool"/></ascendants>
 		<new public="1" set="method" line="292"><f a=""><e path="Void"/></f></new>
 	</class>
-	<class path="org.tbyrne.composure.restrictions.ITraitRestriction" params="" file="../src/org/tbyrne/composure/restrictions/ITraitRestriction.hx" interface="1">
-		<allowNewSibling public="1" set="method"><f a="owner:item:newTrait">
-	<d/>
-	<c path="org.tbyrne.composure.core.ComposeItem"/>
-	<d/>
-	<e path="Bool"/>
-</f></allowNewSibling>
-		<allowAddTo public="1" set="method"><f a="owner:item">
-	<d/>
-	<c path="org.tbyrne.composure.core.ComposeItem"/>
-	<e path="Bool"/>
-</f></allowAddTo>
-		<haxe_doc>
- * @author Tom Byrne
- </haxe_doc>
-	</class>
-	<class path="org.tbyrne.composure.restrictions.SingularTraitRestriction" params="" file="../src/org/tbyrne/composure/restrictions/SingularTraitRestriction.hx">
-		<implements path="org.tbyrne.composure.restrictions.ITraitRestriction"/>
-		<getInheritedRestrictor public="1" set="method" line="14" static="1"><f a=""><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></f></getInheritedRestrictor>
-		<getNonInheritedRestrictor public="1" set="method" line="20" static="1"><f a=""><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></f></getNonInheritedRestrictor>
-		<_inheritedRestrictor static="1"><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></_inheritedRestrictor>
-		<_nonInheritedRestrictor static="1"><c path="org.tbyrne.composure.restrictions.SingularTraitRestriction"/></_nonInheritedRestrictor>
-		<restrictSubclasses public="1"><e path="Bool"/></restrictSubclasses>
-		<lastOwner><c path="org.tbyrne.composure.traits.ITrait"/></lastOwner>
-		<lastClass><c path="Class"><d/></c></lastClass>
-		<allowNewSibling public="1" set="method" line="38"><f a="owner:item:newTrait">
-	<d/>
-	<c path="org.tbyrne.composure.core.ComposeItem"/>
-	<d/>
-	<e path="Bool"/>
-</f></allowNewSibling>
-		<allowAddTo public="1" set="method" line="46"><f a="owner:item">
-	<d/>
-	<c path="org.tbyrne.composure.core.ComposeItem"/>
-	<e path="Bool"/>
-</f></allowAddTo>
-		<validateForOwner set="method" line="61"><f a="owner">
-	<c path="org.tbyrne.composure.traits.ITrait"/>
-	<e path="Void"/>
-</f></validateForOwner>
-		<new set="method" line="35"><f a="restrictSubclasses">
-	<e path="Bool"/>
-	<e path="Void"/>
-</f></new>
-		<haxe_doc>
- * @author Tom Byrne
- </haxe_doc>
-	</class>
 	<class path="org.tbyrne.composure.traits.ITrait" params="" file="../src/org/tbyrne/composure/traits/ITrait.hx" interface="1">
 		<item public="1" set="set_item"><c path="org.tbyrne.composure.core.ComposeItem"/></item>
 		<group public="1" set="null"><c path="org.tbyrne.composure.core.ComposeGroup"/></group>
 		<getInjectors public="1" set="method"><f a=""><c path="Array"><c path="org.tbyrne.composure.injectors.IInjector"/></c></f></getInjectors>
-		<getRestrictions public="1" set="method"><f a=""><c path="Array"><c path="org.tbyrne.composure.restrictions.ITraitRestriction"/></c></f></getRestrictions>
 	</class>
 	<class path="org.tbyrne.composure.traits.AbstractTrait" params="" file="../src/org/tbyrne/composure/traits/AbstractTrait.hx">
 		<implements path="org.tbyrne.composure.traits.ITrait"/>
 		<group public="1" set="null"><c path="org.tbyrne.composure.core.ComposeGroup"/></group>
 		<item public="1" set="set_item"><c path="org.tbyrne.composure.core.ComposeItem"/></item>
-		<set_item set="method" line="16"><f a="value">
+		<set_item set="method" line="15"><f a="value">
 	<c path="org.tbyrne.composure.core.ComposeItem"/>
 	<c path="org.tbyrne.composure.core.ComposeItem"/>
 </f></set_item>
 		<_injectors><c path="org.tbyrne.collections.IndexedList"><c path="org.tbyrne.composure.injectors.IInjector"/></c></_injectors>
-		<_restrictions><c path="org.tbyrne.collections.IndexedList"><c path="org.tbyrne.composure.restrictions.ITraitRestriction"/></c></_restrictions>
 		<_siblingTraits><c path="org.tbyrne.collections.IndexedList"><d/></c></_siblingTraits>
 		<_childItems><c path="org.tbyrne.collections.IndexedList"><c path="org.tbyrne.composure.core.ComposeItem"/></c></_childItems>
 		<_groupOnly>
@@ -3598,51 +3747,42 @@
 	 </haxe_doc>
 		</_groupOnly>
 		<_ownerTrait><d/></_ownerTrait>
-		<onItemRemove set="method" line="78"><f a=""><e path="Void"/></f></onItemRemove>
-		<onItemAdd set="method" line="81"><f a=""><e path="Void"/></f></onItemAdd>
-		<getInjectors public="1" set="method" line="85"><f a=""><c path="Array"><c path="org.tbyrne.composure.injectors.IInjector"/></c></f></getInjectors>
-		<getRestrictions public="1" set="method" line="89"><f a=""><c path="Array"><c path="org.tbyrne.composure.restrictions.ITraitRestriction"/></c></f></getRestrictions>
-		<addSiblingTrait set="method" line="94"><f a="trait">
+		<onItemRemove set="method" line="76"><f a=""><e path="Void"/></f></onItemRemove>
+		<onItemAdd set="method" line="79"><f a=""><e path="Void"/></f></onItemAdd>
+		<getInjectors public="1" set="method" line="83"><f a=""><c path="Array"><c path="org.tbyrne.composure.injectors.IInjector"/></c></f></getInjectors>
+		<addSiblingTrait set="method" line="88"><f a="trait">
 	<d/>
 	<e path="Void"/>
 </f></addSiblingTrait>
-		<removeSiblingTrait set="method" line="105"><f a="trait">
+		<removeSiblingTrait set="method" line="99"><f a="trait">
 	<d/>
 	<e path="Void"/>
 </f></removeSiblingTrait>
-		<removeSiblingTraits set="method" line="115"><f a="traits">
+		<removeSiblingTraits set="method" line="109"><f a="traits">
 	<c path="Array"><c path="org.tbyrne.composure.traits.ITrait"/></c>
 	<e path="Void"/>
 </f></removeSiblingTraits>
-		<addChildItem set="method" line="121"><f a="child">
+		<addChildItem set="method" line="115"><f a="child">
 	<c path="org.tbyrne.composure.core.ComposeItem"/>
 	<e path="Void"/>
 </f></addChildItem>
-		<removeChildItem set="method" line="132"><f a="child">
+		<removeChildItem set="method" line="126"><f a="child">
 	<c path="org.tbyrne.composure.core.ComposeItem"/>
 	<e path="Void"/>
 </f></removeChildItem>
-		<removeChildItems set="method" line="142"><f a="children">
+		<removeChildItems set="method" line="136"><f a="children">
 	<c path="Array"><c path="org.tbyrne.composure.core.ComposeItem"/></c>
 	<e path="Void"/>
 </f></removeChildItems>
-		<addInjector public="1" set="method" line="148"><f a="injector">
+		<addInjector public="1" set="method" line="142"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></addInjector>
-		<removeInjector public="1" set="method" line="157"><f a="injector">
+		<removeInjector public="1" set="method" line="151"><f a="injector">
 	<c path="org.tbyrne.composure.injectors.IInjector"/>
 	<e path="Void"/>
 </f></removeInjector>
-		<addRestriction set="method" line="167"><f a="restriction">
-	<c path="org.tbyrne.composure.restrictions.ITraitRestriction"/>
-	<e path="Void"/>
-</f></addRestriction>
-		<removeRestriction set="method" line="176"><f a="restriction">
-	<c path="org.tbyrne.composure.restrictions.ITraitRestriction"/>
-	<e path="Void"/>
-</f></removeRestriction>
-		<new public="1" set="method" line="70"><f a="?ownerTrait">
+		<new public="1" set="method" line="68"><f a="?ownerTrait">
 	<d/>
 	<e path="Void"/>
 </f></new>
@@ -3842,6 +3982,85 @@
 		<item a="item"><c path="org.tbyrne.composure.core.ComposeItem"/></item>
 		<adoptItem a="newParent"><c path="org.tbyrne.composure.core.ComposeGroup"/></adoptItem>
 	</enum>
+	<class path="org.tbyrne.composure.utils.TraitTypeLimiter" params="" file="../src/org/tbyrne/composure/utils/TraitTypeLimiter.hx">
+		<extends path="org.tbyrne.composure.traits.AbstractTrait"/>
+		<maxCount public="1" set="set_maxCount"><c path="Int"/></maxCount>
+		<set_maxCount set="method" line="25"><f a="value">
+	<c path="Int"/>
+	<c path="Int"/>
+</f></set_maxCount>
+		<policy public="1"><e path="org.tbyrne.composure.utils.LimitPolicy"/></policy>
+		<injector><c path="org.tbyrne.composure.injectors.Injector"/></injector>
+		<added><e path="Bool"/></added>
+		<_added><c path="time.types.ds.ObjectHash">
+	<c path="org.tbyrne.composure.core.ComposeItem"/>
+	<c path="Array"><d/></c>
+</c></_added>
+		<_removed><c path="time.types.ds.ObjectHash">
+	<c path="org.tbyrne.composure.core.ComposeItem"/>
+	<c path="Array"><d/></c>
+</c></_removed>
+		<_ignoreChanges><e path="Bool"/></_ignoreChanges>
+		<setConcern public="1" set="method" line="61"><f a="traitType:?siblings:?descendants:?ascendants">
+	<c path="Class"><d/></c>
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<e path="Void"/>
+</f></setConcern>
+		<reAddAll set="method" line="77"><f a=""><e path="Void"/></f></reAddAll>
+		<checkTraits set="method" line="93"><f a=""><e path="Void"/></f></checkTraits>
+		<onTraitAdded set="method" line="109"><f a="trait:item">
+	<d/>
+	<c path="org.tbyrne.composure.core.ComposeItem"/>
+	<e path="Void"/>
+</f></onTraitAdded>
+		<onTraitRemoved set="method" line="142"><f a="trait:item">
+	<d/>
+	<c path="org.tbyrne.composure.core.ComposeItem"/>
+	<e path="Void"/>
+</f></onTraitRemoved>
+		<reAddTrait set="method" line="156"><f a="item:added:removed">
+	<c path="org.tbyrne.composure.core.ComposeItem"/>
+	<c path="Array"><d/></c>
+	<c path="Array"><d/></c>
+	<e path="Void"/>
+</f></reAddTrait>
+		<attemptTransmit set="method" line="168"><f a="toTrait:fromTrait">
+	<d/>
+	<d/>
+	<e path="Void"/>
+</f></attemptTransmit>
+		<new public="1" set="method" line="43"><f a="?traitType:?policy:?maxCount:?siblings:?descendants:?ascendants">
+	<c path="Class"><d/></c>
+	<e path="org.tbyrne.composure.utils.LimitPolicy"/>
+	<c path="Int"/>
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<e path="Void"/>
+</f></new>
+		<haxe_doc><![CDATA[
+ * TraitTypeLimiter is used to restrict the amount of a certain type of trait
+ * which can be added to a certain item. It could be used, for example, to limit the
+ * amount of IMatrixTransform traits on a certain item to 1.<br/>
+ * If the initially added trait (i.e. the last one added before maxCount was reached)
+ * implements ITransmittableTrait, then the removed trait will be passed into this
+ * trait using the transmitFrom method, this allows the existing trait to copy over
+ * information from the new trait.<br/>
+ * Typically this class is used when the end user has control over trait structures
+ * to enforce certain rules.
+ * @author Tom Byrne
+ ]]></haxe_doc>
+	</class>
+	<enum path="org.tbyrne.composure.utils.LimitPolicy" params="" file="../src/org/tbyrne/composure/utils/TraitTypeLimiter.hx" module="org.tbyrne.composure.utils.TraitTypeLimiter">
+		<FirstInLastOut/>
+		<FirstInFirstOut/>
+	</enum>
+	<class path="org.tbyrne.composure.utils.ITransmittableTrait" params="" file="../src/org/tbyrne/composure/utils/TraitTypeLimiter.hx" module="org.tbyrne.composure.utils.TraitTypeLimiter" interface="1"><transmitFrom public="1" set="method"><f a="trait">
+	<d/>
+	<e path="Void"/>
+</f></transmitFrom></class>
 	<class path="org.tbyrne.composureTest.ClassIncluder" params="" file="../testSrc/org/tbyrne/composureTest/ClassIncluder.hx"><main set="method" line="11" static="1"><f a=""><e path="Void"/></f></main></class>
 	<class path="org.tbyrne.logging.LogMsg" params="" file="../src/org/tbyrne/logging/LogMsg.hx">
 		<id public="1"><c path="String"/></id>

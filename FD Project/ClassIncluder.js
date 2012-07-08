@@ -2298,8 +2298,8 @@ org.tbyrne.composure.core.ComposeItem.prototype = {
 	,getTraits: function(TraitType) {
 		return this._traitCollection.getTraits(TraitType);
 	}
-	,callForTraits: function(func,ifMatches) {
-		this._traitCollection.callForTraits(func,ifMatches,this);
+	,callForTraits: function(func,TraitType) {
+		this._traitCollection.callForTraits(func,TraitType,this);
 	}
 	,addTrait: function(trait) {
 		this._addTrait(trait);
@@ -2314,7 +2314,6 @@ org.tbyrne.composure.core.ComposeItem.prototype = {
 	}
 	,_addTrait: function(trait) {
 		var castTrait = null;
-		var restrictions;
 		var getProxyTrait = Reflect.field(trait,"getProxiedTrait");
 		if(getProxyTrait != null) {
 			var proxy = trait.getProxiedTrait();
@@ -2335,30 +2334,7 @@ org.tbyrne.composure.core.ComposeItem.prototype = {
 		}(this));
 		if(castTrait != null) {
 			castTrait.set_item(this);
-			restrictions = castTrait.getRestrictions();
-			var _g = 0;
-			while(_g < restrictions.length) {
-				var restriction = restrictions[_g];
-				++_g;
-				if(!restriction.allowAddTo(trait,this)) return;
-			}
 			this._traitToCast.set(trait,castTrait);
-		}
-		var traits = this._traitCollection.traits.getlist();
-		var _g = 0;
-		while(_g < traits.length) {
-			var otherTrait = traits[_g];
-			++_g;
-			var otherCast = this._traitToCast.get(otherTrait);
-			if(otherCast != null) {
-				restrictions = otherCast.getRestrictions();
-				var _g1 = 0;
-				while(_g1 < restrictions.length) {
-					var restriction = restrictions[_g1];
-					++_g1;
-					if(!restriction.allowNewSibling(otherTrait,this,trait)) return;
-				}
-			}
 		}
 		this._traitCollection.addTrait(trait);
 		if(this._parentItem != null) this._parentItem.addChildTrait(trait);
@@ -2586,14 +2562,14 @@ org.tbyrne.composure.core.ComposeGroup.prototype = $extend(org.tbyrne.composure.
 			}
 		}
 	}
-	,getDescTrait: function(matchType) {
-		return this._descendantTraits.getTrait(matchType);
+	,getDescTrait: function(TraitType) {
+		return this._descendantTraits.getTrait(TraitType);
 	}
-	,getDescTraits: function(ifMatches) {
-		return this._descendantTraits.getTraits(ifMatches);
+	,getDescTraits: function(TraitType) {
+		return this._descendantTraits.getTraits(TraitType);
 	}
-	,callForDescTraits: function(func,ifMatches) {
-		this._descendantTraits.callForTraits(func,ifMatches,this);
+	,callForDescTraits: function(func,TraitType) {
+		this._descendantTraits.callForTraits(func,TraitType,this);
 	}
 	,onParentAdd: function() {
 		org.tbyrne.composure.core.ComposeItem.prototype.onParentAdd.call(this);
@@ -3023,69 +2999,18 @@ org.tbyrne.composure.macro.InjectorMacro.__name__ = ["org","tbyrne","composure",
 org.tbyrne.composure.macro.InjectorMacro.prototype = {
 	__class__: org.tbyrne.composure.macro.InjectorMacro
 }
-org.tbyrne.composure.macro.InjectorAccess = $hxClasses["org.tbyrne.composure.macro.InjectorAccess"] = function() {
+if(!org.tbyrne.composure.macro._InjectorMacro) org.tbyrne.composure.macro._InjectorMacro = {}
+org.tbyrne.composure.macro._InjectorMacro.InjectorAccess = $hxClasses["org.tbyrne.composure.macro._InjectorMacro.InjectorAccess"] = function() {
 	this.siblings = true;
 	this.descendants = false;
 	this.ascendants = false;
 };
-org.tbyrne.composure.macro.InjectorAccess.__name__ = ["org","tbyrne","composure","macro","InjectorAccess"];
-org.tbyrne.composure.macro.InjectorAccess.prototype = {
+org.tbyrne.composure.macro._InjectorMacro.InjectorAccess.__name__ = ["org","tbyrne","composure","macro","_InjectorMacro","InjectorAccess"];
+org.tbyrne.composure.macro._InjectorMacro.InjectorAccess.prototype = {
 	siblings: null
 	,descendants: null
 	,ascendants: null
-	,__class__: org.tbyrne.composure.macro.InjectorAccess
-}
-if(!org.tbyrne.composure.restrictions) org.tbyrne.composure.restrictions = {}
-org.tbyrne.composure.restrictions.ITraitRestriction = $hxClasses["org.tbyrne.composure.restrictions.ITraitRestriction"] = function() { }
-org.tbyrne.composure.restrictions.ITraitRestriction.__name__ = ["org","tbyrne","composure","restrictions","ITraitRestriction"];
-org.tbyrne.composure.restrictions.ITraitRestriction.prototype = {
-	allowNewSibling: null
-	,allowAddTo: null
-	,__class__: org.tbyrne.composure.restrictions.ITraitRestriction
-}
-org.tbyrne.composure.restrictions.SingularTraitRestriction = $hxClasses["org.tbyrne.composure.restrictions.SingularTraitRestriction"] = function(restrictSubclasses) {
-	this.restrictSubclasses = restrictSubclasses;
-};
-org.tbyrne.composure.restrictions.SingularTraitRestriction.__name__ = ["org","tbyrne","composure","restrictions","SingularTraitRestriction"];
-org.tbyrne.composure.restrictions.SingularTraitRestriction.__interfaces__ = [org.tbyrne.composure.restrictions.ITraitRestriction];
-org.tbyrne.composure.restrictions.SingularTraitRestriction.getInheritedRestrictor = function() {
-	if(org.tbyrne.composure.restrictions.SingularTraitRestriction._inheritedRestrictor == null) org.tbyrne.composure.restrictions.SingularTraitRestriction._inheritedRestrictor = new org.tbyrne.composure.restrictions.SingularTraitRestriction(true);
-	return org.tbyrne.composure.restrictions.SingularTraitRestriction._inheritedRestrictor;
-}
-org.tbyrne.composure.restrictions.SingularTraitRestriction.getNonInheritedRestrictor = function() {
-	if(org.tbyrne.composure.restrictions.SingularTraitRestriction._nonInheritedRestrictor == null) org.tbyrne.composure.restrictions.SingularTraitRestriction._nonInheritedRestrictor = new org.tbyrne.composure.restrictions.SingularTraitRestriction(false);
-	return org.tbyrne.composure.restrictions.SingularTraitRestriction._nonInheritedRestrictor;
-}
-org.tbyrne.composure.restrictions.SingularTraitRestriction._inheritedRestrictor = null;
-org.tbyrne.composure.restrictions.SingularTraitRestriction._nonInheritedRestrictor = null;
-org.tbyrne.composure.restrictions.SingularTraitRestriction.prototype = {
-	restrictSubclasses: null
-	,lastOwner: null
-	,lastClass: null
-	,allowNewSibling: function(owner,item,newTrait) {
-		this.validateForOwner(owner);
-		if(this.restrictSubclasses) return !Std["is"](newTrait,this.lastClass); else return Type.getClass(newTrait) != this.lastClass;
-	}
-	,allowAddTo: function(owner,item) {
-		this.validateForOwner(owner);
-		var traits = item.getTraits(this.lastClass);
-		if(this.restrictSubclasses) return false; else {
-			var _g = 0;
-			while(_g < traits.length) {
-				var trait = traits[_g];
-				++_g;
-				if(Type.getClass(trait) == this.lastClass) return false;
-			}
-		}
-		return true;
-	}
-	,validateForOwner: function(owner) {
-		if(this.lastOwner != owner) {
-			this.lastOwner = owner;
-			this.lastClass = Type.getClass(owner);
-		}
-	}
-	,__class__: org.tbyrne.composure.restrictions.SingularTraitRestriction
+	,__class__: org.tbyrne.composure.macro._InjectorMacro.InjectorAccess
 }
 if(!org.tbyrne.composure.traits) org.tbyrne.composure.traits = {}
 org.tbyrne.composure.traits.ITrait = $hxClasses["org.tbyrne.composure.traits.ITrait"] = function() { }
@@ -3094,7 +3019,6 @@ org.tbyrne.composure.traits.ITrait.prototype = {
 	item: null
 	,group: null
 	,getInjectors: null
-	,getRestrictions: null
 	,__class__: org.tbyrne.composure.traits.ITrait
 	,__properties__: {set_item:"set_item"}
 }
@@ -3162,7 +3086,6 @@ org.tbyrne.composure.traits.AbstractTrait.prototype = {
 		return value;
 	}
 	,_injectors: null
-	,_restrictions: null
 	,_siblingTraits: null
 	,_childItems: null
 	,_groupOnly: null
@@ -3174,10 +3097,6 @@ org.tbyrne.composure.traits.AbstractTrait.prototype = {
 	,getInjectors: function() {
 		if(this._injectors == null) this._injectors = new org.tbyrne.collections.IndexedList();
 		return this._injectors.getlist();
-	}
-	,getRestrictions: function() {
-		if(this._restrictions == null) this._restrictions = new org.tbyrne.collections.IndexedList();
-		return this._restrictions.getlist();
 	}
 	,addSiblingTrait: function(trait) {
 		if(this._siblingTraits == null) this._siblingTraits = new org.tbyrne.collections.IndexedList();
@@ -3223,15 +3142,6 @@ org.tbyrne.composure.traits.AbstractTrait.prototype = {
 	}
 	,removeInjector: function(injector) {
 		if(this._injectors != null && this._injectors.remove(injector)) injector.ownerTrait = null;
-	}
-	,addRestriction: function(restriction) {
-		if(this._restrictions == null) this._restrictions = new org.tbyrne.collections.IndexedList();
-		if(this._restrictions.add(restriction)) {
-		}
-	}
-	,removeRestriction: function(restriction) {
-		if(this._injectors != null && this._restrictions.remove(restriction)) {
-		}
 	}
 	,__class__: org.tbyrne.composure.traits.AbstractTrait
 	,__properties__: {set_item:"set_item"}
@@ -3781,6 +3691,147 @@ org.tbyrne.composure.utils.AddType.selfChild.__enum__ = org.tbyrne.composure.uti
 org.tbyrne.composure.utils.AddType.item = function(item) { var $x = ["item",7,item]; $x.__enum__ = org.tbyrne.composure.utils.AddType; $x.toString = $estr; return $x; }
 org.tbyrne.composure.utils.AddType.itemChild = function(group) { var $x = ["itemChild",8,group]; $x.__enum__ = org.tbyrne.composure.utils.AddType; $x.toString = $estr; return $x; }
 org.tbyrne.composure.utils.AddType.itemSibling = function(item) { var $x = ["itemSibling",9,item]; $x.__enum__ = org.tbyrne.composure.utils.AddType; $x.toString = $estr; return $x; }
+org.tbyrne.composure.utils.TraitTypeLimiter = $hxClasses["org.tbyrne.composure.utils.TraitTypeLimiter"] = function(traitType,policy,maxCount,siblings,descendants,ascendants) {
+	if(ascendants == null) ascendants = false;
+	if(descendants == null) descendants = false;
+	if(siblings == null) siblings = true;
+	if(maxCount == null) maxCount = 1;
+	org.tbyrne.composure.traits.AbstractTrait.call(this);
+	if(policy == null) policy = org.tbyrne.composure.utils.LimitPolicy.FirstInLastOut;
+	this._added = new time.types.ds.ObjectHash();
+	this._removed = new time.types.ds.ObjectHash();
+	this.injector = new org.tbyrne.composure.injectors.Injector(traitType,this.onTraitAdded.$bind(this),this.onTraitRemoved.$bind(this));
+	this.injector.passThroughItem = true;
+	this.set_maxCount(maxCount);
+	this.policy = policy;
+	this.setConcern(traitType,siblings,descendants,ascendants);
+};
+org.tbyrne.composure.utils.TraitTypeLimiter.__name__ = ["org","tbyrne","composure","utils","TraitTypeLimiter"];
+org.tbyrne.composure.utils.TraitTypeLimiter.__super__ = org.tbyrne.composure.traits.AbstractTrait;
+org.tbyrne.composure.utils.TraitTypeLimiter.prototype = $extend(org.tbyrne.composure.traits.AbstractTrait.prototype,{
+	maxCount: null
+	,set_maxCount: function(value) {
+		if(this.maxCount != value) {
+			this.maxCount = value;
+			this.checkTraits();
+		}
+		return value;
+	}
+	,policy: null
+	,injector: null
+	,added: null
+	,_added: null
+	,_removed: null
+	,_ignoreChanges: null
+	,setConcern: function(traitType,siblings,descendants,ascendants) {
+		if(ascendants == null) ascendants = false;
+		if(descendants == null) descendants = false;
+		if(siblings == null) siblings = true;
+		if(this.added) {
+			this.reAddAll();
+			this.added = false;
+			this.removeInjector(this.injector);
+		}
+		this.injector.interestedTraitType = traitType;
+		this.injector.siblings = siblings;
+		this.injector.descendants = descendants;
+		this.injector.ascendants = ascendants;
+		if(traitType != null) {
+			this.added = true;
+			this.addInjector(this.injector);
+		}
+	}
+	,reAddAll: function() {
+		this._ignoreChanges = true;
+		var keys = this._removed.keys();
+		while( keys.hasNext() ) {
+			var item = keys.next();
+			var removed = this._removed.get(item);
+			if(removed != null && removed.length > 0) {
+				var added = this._added.get(item);
+				while(removed.length > 0) this.reAddTrait(item,added,removed);
+			}
+		}
+		this._added = new time.types.ds.ObjectHash();
+		this._removed = new time.types.ds.ObjectHash();
+		this._ignoreChanges = false;
+	}
+	,checkTraits: function() {
+		this._ignoreChanges = true;
+		var keys = this._added.keys();
+		while( keys.hasNext() ) {
+			var item = keys.next();
+			var added = this._added.get(item);
+			if(added.length > this.maxCount) {
+				var removed = this._removed.get(item);
+				if(removed != null) while(removed.length > 0 && added.length > this.maxCount) this.reAddTrait(item,added,removed);
+			}
+		}
+		this._ignoreChanges = false;
+	}
+	,onTraitAdded: function(trait,item) {
+		if(this._ignoreChanges) return;
+		this._ignoreChanges = true;
+		var added = this._added.get(item);
+		if(added == null) {
+			added = [];
+			this._added.set(item,added);
+		}
+		if(added.length == this.maxCount) {
+			var removed = this._removed.get(item);
+			if(removed == null) {
+				removed = [];
+				this._removed.set(item,removed);
+			}
+			switch( (this.policy)[1] ) {
+			case 0:
+				var firstTrait = added.shift();
+				removed.unshift(firstTrait);
+				item.removeTrait(firstTrait);
+				added.push(trait);
+				break;
+			case 1:
+				removed.push(trait);
+				item.removeTrait(trait);
+				break;
+			}
+		} else added.push(trait);
+		this._ignoreChanges = false;
+	}
+	,onTraitRemoved: function(trait,item) {
+		if(this._ignoreChanges) return;
+		this._ignoreChanges = true;
+		var added = this._added.get(item);
+		if(added.remove(trait)) {
+			var removed = this._removed.get(item);
+			if(removed != null && removed.length > 0) this.reAddTrait(item,added,removed);
+		}
+		this._ignoreChanges = false;
+	}
+	,reAddTrait: function(item,added,removed) {
+		var trait;
+		switch( (this.policy)[1] ) {
+		case 0:
+			trait = removed.shift();
+			added.unshift(trait);
+			break;
+		case 1:
+			trait = removed.pop();
+			added.push(trait);
+			break;
+		}
+		item.addTrait(trait);
+	}
+	,__class__: org.tbyrne.composure.utils.TraitTypeLimiter
+	,__properties__: $extend(org.tbyrne.composure.traits.AbstractTrait.prototype.__properties__,{set_maxCount:"set_maxCount"})
+});
+org.tbyrne.composure.utils.LimitPolicy = $hxClasses["org.tbyrne.composure.utils.LimitPolicy"] = { __ename__ : ["org","tbyrne","composure","utils","LimitPolicy"], __constructs__ : ["FirstInFirstOut","FirstInLastOut"] }
+org.tbyrne.composure.utils.LimitPolicy.FirstInFirstOut = ["FirstInFirstOut",0];
+org.tbyrne.composure.utils.LimitPolicy.FirstInFirstOut.toString = $estr;
+org.tbyrne.composure.utils.LimitPolicy.FirstInFirstOut.__enum__ = org.tbyrne.composure.utils.LimitPolicy;
+org.tbyrne.composure.utils.LimitPolicy.FirstInLastOut = ["FirstInLastOut",1];
+org.tbyrne.composure.utils.LimitPolicy.FirstInLastOut.toString = $estr;
+org.tbyrne.composure.utils.LimitPolicy.FirstInLastOut.__enum__ = org.tbyrne.composure.utils.LimitPolicy;
 if(!org.tbyrne.composureTest) org.tbyrne.composureTest = {}
 org.tbyrne.composureTest.ClassIncluder = $hxClasses["org.tbyrne.composureTest.ClassIncluder"] = function() { }
 org.tbyrne.composureTest.ClassIncluder.__name__ = ["org","tbyrne","composureTest","ClassIncluder"];

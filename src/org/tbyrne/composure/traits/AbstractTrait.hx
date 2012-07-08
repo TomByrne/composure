@@ -5,7 +5,6 @@ import org.tbyrne.collections.IndexedList;
 import org.tbyrne.composure.injectors.IInjector;
 import org.tbyrne.composure.core.ComposeGroup;
 import org.tbyrne.composure.core.ComposeItem;
-import org.tbyrne.composure.restrictions.ITraitRestriction;
 import org.tbyrne.logging.LogMsg;
 
 @:autoBuild(org.tbyrne.composure.macro.InjectorMacro.inject())
@@ -57,7 +56,6 @@ class AbstractTrait implements ITrait
 
 
 	private var _injectors:IndexedList<IInjector>;
-	private var _restrictions:IndexedList<ITraitRestriction>;
 	private var _siblingTraits:IndexedList<Dynamic>;
 	private var _childItems:IndexedList<ComposeItem>;
 
@@ -85,10 +83,6 @@ class AbstractTrait implements ITrait
 	public function getInjectors():Array<IInjector>{
 		if(_injectors==null)_injectors = new IndexedList<IInjector>();
 		return _injectors.list;
-	}
-	public function getRestrictions():Array<ITraitRestriction>{
-		if(_restrictions==null)_restrictions = new IndexedList<ITraitRestriction>();
-		return _restrictions.list;
 	}
 
 	private function addSiblingTrait(trait:Dynamic):Void{
@@ -159,25 +153,6 @@ class AbstractTrait implements ITrait
 			injector.ownerTrait = null;
 		}#if debug else{
 				Log.trace(new LogMsg("Attempting to remove non-added injector",[LogType.performanceWarning]));
-			}
-		#end
-	}
-
-
-	private function addRestriction(restriction:ITraitRestriction):Void{
-		if(_restrictions==null)_restrictions = new IndexedList<ITraitRestriction>();
-		if(_restrictions.add(restriction)){
-			
-		}#if debug else{
-				Log.trace(new LogMsg("Attempting to add restriction twice",[LogType.performanceWarning]));
-			}
-		#end
-	}
-	private function removeRestriction(restriction:ITraitRestriction):Void{
-		if(_injectors!=null && _restrictions.remove(restriction)){
-			
-		}#if debug else{
-				Log.trace(new LogMsg("Attempting to remove non-added restriction",[LogType.performanceWarning]));
 			}
 		#end
 	}
