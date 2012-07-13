@@ -7,10 +7,34 @@ import org.tbyrne.composure.core.ComposeGroup;
 import org.tbyrne.composure.core.ComposeItem;
 import org.tbyrne.logging.LogMsg;
 
+/**
+ * The AbstractTrait class can be extended by any trait to gain access
+ * to the trait to which it is added. It also allows traits to access
+ * other traits in the application either via the injection metadata
+ * or via manually adding injectors via the addInjector method.<br/>
+ * <br/>
+ * If, for whatever reason, it is not possible or convenient to extend 
+ * AbstractTrait, it is also possible to instantiate it within your trait
+ * (passing <code>this</code> in as the constructor argument) and returning this
+ * instance via a <code>getProxiedTrait</code> method. To use injection metadata in
+ * this situation you must also add the <code>@build(org.tbyrne.composure.macro.InjectorMacro.inject())</code>
+ * metadata to your class.
+ * 
+ * @author		Tom Byrne
+ */
 @:autoBuild(org.tbyrne.composure.macro.InjectorMacro.inject())
 class AbstractTrait implements ITrait
 {
+	/**
+	 * The group to which this item is added. This is a method of convenience,
+	 * and returns the 'item' property cast as a ComposeGroup.
+	 */
 	public var group(default, null):ComposeGroup;
+	/**
+	 * The item which this trait is added to. Do not set this manually,
+	 * the ComposeItem class sets this property automatically when the 
+	 * trait is added to it.
+	 */
 	public var item(default, set_item):ComposeItem;
 	private function set_item(value:ComposeItem):ComposeItem{
 		if(item!=value){
@@ -65,6 +89,10 @@ class AbstractTrait implements ITrait
 	private var _groupOnly:Bool;
 	private var _ownerTrait:Dynamic;
 
+	/**
+	 * @param ownerTrait When using this Class as a Proxied Trait, pass through the actual trait
+	 * object as the first parameter.
+	 */
 	public function new(ownerTrait:Dynamic=null) {
 		_groupOnly = false;
 		if (ownerTrait != null) {
@@ -80,6 +108,11 @@ class AbstractTrait implements ITrait
 		// override me
 	}
 
+	/**
+	 * This provides a way for this trait to gain access to other traits in the
+	 * application.
+	 * @return A list of IInjectors, each one describing which traits it is concerned with.
+	 */
 	public function getInjectors():Array<IInjector>{
 		if(_injectors==null)_injectors = new IndexedList<IInjector>();
 		return _injectors.list;
@@ -139,6 +172,11 @@ class AbstractTrait implements ITrait
 		}
 	}
 
+	/**
+	 * Adds an injector to this trait, each injector is a description of a certain other trait
+	 * that this trait would like access to.
+	 * @param injector The injector to add to this trait.
+	 */
 	public function addInjector(injector:IInjector):Void{
 		if(_injectors==null)_injectors = new IndexedList<IInjector>();
 		if(_injectors.add(injector)){
@@ -148,6 +186,11 @@ class AbstractTrait implements ITrait
 			}
 		#end
 	}
+	/**
+	 * Removes an injector from this trait.
+	 * @see addInjector
+	 * @param injector The injector to remove from this trait.
+	 */
 	public function removeInjector(injector:IInjector):Void{
 		if(_injectors!=null && _injectors.remove(injector)){
 			injector.ownerTrait = null;

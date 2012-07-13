@@ -11,6 +11,13 @@ import hsl.haxe.DirectSignaler;
 
 import time.types.ds.ObjectHash;
 
+/**
+ * The TraitCollection holds a collection of traits and has the
+ * ability to compare them to a collection of injectors. This is 
+ * used internally in Composure.
+ * 
+ * @author Tom Byrne
+ */
 class TraitCollection
 {
 	
@@ -52,7 +59,7 @@ class TraitCollection
 			}
 		}
 	}
-	public function getTraits<TraitType>(TraitType:Class<TraitType>=null):Array<TraitType>{
+	public function getTraits<TraitType>(TraitType:Class<TraitType> = null):Array<TraitType> {
 		var cache:TraitTypeCache<TraitType> = validateCache(TraitType);
 		if(cache!=null){
 			return cache.getTraits;

@@ -1,42 +1,44 @@
-> Classpath: **::nameDots::::params::**
+**::nameDots::::params::**
+
+$$typeDocs()
 ::if isPrivate::
 
 
-> Type: **Private ::type::**
+> *Type:* **Private ::type::**
 ::else::
 
 
-> Type: **::type::**
+> *Type:* **::type::**
 ::end::
 
 ::if superClasses.length > 0::
 
 
-> Extends: $$classLink(::superClasses[0]::)
+> *Extends:* $$classLink(::superClasses[0]::)
 ::end::
 
 ::if module != null && module.length > 0::
 
 
-> Defined in: **::module::**
+> *Defined in:* **::module::**
 ::end::
 
 ::if interfaces.length > 0::
 
 
-> Implements:
+> *Implements:*
 ::foreach i interfaces::* $$classLink(::i::)::end::
 ::end::
 
 ::if subclasses.length == 1::
 
 
-> Subclasses:::foreach sc subclasses:: **::raw sc.text::**::end::
+> *Subclasses:*::foreach sc subclasses:: **::raw sc.text::**::end::
 
 ::elseif subclasses.length > 1::
 
 
-> Subclasses:
+> *Subclasses:*
 ::foreach sc subclasses::> * **::raw sc.text::**
 ::end::
 ::end::
@@ -44,12 +46,10 @@
 ::if platforms.length > 0::
 
 
-> Available in:
+> *Available in:*
 ::foreach p platforms::> * **::p::**
 ::end::
 ::end::
-
-$$typeDocs()
 
 ::if staticVars.length > 0::
 ##Static Variables:##

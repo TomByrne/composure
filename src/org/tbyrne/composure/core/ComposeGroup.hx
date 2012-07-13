@@ -19,6 +19,10 @@ import org.tbyrne.logging.LogMsg;
  */
 class ComposeGroup extends ComposeItem
 {
+	public var children(get_children, null):Array<ComposeItem>;
+	private function get_children():Array<ComposeItem> {
+		return _children.list;
+	}
 
 	private var _descendantTraits:TraitCollection;
 	private var _children:IndexedList<ComposeItem>;

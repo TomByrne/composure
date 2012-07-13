@@ -4,7 +4,6 @@ import org.tbyrne.composure.traits.ITrait;
 import org.tbyrne.composure.injectors.Injector;
 
 /**
- * ...
  * @author Tom Byrne
  */
 

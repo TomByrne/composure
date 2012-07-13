@@ -1,10 +1,10 @@
 <macros>
-<macro name="typeDocs()">
-::if docs != null && docs.comments != null::
-> Comments:
-> ```hx ::raw docs.comments::
-```
+<macro name="typeDocs()">$$printDocs(::docs::)</macro>
 
+<macro name="printDocs(docs)">
+::if docs != null && docs.comments != null && docs.comments.length>3::
+<p>::raw docs.comments::
+</p>
 
 ::end::
 </macro>
@@ -13,8 +13,9 @@
 
 <macro name="methodHeader(m)">
 #####$$showAccess(::m::)$$showDynamic(::m::)$$showInline(::m::)**::raw m.name::** ::m.params::(::if m.args != null::::raw m.args::::end::) : ::raw m.returns::#####
-::if m.isOverride::> Overrides: **::raw m.inheritance.link.text::**
-::elseif m.isInherited::> Inherited from: **(::raw m.inheritance.link.text::)[::raw m.inheritance.link.text::]**
+$$printDocs(::m.docs::)
+::if m.isOverride::> *Overrides:* **::raw m.inheritance.link.text::**
+::elseif m.isInherited::> *Inherited from:* **::raw m.inheritance.link.text::**
 ::end::
 </macro>
 
@@ -22,70 +23,80 @@
 ::if m.docs != null || m.platforms != null::
 ::if m.docs != null::
 ::if m.docs.deprecated::
-> Deprecated: *::raw m.docs.deprecatedMsg::*
+> *Deprecated:* **::raw m.docs.deprecatedMsg::**
 ::end::
-::if m.docs.typeParams.length != 0::
-> Types:
+::if m.docs.typeParams.length == 1::
+> *Types:* ::foreach pd m.docs.typeParams:: `::pd.arg::` ::raw pd.desc::::end::
+::elseif m.docs.typeParams.length > 1::
+> *Types:*
 ::foreach pd m.docs.typeParams::> * `::pd.arg::` ::raw pd.desc::
 ::end::
 ::end::
-::if m.docs.params.length != 0::
-> Parameters:
+::if m.docs.params.length == 1::
+> *Parameters:* ::foreach pd m.docs.params:: `::pd.arg::` ::raw pd.desc::::end::
+::elseif m.docs.params.length > 1::
+> *Parameters:*
 ::foreach pd m.docs.params::> * `::pd.arg::` ::raw pd.desc::
 ::end::
 ::end::
-::if m.docs.returns.length != 0::
-> Returns:
+::if m.docs.returns.length == 1::
+> *Returns:* ::foreach s m.docs.returns:: ::raw s::::end::
+::elseif m.docs.returns.length > 1::
+> *Returns:*
 ::foreach s m.docs.returns::> * ::raw s::
 ::end::
 ::end::
-::if m.docs.throws.length != 0::
-> Throws:
+::if m.docs.throws.length == 1::
+> *Throws:* ::foreach td m.docs.throws:: ::td.name:: ::raw td.desc::::end::
+::elseif m.docs.throws.length > 1::
+> *Throws:*
 ::foreach td m.docs.throws::> * ::td.name:: ::raw td.desc::
 ::end::
 ::end::
-::if m.docs.requires.length != 0::
-> Requires:
+::if m.docs.requires.length == 1::
+> *Requires:* ::foreach i m.docs.requires:: ::raw i::::end::
+::elseif m.docs.requires.length > 1::
+> *Requires:*
 ::foreach i m.docs.requires::> * ::raw i::
 ::end::
 ::end::
-::if m.docs.see.length != 0::
-> See:
-::foreach i m.docs.see::> * ::raw i::
+::if m.docs.see.length == 1::
+> *See:* ::foreach i m.docs.see:: `::raw i::`::end::
+::elseif m.docs.see.length > 1::
+> *See:*
+::foreach i m.docs.see::> * `::raw i::`
 ::end::
 ::end::
-::if m.docs.todos.length != 0::
-> Todo: 
+::if m.docs.todos.length == 1::
+> *Todo:* ::foreach i m.docs.todos:: ::raw i::::end::
+::elseif m.docs.todos.length > 1::
+> *Todo:*
 ::foreach i m.docs.todos::> * ::raw i::
 ::end::
 ::end::
-::if m.docs.authors.length != 0::
-> Authors: 
+::if m.docs.authors.length == 1::
+> *Authors:* ::foreach i m.docs.authors:: ::raw i::::end::
+::elseif m.docs.authors.length > 1::
+> *Authors:* 
 ::foreach i m.docs.authors::> * ::raw i::
 ::end::
 ::end::
 ::end::
 ::if m.platforms != null && m.platforms.length != 0 && (platforms == null || platforms.length > m.platforms.length) ::
-> Platforms: ::foreach p m.platforms::::if !repeat.p.first::, ::end::::p::::end::
+> *Platforms:* ::foreach p m.platforms::::if !repeat.p.first::, ::end::::p::::end::
 ::end::
 ::end::
-::if m.docs != null && m.docs.comments != null::> Comments:
-> ```hx ::raw m.docs.comments::
-```::end::
 </macro>
 
 <macro name="varHeader(f)">#####$$showAccess(::f::) **::f.name::** ::raw f.rights:: : ::raw f.returns::#####
-::if f.isInherited::> Inherited from (::raw f.inheritance.link.text::)[::raw f.inheritance.link.text::]::end::
+$$printDocs(::f.docs::)
+::if f.isInherited::> *Inherited from:* ::raw f.inheritance.link.text::::end::
 </macro>
 
 <macro name="varDocs(m)">
-::if m.platforms != null::
-::if m.platforms.length != 0 && (platforms == null || platforms.length > m.platforms.length) ::
-Platforms: ::foreach p m.platforms::::if !repeat.p.first::, ::end::::p::::end::
+::if m.platforms != null && m.platforms.length != 0 && (platforms == null || platforms.length > m.platforms.length) ::
+*Platforms:* ::foreach p m.platforms::::if !repeat.p.first::, ::end::::p::::end::
 ::end::
-::end::
-::if m.docs != null && m.docs.comments != null::> ```hx ::raw m.docs.comments::
-```::end::
 </macro>
 
 <macro name="enumConstructor(m)">

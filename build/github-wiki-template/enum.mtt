@@ -1,29 +1,29 @@
-> Classpath: **::nameDots::::params::**
+**::nameDots::::params::**
+
+$$typeDocs()
 ::if isPrivate::
 
 
-> Type: **Private ::type::**
+> *Type:* **Private ::type::**
 ::else::
 
 
-> Type: **::type::**
+> *Type:* **::type::**
 ::end::
 
 ::if module != null && module.length > 0::
 
 
-> Defined in: **::module::**
+> *Defined in:* **::module::**
 ::end::
 
 ::if platforms.length > 0::
 
 
-> Available in:
+> *Available in:*
 ::foreach p platforms::> * **::p::**
 ::end::
 ::end::
-
-$$typeDocs()
 
 
 

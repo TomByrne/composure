@@ -9,23 +9,38 @@ import org.tbyrne.logging.LogMsg;
 import time.types.ds.ObjectHash;
 
 /**
- * ...
+ * The TraitFurnisher class is used to add traits to an item in response
+ * to a certain type of trait being added to the item.<br/>
+ * <br/>
+ * This is very useful when creating interchangable libraries. For example,
+ * when wanting to add a platform specific display trait to a items in the
+ * presence of another trait:
+ * <pre><code>
+ * var traitFurnisher:TraitFurnisher = new TraitFurnisher(AddType.traitItem, RectangleInfo, [HtmlRectangleDisplay]);
+ * stage.addTrait(traitFurnisher);
+ * </code></pre>
+ * In this example, any item which has a RectangleInfo trait added to it (representing
+ * a rectangle's position and size) will also get a HtmlRectangleDisplay trait added to
+ * it. The HtmlRectangleDisplay object can then access the RectangleInfo's size and 
+ * position properties using injection metadata. In this way, the display method for
+ * all rectangles could be quickly and easily be swapped out for another display trait.
+ * 
  * @author Tom Byrne
  */
 
 class TraitFurnisher extends AbstractTrait
 {
-	public var injectoredTraitType(default, set_injectoredTraitType):Class<Dynamic>;
-	private function set_injectoredTraitType(value:Class<Dynamic>):Class<Dynamic> {
+	public var concernedTraitType(default, set_concernedTraitType):Class<Dynamic>;
+	private function set_concernedTraitType(value:Class<Dynamic>):Class<Dynamic> {
 		if (_injector == null) {
-			_injector = new Injector(value, onInjectoredTraitAdded, onInjectoredTraitRemoved, searchSiblings, searchDescendants, searchAscendants);
+			_injector = new Injector(value, onConcernedTraitAdded, onConcernedTraitRemoved, searchSiblings, searchDescendants, searchAscendants);
 			_injector.passThroughItem = true;
 		}else {
 			removeInjector(_injector);
 			_injector.interestedTraitType = value;
 		}
-		injectoredTraitType = value;
-		if (injectoredTraitType != null) {
+		concernedTraitType = value;
+		if (concernedTraitType != null) {
 			addInjector(_injector);
 		}
 		return value;
@@ -100,7 +115,7 @@ class TraitFurnisher extends AbstractTrait
 	
 	private var _ignoreTraitChanges:Bool;
 
-	public function new(addType:AddType, ?injectoredTraitType:Class<Dynamic>,?traitTypes:Array<Dynamic>,?traitFactories:Array<Void->Dynamic>,searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false,?adoptTrait:Bool) 
+	public function new(addType:AddType, ?concernedTraitType:Class<Dynamic>,?traitTypes:Array<Dynamic>,?traitFactories:Array<Void->Dynamic>,searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false,?adoptTrait:Bool) 
 	{
 		super();
 		
@@ -115,11 +130,11 @@ class TraitFurnisher extends AbstractTrait
 		this.searchSiblings = searchSiblings;
 		this.searchDescendants = searchDescendants;
 		this.searchAscendants = searchAscendants;
-		this.injectoredTraitType = injectoredTraitType;
+		this.concernedTraitType = concernedTraitType;
 		
 	}
 	
-	private function onInjectoredTraitAdded(trait:Dynamic, origItem:ComposeItem):Void {
+	private function onConcernedTraitAdded(trait:Dynamic, origItem:ComposeItem):Void {
 		if (_ignoreTraitChanges) return;
 		_ignoreTraitChanges = true;
 		
@@ -161,7 +176,7 @@ class TraitFurnisher extends AbstractTrait
 		_addedTraits.set(trait, traitsAdded);
 		_ignoreTraitChanges = false;
 	}
-	private function onInjectoredTraitRemoved(trait:Dynamic, currItem:ComposeItem):Void {
+	private function onConcernedTraitRemoved(trait:Dynamic, currItem:ComposeItem):Void {
 		if (_ignoreTraitChanges) return;
 			_ignoreTraitChanges = true;
 		

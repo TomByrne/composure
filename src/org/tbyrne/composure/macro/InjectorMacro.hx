@@ -6,6 +6,15 @@ import haxe.macro.Context;
 import haxe.macro.Compiler;
 
 /**
+ * The InjectorMacro is used to convert inject metadata into IInjector objects.
+ * It gets run at compile-time using the build metadata:<br/>
+ * '@build(org.tbyrne.composure.macro.InjectorMacro.inject())'<br/>
+ * which should be added directly above your trait class definition.<br/>
+ * <br/>
+ * If your trait extends AbstractTrait, it needn't use the '@build' metadata
+ * as all subclasses of AbstractTrait automatically get processed by the 
+ * InjectorMacro.
+ * 
  * @author Tom Byrne
  */
 
