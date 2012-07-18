@@ -1,10 +1,10 @@
-package org.tbyrne.composure.utils;
+package composure.utils;
 import haxe.Log;
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.injectors.Injector;
-import org.tbyrne.composure.core.ComposeGroup;
-import org.tbyrne.composure.core.ComposeItem;
-import org.tbyrne.composure.traits.AbstractTrait;
+import composure.injectors.Injector;
+import composure.core.ComposeGroup;
+import composure.core.ComposeItem;
+import composure.traits.AbstractTrait;
 import org.tbyrne.logging.LogMsg;
 import time.types.ds.ObjectHash;
 

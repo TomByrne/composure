@@ -1,8 +1,8 @@
-package org.tbyrne.composure.injectors;
+package composure.injectors;
 
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.core.ComposeItem;
-import org.tbyrne.composure.traits.TraitCollection;
+import composure.core.ComposeItem;
+import composure.traits.TraitCollection;
 import time.types.ds.ObjectHash;
 import haxe.Log;
 import org.tbyrne.logging.LogMsg;

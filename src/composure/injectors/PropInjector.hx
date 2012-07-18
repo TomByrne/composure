@@ -1,4 +1,4 @@
-package org.tbyrne.composure.injectors;
+package composure.injectors;
 
 /**
  * ...

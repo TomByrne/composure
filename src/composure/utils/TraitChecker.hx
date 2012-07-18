@@ -1,7 +1,7 @@
-package org.tbyrne.composure.utils;
-import org.tbyrne.composure.core.ComposeItem;
-import org.tbyrne.composure.traits.ITrait;
-import org.tbyrne.composure.injectors.Injector;
+package composure.utils;
+import composure.core.ComposeItem;
+import composure.traits.ITrait;
+import composure.injectors.Injector;
 
 /**
  * @author Tom Byrne

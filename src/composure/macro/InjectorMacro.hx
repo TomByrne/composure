@@ -1,4 +1,4 @@
-package org.tbyrne.composure.macro;
+package composure.macro;
 
 import haxe.macro.Expr;
 import haxe.macro.Type;
@@ -8,7 +8,7 @@ import haxe.macro.Compiler;
 /**
  * The InjectorMacro is used to convert inject metadata into IInjector objects.
  * It gets run at compile-time using the build metadata:<br/>
- * '@build(org.tbyrne.composure.macro.InjectorMacro.inject())'<br/>
+ * '@build(composure.macro.InjectorMacro.inject())'<br/>
  * which should be added directly above your trait class definition.<br/>
  * <br/>
  * If your trait extends AbstractTrait, it needn't use the '@build' metadata
@@ -33,7 +33,7 @@ class InjectorMacro
 		var typePathToExpr:Hash<ExprDef>;
 		
 		var type:Type = Context.getLocalType();
-		var isTrait:Bool = doesTypeInherit("org.tbyrne.composure.traits.ITrait", type);
+		var isTrait:Bool = doesTypeInherit("composure.traits.ITrait", type);
 		
 		var addInjectorMethod:Expr;
 		if (isTrait) {
@@ -108,18 +108,18 @@ class InjectorMacro
 					/*switch(type) {
 						case TInst( t , params  ):
 							var classType:ClassType = t.get();
-							var proxyInterface:ClassType = cast Context.getType("org.tbyrne.composure.traits.ITraitProxy");
+							var proxyInterface:ClassType = cast Context.getType("composure.traits.ITraitProxy");
 							classType.interfaces.push( { params : [], t : Ref. (proxyInterface) } );
 						
 						default:
 							throw new Error("InjectorMacro can't operate on non-classes that don't extend ITrait", Context.getLocalClass().get().pos);
 					}*/
 					// add _proxiedTrait variable
-					fields.push({ kind : FVar(TPath( { name : "AbstractTrait", pack : ["org", "tbyrne", "composure", "traits"], params : [], sub : null } ), null), meta : [], name : "_proxiedTrait", doc : null, pos : constructor.expr.pos, access : [APrivate] });
+					fields.push({ kind : FVar(TPath( { name : "AbstractTrait", pack : ["composure", "traits"], params : [], sub : null } ), null), meta : [], name : "_proxiedTrait", doc : null, pos : constructor.expr.pos, access : [APrivate] });
 					// add getProxiedTrait function
-					fields.push( { kind : FFun( { args : [], expr : { expr : EBlock([ { expr : EReturn( { expr : EConst(CIdent("_proxiedTrait")), pos : constructor.expr.pos } ), pos : constructor.expr.pos } ]), pos : constructor.expr.pos }, params : [], ret : TPath( { name : "ITrait", pack : ["org", "tbyrne", "composure", "traits"], params : [], sub : null } ) } ), meta : [], name : "getProxiedTrait", doc : null, pos : constructor.expr.pos, access : [APublic] } );
+					fields.push( { kind : FFun( { args : [], expr : { expr : EBlock([ { expr : EReturn( { expr : EConst(CIdent("_proxiedTrait")), pos : constructor.expr.pos } ), pos : constructor.expr.pos } ]), pos : constructor.expr.pos }, params : [], ret : TPath( { name : "ITrait", pack : ["composure", "traits"], params : [], sub : null } ) } ), meta : [], name : "getProxiedTrait", doc : null, pos : constructor.expr.pos, access : [APublic] } );
 					// instantiate proxiedTrait
-					addExpr.unshift({ expr : EBlock([{ expr : EBinop(OpAssign,{ expr : EConst(CIdent("_proxiedTrait")), pos : constructor.expr.pos },{ expr : ENew({ name : "AbstractTrait", pack : ["org", "tbyrne", "composure", "traits"], params : [], sub : null },[{expr:EConst(CIdent("this")), pos:constructor.expr.pos}]), pos : constructor.expr.pos }), pos : constructor.expr.pos }]), pos : constructor.expr.pos });
+					addExpr.unshift({ expr : EBlock([{ expr : EBinop(OpAssign,{ expr : EConst(CIdent("_proxiedTrait")), pos : constructor.expr.pos },{ expr : ENew({ name : "AbstractTrait", pack : ["composure", "traits"], params : [], sub : null },[{expr:EConst(CIdent("this")), pos:constructor.expr.pos}]), pos : constructor.expr.pos }), pos : constructor.expr.pos }]), pos : constructor.expr.pos });
 				}
 				switch(constructor.expr.expr) {
 					case EBlock(exprs):
@@ -205,13 +205,13 @@ class InjectorMacro
 		}else {
 			addExpr = EConst(CIdent("null"));
 		}
-		var expr:Expr = { expr : ECall( addInjectorMeth, [ { expr : ENew( { name : "Injector", pack : ["org", "tbyrne", "composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : addExpr, pos :pos}, { expr : remExpr, pos :pos}, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
+		var expr:Expr = { expr : ECall( addInjectorMeth, [ { expr : ENew( { name : "Injector", pack : ["composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : addExpr, pos :pos}, { expr : remExpr, pos :pos}, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
 		addTo.push(expr);
 	}
 	private static function createPropInjector(fieldName:String, typeExpr:ExprDef, writeOnly:Bool, meta:{ name : String, params : Array<Expr>, pos : Position }, addTo:Array<Expr>, pos:Position, addInjectorMethod:Expr):Void {
 		var injectorAccess:InjectorAccess = new InjectorAccess();
 		checkMetaAccess(injectorAccess, meta);
-		var expr:Expr = { expr : ECall( addInjectorMethod, [ { expr : ENew( { name : "PropInjector", pack : ["org", "tbyrne", "composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : EConst(CIdent("this")), pos : pos }, { expr : EConst(CString(fieldName)), pos : pos }, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(writeOnly?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
+		var expr:Expr = { expr : ECall( addInjectorMethod, [ { expr : ENew( { name : "PropInjector", pack : ["composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : EConst(CIdent("this")), pos : pos }, { expr : EConst(CString(fieldName)), pos : pos }, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(writeOnly?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
 		addTo.push(expr);
 	}
 	private static function checkMetaAccess(injectorAccess:InjectorAccess, meta: { name : String, params : Array<Expr>, pos : Position } ):Void {

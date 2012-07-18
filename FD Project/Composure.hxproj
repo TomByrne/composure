@@ -23,7 +23,7 @@
   <build>
     <option directives="" />
     <option flashStrict="False" />
-    <option mainClass="org.tbyrne.composureTest.HelloWorld" />
+    <option mainClass="composureTest.HelloWorld" />
     <option enabledebug="False" />
     <option additional="" />
   </build>

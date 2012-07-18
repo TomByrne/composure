@@ -1,10 +1,10 @@
-package org.tbyrne.composure.core;
+package composure.core;
 
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.injectors.IInjector;
-import org.tbyrne.composure.injectors.InjectorMarrier;
-import org.tbyrne.composure.traits.ITrait;
-import org.tbyrne.composure.traits.TraitCollection;
+import composure.injectors.IInjector;
+import composure.injectors.InjectorMarrier;
+import composure.traits.ITrait;
+import composure.traits.TraitCollection;
 import time.types.ds.ObjectHash;
 
 

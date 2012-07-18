@@ -1,10 +1,10 @@
-package org.tbyrne.composure.traits;
+package composure.traits;
 
 import haxe.Log;
 import org.tbyrne.logging.LogMsg;
 
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.core.ComposeItem;
+import composure.core.ComposeItem;
 
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;

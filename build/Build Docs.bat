@@ -1,8 +1,8 @@
-haxe -main org.tbyrne.composureTest.ClassIncluder -cp ../src -cp ../testSrc -lib hsl-1 -xml type-desc.xml
+haxe -main composureTest.ClassIncluder -cp ../src -cp ../testSrc -lib hsl-1 -xml type-desc.xml
 cd chxdoc
 
 rd /s /q "../../github-wiki/docs"
-chxdoc -o ../../github-wiki/docs --template=../github-wiki-template --includeOnly=org.tbyrne.composure.* ../type-desc.xml
+chxdoc -o ../../github-wiki/docs --template=../github-wiki-template --includeOnly=composure.* ../type-desc.xml
 
 cd ../../github-wiki/docs
 

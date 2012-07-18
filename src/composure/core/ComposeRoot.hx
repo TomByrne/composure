@@ -1,5 +1,5 @@
-package org.tbyrne.composure.core;
-import org.tbyrne.composure.traits.ITrait;
+package composure.core;
+import composure.traits.ITrait;
 
 /**
  * ComposeRoot is the root item for the Composure library.

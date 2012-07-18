@@ -1,8 +1,8 @@
-package org.tbyrne.composure.injectors;
+package composure.injectors;
 
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.core.ComposeItem;
-import org.tbyrne.composure.traits.ITrait;
+import composure.core.ComposeItem;
+import composure.traits.ITrait;
 
 
 class AbstractInjector implements IInjector

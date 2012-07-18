@@ -1,10 +1,10 @@
-package org.tbyrne.composure.traits;
+package composure.traits;
 
 import haxe.Log;
 import org.tbyrne.collections.IndexedList;
-import org.tbyrne.composure.injectors.IInjector;
-import org.tbyrne.composure.core.ComposeGroup;
-import org.tbyrne.composure.core.ComposeItem;
+import composure.injectors.IInjector;
+import composure.core.ComposeGroup;
+import composure.core.ComposeItem;
 import org.tbyrne.logging.LogMsg;
 
 /**
@@ -17,12 +17,12 @@ import org.tbyrne.logging.LogMsg;
  * AbstractTrait, it is also possible to instantiate it within your trait
  * (passing <code>this</code> in as the constructor argument) and returning this
  * instance via a <code>getProxiedTrait</code> method. To use injection metadata in
- * this situation you must also add the <code>@build(org.tbyrne.composure.macro.InjectorMacro.inject())</code>
+ * this situation you must also add the <code>@build(composure.macro.InjectorMacro.inject())</code>
  * metadata to your class.
  * 
  * @author		Tom Byrne
  */
-@:autoBuild(org.tbyrne.composure.macro.InjectorMacro.inject())
+@:autoBuild(composure.macro.InjectorMacro.inject())
 class AbstractTrait implements ITrait
 {
 	/**

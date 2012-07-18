@@ -1,7 +1,7 @@
-package org.tbyrne.composureTest;
-import org.tbyrne.composure.core.ComposeGroup;
-import org.tbyrne.composure.core.ComposeRoot;
-import org.tbyrne.composure.traits.AbstractTrait;
+package composureTest;
+import composure.core.ComposeGroup;
+import composure.core.ComposeRoot;
+import composure.traits.AbstractTrait;
 
 /**
  * @author Tom Byrne

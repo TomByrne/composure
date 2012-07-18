@@ -1,8 +1,8 @@
-package org.tbyrne.composure.utils;
-import org.tbyrne.composure.core.ComposeItem;
-import org.tbyrne.composure.injectors.AbstractInjector;
-import org.tbyrne.composure.injectors.Injector;
-import org.tbyrne.composure.traits.AbstractTrait;
+package composure.utils;
+import composure.core.ComposeItem;
+import composure.injectors.AbstractInjector;
+import composure.injectors.Injector;
+import composure.traits.AbstractTrait;
 import time.types.ds.ObjectHash;
 
 /**

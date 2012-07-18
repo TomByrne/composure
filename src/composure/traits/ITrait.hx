@@ -1,8 +1,8 @@
-package org.tbyrne.composure.traits;
+package composure.traits;
 
-import org.tbyrne.composure.injectors.IInjector;
-import org.tbyrne.composure.core.ComposeGroup;
-import org.tbyrne.composure.core.ComposeItem;
+import composure.injectors.IInjector;
+import composure.core.ComposeGroup;
+import composure.core.ComposeItem;
 
 
 /**
