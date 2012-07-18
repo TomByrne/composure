@@ -71,7 +71,6 @@ class InjectorMarrier
 				compareTrait(trait, traitInjector);
 			}
 		}
-		//testCheck();
 	}
 	public function removeInjector(traitInjector:IInjector):Void{
 		#if debug
@@ -99,28 +98,12 @@ class InjectorMarrier
 				_injectorLookup.remove(traitInjector);
 			}
 		}
-		//testCheck();
 	}
-
-	/*private function testCheck():Void
-	{
-		for each(var traitLookup:IndexedList<IInjector> in _traitLookup){
-		if(traitLookup.list.length>_traitInjectors.list.length){
-			Log.error("Holy Funk");
-		}
-		}
-		for each(var injectorLookup:IndexedList<Dynamic> in _injectorLookup){
-		if(injectorLookup.list.length>_traits.traits.list.length){
-			Log.error("Holy Funk");
-		}
-		}
-	}*/
 
 	private function onTraitAdded(trait:Dynamic):Void{
 		for(traitInjector in _traitInjectors.list){
 			compareTrait(trait, traitInjector);
 		}
-		//testCheck();
 	}
 
 	private function onTraitRemoved(trait:Dynamic):Void{
@@ -135,7 +118,6 @@ class InjectorMarrier
 			injectors.clear();
 			_traitLookup.remove(trait);
 		}
-		//testCheck();
 	}
 
 
@@ -160,6 +142,5 @@ class InjectorMarrier
 			
 			traitInjector.injectorAdded(trait, _item);
 		}
-		//testCheck();
 	}
 }

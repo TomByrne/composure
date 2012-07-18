@@ -18,6 +18,18 @@ class LogMsg
 		this.title = title;
 		this.id = id;
 	}
+	/**
+	 * Used by trace when Logging hasn't been setup.
+	 */
+	public function toString():String {
+		var ret:String = "";
+		if (types!=null && types.length>0) {
+			ret += "[" + types.join(", ") + "] ";
+		}
+		if (title!=null && title.length>0) ret += title + ": ";
+		if (message!=null && message.length>0) ret += message;
+		return ret;
+	}
 }
 
 

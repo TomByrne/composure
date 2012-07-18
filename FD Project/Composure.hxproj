@@ -4,13 +4,13 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="ClassIncluder.js" />
+    <movie path="testBin/HelloWorld.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="1" />
-    <movie minorVersion="0" />
-    <movie platform="JavaScript" />
+    <movie version="10" />
+    <movie minorVersion="1" />
+    <movie platform="Flash Player" />
     <movie background="#FFFFFF" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
@@ -23,7 +23,7 @@
   <build>
     <option directives="" />
     <option flashStrict="False" />
-    <option mainClass="org.tbyrne.composureTest.ClassIncluder" />
+    <option mainClass="org.tbyrne.composureTest.HelloWorld" />
     <option enabledebug="False" />
     <option additional="" />
   </build>
@@ -35,6 +35,10 @@
   <compileTargets>
     <!-- example: <compile path="..." /> -->
   </compileTargets>
+  <!-- Assets to embed into the output SWF -->
+  <library>
+    <!-- example: <asset path="..." id="..." update="..." glyphs="..." mode="..." place="..." sharepoint="..." /> -->
+  </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
     <!-- example: <hidden path="..." /> -->
@@ -46,7 +50,7 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Unknown" />
+    <option testMovie="Default" />
   </options>
   <!-- Plugin storage -->
   <storage />
