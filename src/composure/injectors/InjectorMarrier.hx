@@ -122,7 +122,7 @@ class InjectorMarrier
 
 
 	private function compareTrait(trait:Dynamic, traitInjector:IInjector):Void {
-		if((trait!=traitInjector.ownerTrait || traitInjector.acceptOwnerTrait) && traitInjector.isInterestedIn(trait)){
+		if((trait!=traitInjector.ownerTrait || traitInjector.acceptOwnerTrait) && traitInjector.isInterestedIn(_item, trait)){
 		
 			// add to injector lookup
 			var injectorList:IndexedList<Dynamic> = _injectorLookup.get(traitInjector);

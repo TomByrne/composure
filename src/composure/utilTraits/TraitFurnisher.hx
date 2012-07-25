@@ -1,4 +1,4 @@
-package composure.utils;
+package composure.utilTraits;
 import haxe.Log;
 import org.tbyrne.collections.IndexedList;
 import composure.injectors.Injector;

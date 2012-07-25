@@ -1,4 +1,4 @@
-package composure.utils;
+package composure.utilTraits;
 import composure.core.ComposeItem;
 import composure.injectors.AbstractInjector;
 import composure.injectors.Injector;

@@ -20,5 +20,5 @@ interface IInjector
 	function shouldDescend(item:ComposeItem):Bool;
 	function shouldAscend(item:ComposeItem):Bool;
 
-	function isInterestedIn(trait:Dynamic):Bool;
+	function isInterestedIn(item:ComposeItem, trait:Dynamic):Bool;
 }

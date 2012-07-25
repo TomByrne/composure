@@ -1,9 +1,10 @@
 package composureTest;
 
-import composure.utils.GenerationChecker;
-import composure.utils.TraitChecker;
-import composure.utils.TraitFurnisher;
-import composure.utils.TraitTypeLimiter;
+import composure.traitCheckers.GenerationChecker;
+import composure.traitCheckers.MatchProps;
+import composure.traitCheckers.TraitTypeChecker;
+import composure.utilTraits.TraitFurnisher;
+import composure.utilTraits.TraitTypeLimiter;
 import composure.injectors.PropInjector;
 import composure.macro.InjectorMacro;
 

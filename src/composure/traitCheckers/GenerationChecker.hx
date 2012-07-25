@@ -1,4 +1,5 @@
-package composure.utils;
+package composure.traitCheckers;
+import composure.traits.ITrait;
 import haxe.Log;
 import composure.core.ComposeGroup;
 import composure.core.ComposeItem;
@@ -13,7 +14,7 @@ class GenerationChecker
 {
 
 	/**
-	 * The createTraitCheck method can be used to limit the scope of a certain Injector
+	 * The create method can be used to limit the scope of a certain Injector
 	 * to a certain amount of generations. It generates a function which can be assigned
 	 * to either the stopDescendingAt or stopAscendingAt properties of the Injector class.<br/>
 	 * <br/>
@@ -21,7 +22,7 @@ class GenerationChecker
 	 * grandchild items) you could do something like this:
 	 * <pre><code>
 	 * var injector:Injector = new Injector(IPositionTrait, childPosAdded, childPosRemoved, false, true, false);
-	 * injector.stopDescendingAt = GenerationChecker.createTraitCheck(1,true,ItemType.injectorItem);
+	 * injector.stopDescendingAt = GenerationChecker.create(1,true,ItemType.injectorItem);
 	 * addInjector(injector);
 	 * </code></pre>
 	 * 
@@ -34,8 +35,8 @@ class GenerationChecker
 	 * @param relatedItem Which ComposeItem/ComposeGroup should the generations be relative to.
 	 * Defaults to the item which the trait is added.
 	 */
-	public static function createTraitCheck(maxGenerations:Int=1, descending:Bool=true, relatedItem:ItemType=null):ComposeItem->Injector->Bool {
-		return function(item:ComposeItem, from:Injector):Bool {
+	public static function create(maxGenerations:Int=1, descending:Bool=true, relatedItem:ItemType=null):ComposeItem->Dynamic->Injector->Bool {
+		return function(item:ComposeItem, trait:Dynamic, from:Injector):Bool {
 			var compare:ComposeItem;
 			switch(relatedItem) {
 				case specific(other): compare = other;

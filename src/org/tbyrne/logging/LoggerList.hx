@@ -33,7 +33,7 @@ class LoggerList
 	
 	
 	public static function install():Void {
-		Log.trace = trace;
+		Log.trace = LoggerList.trace;
 		if (fallbackLogger == null) {
 			#if flash
 			fallbackLogger = new FlashTraceLogger();
@@ -48,7 +48,15 @@ class LoggerList
 		if (Std.is(v, LogMsg)) {
 			log(v, infos);
 		}else if(_nativeTrace!=null){
-			_nativeTrace(v,infos);
+			#if debug
+				#if (flash9 || flash10)
+					untyped __global__["trace"](v);
+				#elseif flash
+					flash.Lib.trace(v);
+				#end
+			#else
+				_nativeTrace(v, infos);
+			#end
 		}
 	}
 

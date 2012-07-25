@@ -101,7 +101,7 @@ class AbstractInjector implements IInjector
 		// override me
 		return true;
 	}
-	public function isInterestedIn(trait:Dynamic):Bool {
+	public function isInterestedIn(item:ComposeItem, trait:Dynamic):Bool {
 		return Std.is(trait, interestedTraitType);
 	}
 }
