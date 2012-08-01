@@ -1,9 +1,9 @@
 package composure.injectors;
 
-import org.tbyrne.collections.IndexedList;
+import org.tbyrne.collections.UniqueList;
 import composure.core.ComposeItem;
 import composure.traits.TraitCollection;
-import time.types.ds.ObjectHash;
+import cmtc.ds.hash.ObjectHash;
 import haxe.Log;
 import org.tbyrne.logging.LogMsg;
 
@@ -29,26 +29,26 @@ class InjectorMarrier
 		}
 		return value;
 	}
-	public var traitInjectors(getTraitInjectors, null):IndexedList<IInjector>;
-	private function getTraitInjectors():IndexedList<IInjector>{
+	public var traitInjectors(getTraitInjectors, null):UniqueList<IInjector>;
+	private function getTraitInjectors():UniqueList<IInjector>{
 		return _traitInjectors;
 	}
 
 	private var _traits:TraitCollection;
-	private var _traitInjectors:IndexedList<IInjector>;
+	private var _traitInjectors:UniqueList<IInjector>;
 
 	// mapped injector > [traits]
-	private var _injectorLookup:ObjectHash<IInjector,IndexedList<Dynamic>>;
+	private var _injectorLookup:ObjectHash<IInjector,UniqueList<Dynamic>>;
 
 	// mapped trait > [injectors]
-	private var _traitLookup:ObjectHash < Dynamic, IndexedList<IInjector> > ;
+	private var _traitLookup:ObjectHash < Dynamic, UniqueList<IInjector> > ;
 
 	private var _item:ComposeItem;
 
 	public function new(item:ComposeItem, traits:TraitCollection) {
-		_traitInjectors = new IndexedList<IInjector>();
-		_injectorLookup = new ObjectHash < IInjector, IndexedList<Dynamic> > ();
-		_traitLookup = new ObjectHash < Dynamic, IndexedList<IInjector> > ();
+		_traitInjectors = new UniqueList<IInjector>();
+		_injectorLookup = new ObjectHash < IInjector, UniqueList<Dynamic> > ();
+		_traitLookup = new ObjectHash < Dynamic, UniqueList<IInjector> > ();
 		_item = item;
 		this.traits = traits;
 		
@@ -67,7 +67,7 @@ class InjectorMarrier
 		#end
 		if(_traitInjectors.add(traitInjector)){
 			
-			for(trait in _traits.traits.list){
+			for(trait in _traits.traits){
 				compareTrait(trait, traitInjector);
 			}
 		}
@@ -86,12 +86,12 @@ class InjectorMarrier
 		
 		if(_traitInjectors.remove(traitInjector)){
 		
-			var traits:IndexedList<Dynamic> = _injectorLookup.get(traitInjector);
+			var traits:UniqueList<Dynamic> = _injectorLookup.get(traitInjector);
 			if(traits!=null){
-				for(trait in traits.list){
+				for(trait in traits){
 					traitInjector.injectorRemoved(trait, _item);
 					
-					var traitLookup:IndexedList<IInjector> = _traitLookup.get(trait);
+					var traitLookup:UniqueList<IInjector> = _traitLookup.get(trait);
 					traitLookup.remove(traitInjector);
 				}
 				traits.clear();
@@ -101,18 +101,18 @@ class InjectorMarrier
 	}
 
 	private function onTraitAdded(trait:Dynamic):Void{
-		for(traitInjector in _traitInjectors.list){
+		for(traitInjector in _traitInjectors){
 			compareTrait(trait, traitInjector);
 		}
 	}
 
 	private function onTraitRemoved(trait:Dynamic):Void{
-		var injectors:IndexedList<IInjector> = _traitLookup.get(trait);
+		var injectors:UniqueList<IInjector> = _traitLookup.get(trait);
 		if(injectors!=null){
-			for(traitInjector in injectors.list){
+			for(traitInjector in injectors){
 				traitInjector.injectorRemoved(trait, _item);
 				
-				var injectorLookup:IndexedList<Dynamic> = _injectorLookup.get(traitInjector);
+				var injectorLookup:UniqueList<Dynamic> = _injectorLookup.get(traitInjector);
 				injectorLookup.remove(trait);
 			}
 			injectors.clear();
@@ -125,17 +125,17 @@ class InjectorMarrier
 		if((trait!=traitInjector.ownerTrait || traitInjector.acceptOwnerTrait) && traitInjector.isInterestedIn(_item, trait)){
 		
 			// add to injector lookup
-			var injectorList:IndexedList<Dynamic> = _injectorLookup.get(traitInjector);
+			var injectorList:UniqueList<Dynamic> = _injectorLookup.get(traitInjector);
 			if(injectorList==null){
-				injectorList = new IndexedList<Dynamic>();
+				injectorList = new UniqueList<Dynamic>();
 				_injectorLookup.set(traitInjector,injectorList);
 			}
 			injectorList.add(trait);
 			
 			// add to trait lookup
-			var traitList:IndexedList<IInjector> = _traitLookup.get(trait);
+			var traitList:UniqueList<IInjector> = _traitLookup.get(trait);
 			if(traitList==null){
-				traitList = new IndexedList<IInjector>();
+				traitList = new UniqueList<IInjector>();
 				_traitLookup.set(trait, traitList);
 			}
 			traitList.add(traitInjector);

@@ -1,12 +1,12 @@
 package composure.utilTraits;
 import haxe.Log;
-import org.tbyrne.collections.IndexedList;
+import org.tbyrne.collections.UniqueList;
 import composure.injectors.Injector;
 import composure.core.ComposeGroup;
 import composure.core.ComposeItem;
 import composure.traits.AbstractTrait;
 import org.tbyrne.logging.LogMsg;
-import time.types.ds.ObjectHash;
+import cmtc.ds.hash.ObjectHash;
 
 /**
  * The TraitFurnisher class is used to add traits to an item in response
@@ -80,7 +80,7 @@ class TraitFurnisher extends AbstractTrait
 		adoptTrait = value;
 		if(_foundTraits!=null){
 			if (value) {
-				for (trait in _foundTraits.list) {
+				for (trait in _foundTraits) {
 					var item = getItem(trait);
 					var origItem = _originalItems.get(trait);
 					if (item != origItem) {
@@ -89,7 +89,7 @@ class TraitFurnisher extends AbstractTrait
 					}
 				}
 			}else {
-				for (trait in _foundTraits.list) {
+				for (trait in _foundTraits) {
 					var item = getItem(trait);
 					var origItem = _originalItems.get(trait);
 					if (item != origItem) {
@@ -104,10 +104,10 @@ class TraitFurnisher extends AbstractTrait
 	
 	private var _addType:AddType;
 	private var _injector:Injector;
-	private var _traits:IndexedList<Dynamic>;
-	private var _traitTypes:IndexedList<Dynamic>;
-	private var _traitFactories:IndexedList<Void->Dynamic>;
-	private var _foundTraits:IndexedList<Dynamic>;
+	private var _traits:UniqueList<Dynamic>;
+	private var _traitTypes:UniqueList<Dynamic>;
+	private var _traitFactories:UniqueList<Void->Dynamic>;
+	private var _foundTraits:UniqueList<Dynamic>;
 	private var _addedTraits:ObjectHash<Dynamic,Array<Dynamic>>;
 	private var _traitToItems:ObjectHash<Dynamic,ComposeItem>;
 	private var _originalItems:ObjectHash<Dynamic,ComposeItem>;
@@ -123,8 +123,8 @@ class TraitFurnisher extends AbstractTrait
 		
 		_addedTraits = new ObjectHash < Dynamic, Array<Dynamic> > ();
 		
-		if(traitTypes!=null)_traitTypes = new IndexedList<Dynamic>(traitTypes);
-		if(traitFactories!=null)_traitFactories = new IndexedList<Void->Dynamic>(traitFactories);
+		if(traitTypes!=null)_traitTypes = new UniqueList<Dynamic>(traitTypes);
+		if(traitFactories!=null)_traitFactories = new UniqueList<Void->Dynamic>(traitFactories);
 		
 		this.adoptTrait = adoptTrait;
 		this.searchSiblings = searchSiblings;
@@ -140,7 +140,7 @@ class TraitFurnisher extends AbstractTrait
 		
 		
 		if (_foundTraits == null) {
-			_foundTraits = new IndexedList<Dynamic>();
+			_foundTraits = new UniqueList<Dynamic>();
 			_originalItems = new ObjectHash<Dynamic,ComposeItem>();
 		}
 		_foundTraits.add(trait);
@@ -154,20 +154,20 @@ class TraitFurnisher extends AbstractTrait
 		
 		var traitsAdded:Array<Dynamic> = [];
 		if (_traits != null) {
-			for (otherTrait in _traits.list) {
+			for (otherTrait in _traits) {
 				item.addTrait(otherTrait);
 				traitsAdded.push(otherTrait);
 			}
 		}
 		if (_traitTypes != null) {
-			for (traitType in _traitTypes.list) {
+			for (traitType in _traitTypes) {
 				var otherTrait:Dynamic = Type.createInstance(traitType,[]);
 				item.addTrait(otherTrait);
 				traitsAdded.push(otherTrait);
 			}
 		}
 		if (_traitFactories != null) {
-			for (traitFactory in _traitFactories.list) {
+			for (traitFactory in _traitFactories) {
 				var otherTrait:Dynamic = traitFactory();
 				item.addTrait(otherTrait);
 				traitsAdded.push(otherTrait);
@@ -203,12 +203,12 @@ class TraitFurnisher extends AbstractTrait
 	
 	public function addTrait(trait:Dynamic):Void {
 		if (_traits == null) {
-			_traits = new IndexedList<Dynamic>();
+			_traits = new UniqueList<Dynamic>();
 		}
 		_traits.add(trait);
 		
 		if(_foundTraits!=null){
-			for (foundTrait in _foundTraits.list) {
+			for (foundTrait in _foundTraits) {
 				getItem(foundTrait).addTrait(trait);
 				var traitsAdded:Array<Dynamic> = _addedTraits.get(foundTrait);
 				traitsAdded.push(trait);
@@ -218,12 +218,12 @@ class TraitFurnisher extends AbstractTrait
 	
 	public function addTraitType(traitType:Class<Dynamic>):Void {
 		if (_traitTypes == null) {
-			_traitTypes = new IndexedList<Dynamic>();
+			_traitTypes = new UniqueList<Dynamic>();
 		}
 		_traitTypes.add(traitType);
 		
 		if(_foundTraits!=null){
-			for (trait in _foundTraits.list) {
+			for (trait in _foundTraits) {
 				var otherTrait:Dynamic = Type.createInstance(traitType,[]);
 				getItem(trait).addTrait(otherTrait);
 				var traitsAdded:Array<Dynamic> = _addedTraits.get(trait);
@@ -234,12 +234,12 @@ class TraitFurnisher extends AbstractTrait
 	
 	public function addTraitFactory(traitFactory:Void->Dynamic):Void {
 		if (_traitFactories == null) {
-			_traitFactories = new IndexedList<Void->Dynamic>();
+			_traitFactories = new UniqueList<Void->Dynamic>();
 		}
 		_traitFactories.add(traitFactory);
 		
 		if(_foundTraits!=null){
-			for (trait in _foundTraits.list) {
+			for (trait in _foundTraits) {
 				var otherTrait:Dynamic = traitFactory();
 				getItem(trait).addTrait(otherTrait);
 				var traitsAdded:Array<Dynamic> = _addedTraits.get(trait);

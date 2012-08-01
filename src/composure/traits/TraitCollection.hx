@@ -3,13 +3,11 @@ package composure.traits;
 import haxe.Log;
 import org.tbyrne.logging.LogMsg;
 
-import org.tbyrne.collections.IndexedList;
+import org.tbyrne.collections.UniqueList;
 import composure.core.ComposeItem;
 
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
-
-import time.types.ds.ObjectHash;
 
 /**
  * The TraitCollection holds a collection of traits and has the
@@ -36,13 +34,13 @@ class TraitCollection
 	private var _traitAdded:Signaler<Dynamic>;
 	private var _traitTypeCache:Hash < TraitTypeCache<Dynamic> > ;
 	
-	public var traits(default, null):IndexedList<Dynamic>;
+	public var traits(default, null):UniqueList<Dynamic>;
 
 
 	public function new()
 	{
 		_traitTypeCache = new Hash< TraitTypeCache<Dynamic>>();
-		traits = new IndexedList<Dynamic>();
+		traits = new UniqueList<Dynamic>();
 	}
 
 	public function getTrait<TraitType>(TraitType:Class<TraitType>):TraitType{
@@ -59,7 +57,7 @@ class TraitCollection
 			}
 		}
 	}
-	public function getTraits<TraitType>(TraitType:Class<TraitType> = null):Array<TraitType> {
+	public function getTraits<TraitType>(TraitType:Class<TraitType> = null):Iterable<TraitType> {
 		var cache:TraitTypeCache<TraitType> = validateCache(TraitType);
 		if(cache!=null){
 			return cache.getTraits;
@@ -89,15 +87,15 @@ class TraitCollection
 			invalid = traits;
 		}
 		if(!cache.methodCachesSafe){
-			for(trait in invalid.list){
+			for(trait in invalid){
 				if(Std.is(trait, matchType)){
 					untyped cache.matched.add(trait);
 				}
 			}
 			cache.invalid.clear();
 			cache.methodCachesSafe = true;
-			cache.getTraits = cache.matched.list;
-			cache.getTrait = cache.getTraits[0];
+			cache.getTraits = cache.matched;
+			cache.getTrait = cache.matched.first();
 		}
 		return cache;
 	}
@@ -120,7 +118,7 @@ class TraitCollection
 		var invalid;
 		
 		if(cache!=null){
-			for(trait in cache.matched.list){
+			for(trait in cache.matched){
 				realParams[1] = trait;
 				Reflect.callMethod(thisObj, func, realParams);
 			}
@@ -134,7 +132,7 @@ class TraitCollection
 		}
 		if(matchingType){
 			if(cache!=null && cache.methodCachesSafe==false){
-				for(trait in invalid.list){
+				for(trait in invalid){
 					if(Std.is(trait, matchType)){
 						realParams[1] = trait;
 						if (matchingType) untyped cache.matched.add(trait);
@@ -147,11 +145,11 @@ class TraitCollection
 				}
 				cache.invalid.clear();
 				cache.methodCachesSafe = true;
-				cache.getTraits = cache.matched.list;
-				cache.getTrait = cache.getTraits[0];
+				cache.getTraits = cache.matched;
+				cache.getTrait = cache.matched.first();
 			}
 		}else{
-			for(trait in invalid.list){
+			for(trait in invalid){
 				realParams[1] = trait;
 				if (collectReturns != null){
 					collectReturns.push(Reflect.callMethod(thisObj, func, realParams));
@@ -188,13 +186,13 @@ private class TraitTypeCache<TraitType>
 {
 	public var methodCachesSafe:Bool;
 	public var getTrait:TraitType;
-	public var getTraits:Array<TraitType>;
+	public var getTraits:Iterable<TraitType>;
 
-	public var matched:IndexedList<TraitType>;
-	public var invalid:IndexedList<Dynamic>;
+	public var matched:UniqueList<TraitType>;
+	public var invalid:UniqueList<Dynamic>;
 	
 	public function new() {
-		matched = new IndexedList<TraitType>();
-		invalid = new IndexedList<Dynamic>();
+		matched = new UniqueList<TraitType>();
+		invalid = new UniqueList<Dynamic>();
 	}
 }

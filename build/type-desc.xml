@@ -1471,7 +1471,7 @@
 		<_traitCollection><c path="composure.traits.TraitCollection"/></_traitCollection>
 		<_siblingMarrier><c path="composure.injectors.InjectorMarrier"/></_siblingMarrier>
 		<_parentMarrier><c path="composure.injectors.InjectorMarrier"/></_parentMarrier>
-		<_ascInjectors><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></_ascInjectors>
+		<_ascInjectors><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></_ascInjectors>
 		<_traitToCast><c path="time.types.ds.ObjectHash">
 	<d/>
 	<c path="composure.traits.ITrait"/>
@@ -1627,13 +1627,13 @@
 		<children public="1" get="get_children" set="null"><c path="Array"><c path="composure.core.ComposeItem"/></c></children>
 		<get_children set="method" line="23"><f a=""><c path="Array"><c path="composure.core.ComposeItem"/></c></f></get_children>
 		<_descendantTraits><c path="composure.traits.TraitCollection"/></_descendantTraits>
-		<_children><c path="org.tbyrne.collections.IndexedList"><c path="composure.core.ComposeItem"/></c></_children>
-		<_childAscInjectors><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></_childAscInjectors>
-		<_ignoredChildAscInjectors><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></_ignoredChildAscInjectors>
+		<_children><c path="org.tbyrne.collections.UniqueList"><c path="composure.core.ComposeItem"/></c></_children>
+		<_childAscInjectors><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></_childAscInjectors>
+		<_ignoredChildAscInjectors><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></_ignoredChildAscInjectors>
 		<_childAscendingMarrier><c path="composure.injectors.InjectorMarrier"/></_childAscendingMarrier>
-		<_descInjectors><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></_descInjectors>
-		<_parentDescInjectors><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></_parentDescInjectors>
-		<_ignoredParentDescInjectors><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></_ignoredParentDescInjectors>
+		<_descInjectors><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></_descInjectors>
+		<_parentDescInjectors><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></_parentDescInjectors>
+		<_ignoredParentDescInjectors><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></_ignoredParentDescInjectors>
 		<setRoot set="method" line="48" override="1"><f a="game">
 	<c path="composure.core.ComposeRoot"/>
 	<e path="Void"/>
@@ -1902,7 +1902,7 @@
 		<ownerTrait public="1"><d/></ownerTrait>
 		<passThroughInjector public="1"><e path="Bool"/></passThroughInjector>
 		<passThroughItem public="1"><e path="Bool"/></passThroughItem>
-		<_addedTraits><c path="org.tbyrne.collections.IndexedList"><d/></c></_addedTraits>
+		<_addedTraits><c path="org.tbyrne.collections.UniqueList"><d/></c></_addedTraits>
 		<injectorAdded public="1" set="method" line="44"><f a="trait:item">
 	<d/>
 	<c path="composure.core.ComposeItem"/>
@@ -1997,17 +1997,17 @@
 	<c path="composure.traits.TraitCollection"/>
 	<c path="composure.traits.TraitCollection"/>
 </f></set_traits>
-		<traitInjectors public="1" get="getTraitInjectors" set="null"><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></traitInjectors>
-		<getTraitInjectors set="method" line="33"><f a=""><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></f></getTraitInjectors>
+		<traitInjectors public="1" get="getTraitInjectors" set="null"><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></traitInjectors>
+		<getTraitInjectors set="method" line="33"><f a=""><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></f></getTraitInjectors>
 		<_traits><c path="composure.traits.TraitCollection"/></_traits>
-		<_traitInjectors><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></_traitInjectors>
+		<_traitInjectors><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></_traitInjectors>
 		<_injectorLookup><c path="time.types.ds.ObjectHash">
 	<c path="composure.injectors.IInjector"/>
-	<c path="org.tbyrne.collections.IndexedList"><d/></c>
+	<c path="org.tbyrne.collections.UniqueList"><d/></c>
 </c></_injectorLookup>
 		<_traitLookup><c path="time.types.ds.ObjectHash">
 	<d/>
-	<c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c>
+	<c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c>
 </c></_traitLookup>
 		<_item><c path="composure.core.ComposeItem"/></_item>
 		<addInjector public="1" set="method" line="57"><f a="traitInjector">
@@ -2240,9 +2240,9 @@
 	<c path="composure.core.ComposeItem"/>
 	<c path="composure.core.ComposeItem"/>
 </f></set_item>
-		<_injectors><c path="org.tbyrne.collections.IndexedList"><c path="composure.injectors.IInjector"/></c></_injectors>
-		<_siblingTraits><c path="org.tbyrne.collections.IndexedList"><d/></c></_siblingTraits>
-		<_childItems><c path="org.tbyrne.collections.IndexedList"><c path="composure.core.ComposeItem"/></c></_childItems>
+		<_injectors><c path="org.tbyrne.collections.UniqueList"><c path="composure.injectors.IInjector"/></c></_injectors>
+		<_siblingTraits><c path="org.tbyrne.collections.UniqueList"><d/></c></_siblingTraits>
+		<_childItems><c path="org.tbyrne.collections.UniqueList"><c path="composure.core.ComposeItem"/></c></_childItems>
 		<_groupOnly>
 			<e path="Bool"/>
 			<haxe_doc>
@@ -2340,7 +2340,7 @@
 		<_traitRemoved><c path="hsl.haxe.Signaler"><d/></c></_traitRemoved>
 		<_traitAdded><c path="hsl.haxe.Signaler"><d/></c></_traitAdded>
 		<_traitTypeCache><c path="Hash"><c path="composure.traits._TraitCollection.TraitTypeCache"><d/></c></c></_traitTypeCache>
-		<traits public="1" set="null"><c path="org.tbyrne.collections.IndexedList"><d/></c></traits>
+		<traits public="1" set="null"><c path="org.tbyrne.collections.UniqueList"><d/></c></traits>
 		<getTrait public="1" params="TraitType" set="method" line="48"><f a="TraitType">
 	<c path="Class"><c path="getTrait.TraitType"/></c>
 	<c path="getTrait.TraitType"/>
@@ -2382,8 +2382,8 @@
 		<methodCachesSafe public="1"><e path="Bool"/></methodCachesSafe>
 		<getTrait public="1"><c path="composure.traits._TraitCollection.TraitTypeCache.TraitType"/></getTrait>
 		<getTraits public="1"><c path="Array"><c path="composure.traits._TraitCollection.TraitTypeCache.TraitType"/></c></getTraits>
-		<matched public="1"><c path="org.tbyrne.collections.IndexedList"><c path="composure.traits._TraitCollection.TraitTypeCache.TraitType"/></c></matched>
-		<invalid public="1"><c path="org.tbyrne.collections.IndexedList"><d/></c></invalid>
+		<matched public="1"><c path="org.tbyrne.collections.UniqueList"><c path="composure.traits._TraitCollection.TraitTypeCache.TraitType"/></c></matched>
+		<invalid public="1"><c path="org.tbyrne.collections.UniqueList"><d/></c></invalid>
 		<new public="1" set="method" line="196"><f a=""><e path="Void"/></f></new>
 	</class>
 	<class path="composure.utilTraits.TraitFurnisher" params="" file="../src/composure/utilTraits/TraitFurnisher.hx">
@@ -2415,10 +2415,10 @@
 </f></set_adoptTrait>
 		<_addType><e path="composure.utilTraits.AddType"/></_addType>
 		<_injector><c path="composure.injectors.Injector"/></_injector>
-		<_traits><c path="org.tbyrne.collections.IndexedList"><d/></c></_traits>
-		<_traitTypes><c path="org.tbyrne.collections.IndexedList"><d/></c></_traitTypes>
-		<_traitFactories><c path="org.tbyrne.collections.IndexedList"><f a=""><d/></f></c></_traitFactories>
-		<_foundTraits><c path="org.tbyrne.collections.IndexedList"><d/></c></_foundTraits>
+		<_traits><c path="org.tbyrne.collections.UniqueList"><d/></c></_traits>
+		<_traitTypes><c path="org.tbyrne.collections.UniqueList"><d/></c></_traitTypes>
+		<_traitFactories><c path="org.tbyrne.collections.UniqueList"><f a=""><d/></f></c></_traitFactories>
+		<_foundTraits><c path="org.tbyrne.collections.UniqueList"><d/></c></_foundTraits>
 		<_addedTraits><c path="time.types.ds.ObjectHash">
 	<d/>
 	<c path="Array"><d/></c>
@@ -4219,32 +4219,32 @@
  * </pre>
  ]]></haxe_doc>
 	</typedef>
-	<class path="org.tbyrne.collections.IndexedList" params="T" file="../src/org/tbyrne/collections/IndexedList.hx">
+	<class path="org.tbyrne.collections.UniqueList" params="T" file="../src/org/tbyrne/collections/UniqueList.hx">
 		<_indices><c path="time.types.ds.ObjectHash">
-	<c path="org.tbyrne.collections.IndexedList.T"/>
+	<c path="org.tbyrne.collections.UniqueList.T"/>
 	<c path="Int"/>
 </c></_indices>
-		<list public="1" get="getlist" set="setlist"><c path="Array"><c path="org.tbyrne.collections.IndexedList.T"/></c></list>
-		<getlist set="method" line="16"><f a=""><c path="Array"><c path="org.tbyrne.collections.IndexedList.T"/></c></f></getlist>
+		<list public="1" get="getlist" set="setlist"><c path="Array"><c path="org.tbyrne.collections.UniqueList.T"/></c></list>
+		<getlist set="method" line="16"><f a=""><c path="Array"><c path="org.tbyrne.collections.UniqueList.T"/></c></f></getlist>
 		<setlist set="method" line="23"><f a="value">
-	<c path="Array"><c path="org.tbyrne.collections.IndexedList.T"/></c>
-	<c path="Array"><c path="org.tbyrne.collections.IndexedList.T"/></c>
+	<c path="Array"><c path="org.tbyrne.collections.UniqueList.T"/></c>
+	<c path="Array"><c path="org.tbyrne.collections.UniqueList.T"/></c>
 </f></setlist>
 		<add public="1" set="method" line="44"><f a="value">
-	<c path="org.tbyrne.collections.IndexedList.T"/>
+	<c path="org.tbyrne.collections.UniqueList.T"/>
 	<e path="Bool"/>
 </f></add>
 		<remove public="1" set="method" line="54"><f a="value">
-	<c path="org.tbyrne.collections.IndexedList.T"/>
+	<c path="org.tbyrne.collections.UniqueList.T"/>
 	<e path="Bool"/>
 </f></remove>
 		<containsItem public="1" set="method" line="68"><f a="value">
-	<c path="org.tbyrne.collections.IndexedList.T"/>
+	<c path="org.tbyrne.collections.UniqueList.T"/>
 	<e path="Bool"/>
 </f></containsItem>
 		<clear public="1" set="method" line="71"><f a=""><e path="Void"/></f></clear>
 		<new public="1" set="method" line="8"><f a="?list">
-	<c path="Array"><c path="org.tbyrne.collections.IndexedList.T"/></c>
+	<c path="Array"><c path="org.tbyrne.collections.UniqueList.T"/></c>
 	<e path="Void"/>
 </f></new>
 	</class>

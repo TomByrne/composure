@@ -35,6 +35,6 @@ class Injector extends AbstractInjector
 	override public function isInterestedIn(item:ComposeItem, trait:Dynamic):Bool {
 		return  	(super.isInterestedIn(item, trait) &&
 					(matchTrait == null || matchTrait(item, trait, this)) &&
-					(maxMatches==-1 || _addedTraits.list.length<maxMatches));
+					(maxMatches==-1 || _addedTraits.length<maxMatches));
 	}
 }

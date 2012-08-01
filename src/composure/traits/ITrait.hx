@@ -32,5 +32,5 @@ interface ITrait
 	 * application.
 	 * @return A list of IInjectors, each one describing which traits it is concerned with.
 	 */
-	public function getInjectors():Array<IInjector>;
+	public function getInjectors():Iterable<IInjector>;
 }

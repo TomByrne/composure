@@ -1,7 +1,7 @@
 package composure.traits;
 
 import haxe.Log;
-import org.tbyrne.collections.IndexedList;
+import org.tbyrne.collections.UniqueList;
 import composure.injectors.IInjector;
 import composure.core.ComposeGroup;
 import composure.core.ComposeItem;
@@ -40,12 +40,12 @@ class AbstractTrait implements ITrait
 		if(item!=value){
 			if (item != null) {
 				if(_siblingTraits!=null){
-					for (trait in _siblingTraits.list) {
+					for (trait in _siblingTraits) {
 						item.removeTrait(trait);
 					}
 				}
 				if(group!=null && _childItems!=null){
-					for (trait in _childItems.list) {
+					for (trait in _childItems) {
 						group.removeItem(trait);
 					}
 				}
@@ -57,19 +57,19 @@ class AbstractTrait implements ITrait
 				if (Std.is(value, ComposeGroup)){
 					group = cast(value, ComposeGroup);
 					if(_childItems!=null){
-						for (child in _childItems.list) {
+						for (child in _childItems) {
 							group.addItem(child);
 						}
 					}
 				}
 				#if debug
-				if(group==null && (_groupOnly || (_childItems!=null && _childItems.list.length>0))){
+				if(group==null && (_groupOnly || (_childItems!=null && _childItems.length>0))){
 					Log.trace(new LogMsg("Group only Trait added to non-group",LogType.devWarning));
 				}
 				#end
 				onItemAdd();
 				if(_siblingTraits!=null){
-					for (trait in _siblingTraits.list) {
+					for (trait in _siblingTraits) {
 						item.addTrait(trait);
 					}
 				}
@@ -79,9 +79,9 @@ class AbstractTrait implements ITrait
 	}
 
 
-	private var _injectors:IndexedList<IInjector>;
-	private var _siblingTraits:IndexedList<Dynamic>;
-	private var _childItems:IndexedList<ComposeItem>;
+	private var _injectors:UniqueList<IInjector>;
+	private var _siblingTraits:UniqueList<Dynamic>;
+	private var _childItems:UniqueList<ComposeItem>;
 
 	/**
 	 * Set to true to force Trait to only be added for groups.
@@ -113,13 +113,13 @@ class AbstractTrait implements ITrait
 	 * application.
 	 * @return A list of IInjectors, each one describing which traits it is concerned with.
 	 */
-	public function getInjectors():Array<IInjector>{
-		if(_injectors==null)_injectors = new IndexedList<IInjector>();
-		return _injectors.list;
+	public function getInjectors():Iterable<IInjector>{
+		if(_injectors==null)_injectors = new UniqueList<IInjector>();
+		return _injectors;
 	}
 
 	private function addSiblingTrait(trait:Dynamic):Void{
-		if(_siblingTraits==null)_siblingTraits = new IndexedList<Dynamic>();
+		if(_siblingTraits==null)_siblingTraits = new UniqueList<Dynamic>();
 		if(_siblingTraits.add(trait)){
 			if (item != null) {
 				item.addTrait(trait);
@@ -146,7 +146,7 @@ class AbstractTrait implements ITrait
 	}
 
 	private function addChildItem(child:ComposeItem):Void{
-		if(_childItems==null)_childItems = new IndexedList<ComposeItem>();
+		if(_childItems==null)_childItems = new UniqueList<ComposeItem>();
 		if(_childItems.add(child)){
 			if (group != null) {
 				group.addItem(child);
@@ -178,7 +178,7 @@ class AbstractTrait implements ITrait
 	 * @param injector The injector to add to this trait.
 	 */
 	public function addInjector(injector:IInjector):Void{
-		if(_injectors==null)_injectors = new IndexedList<IInjector>();
+		if(_injectors==null)_injectors = new UniqueList<IInjector>();
 		if(_injectors.add(injector)){
 			injector.ownerTrait = _ownerTrait;
 		}#if debug else{

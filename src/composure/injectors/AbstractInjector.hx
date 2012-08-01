@@ -1,6 +1,6 @@
 package composure.injectors;
 
-import org.tbyrne.collections.IndexedList;
+import org.tbyrne.collections.UniqueList;
 import composure.core.ComposeItem;
 import composure.traits.ITrait;
 
@@ -24,7 +24,7 @@ class AbstractInjector implements IInjector
 	public var passThroughInjector:Bool;
 	public var passThroughItem:Bool;
 
-	private var _addedTraits:IndexedList<Dynamic>;
+	private var _addedTraits:UniqueList<Dynamic>;
 
 	public function new(interestedTraitType:Class<Dynamic>, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool=true, descendants:Bool=false, ascendants:Bool=false){
 		this.addHandler = addHandler;
@@ -34,7 +34,7 @@ class AbstractInjector implements IInjector
 		this.descendants = descendants;
 		this.ascendants = ascendants;
 		this.interestedTraitType = interestedTraitType;
-		_addedTraits = new IndexedList<Dynamic>();
+		_addedTraits = new UniqueList<Dynamic>();
 		passThroughInjector = false;
 		passThroughItem = false;
 	}

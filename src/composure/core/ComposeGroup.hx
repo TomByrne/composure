@@ -1,7 +1,7 @@
 package composure.core;
 
 import haxe.Log;
-import org.tbyrne.collections.IndexedList;
+import org.tbyrne.collections.UniqueList;
 import composure.injectors.InjectorMarrier;
 import composure.injectors.IInjector;
 import composure.traits.TraitCollection;
@@ -19,35 +19,35 @@ import org.tbyrne.logging.LogMsg;
  */
 class ComposeGroup extends ComposeItem
 {
-	public var children(get_children, null):Array<ComposeItem>;
-	private function get_children():Array<ComposeItem> {
-		return _children.list;
+	public var children(get_children, null):Iterable<ComposeItem>;
+	private function get_children():Iterable<ComposeItem> {
+		return _children;
 	}
 
 	private var _descendantTraits:TraitCollection;
-	private var _children:IndexedList<ComposeItem>;
+	private var _children:UniqueList<ComposeItem>;
 	
-	private var _childAscInjectors:IndexedList<IInjector>;
-	private var _ignoredChildAscInjectors:IndexedList<IInjector>;
+	private var _childAscInjectors:UniqueList<IInjector>;
+	private var _ignoredChildAscInjectors:UniqueList<IInjector>;
 	private var _childAscendingMarrier:InjectorMarrier;
 	
-	private var _descInjectors:IndexedList<IInjector>;
-	private var _parentDescInjectors:IndexedList<IInjector>;
-	private var _ignoredParentDescInjectors:IndexedList<IInjector>;
+	private var _descInjectors:UniqueList<IInjector>;
+	private var _parentDescInjectors:UniqueList<IInjector>;
+	private var _ignoredParentDescInjectors:UniqueList<IInjector>;
 
 	/**
 	 * @param	initTraits		A list of traits to add to this ComposeItem initially.
 	 */
 	public function new(initTraits:Array<Dynamic> = null) {
 		_descendantTraits = new TraitCollection();
-		_children = new IndexedList<ComposeItem>();
-		_descInjectors = new IndexedList<IInjector>();
+		_children = new UniqueList<ComposeItem>();
+		_descInjectors = new UniqueList<IInjector>();
 		super(initTraits);
 		_childAscendingMarrier = new InjectorMarrier(this,_traitCollection);
 	}
 	override private function setRoot(game:ComposeRoot):Void{
 		super.setRoot(game);
-		for(child in _children.list){
+		for(child in _children){
 			child.setRoot(game);
 		}
 	}
@@ -71,11 +71,11 @@ class ComposeGroup extends ComposeItem
 		
 		item.parentItem = this;
 		
-		for(traitInjector in _descInjectors.list){
+		for(traitInjector in _descInjectors){
 			item.addParentInjector(traitInjector);
 		}
 		if(_parentDescInjectors!=null){
-			for(traitInjector in _parentDescInjectors.list){
+			for(traitInjector in _parentDescInjectors){
 				item.addParentInjector(traitInjector);
 			}
 		}
@@ -100,11 +100,11 @@ class ComposeGroup extends ComposeItem
 		_children.remove(item);
 		item.parentItem = null;
 		
-		for(traitInjector in _descInjectors.list){
+		for(traitInjector in _descInjectors){
 			item.removeParentInjector(traitInjector);
 		}
 		if(_parentDescInjectors!=null){
-			for(traitInjector in _parentDescInjectors.list){
+			for(traitInjector in _parentDescInjectors){
 				item.removeParentInjector(traitInjector);
 			}
 		}
@@ -115,8 +115,8 @@ class ComposeGroup extends ComposeItem
 	 * Removes all children from this ComposeGroup.
 	 */
 	public function removeAllItem():Void{
-		while( _children.list.length>0 ){
-			removeItem(_children.list[0]);
+		while( _children.length>0 ){
+			removeItem(_children.first());
 		}
 	}
 	/**
@@ -172,7 +172,7 @@ class ComposeGroup extends ComposeItem
 		super.addTraitInjector(injector);
 		if(injector.descendants){
 			_descInjectors.add(injector);
-			for(child in _children.list){
+			for(child in _children){
 				child.addParentInjector(injector);
 			}
 		}
@@ -181,7 +181,7 @@ class ComposeGroup extends ComposeItem
 		super.removeTraitInjector(injector);
 		if(_descInjectors.containsItem(injector)){
 			_descInjectors.remove(injector);
-			for(child in _children.list){
+			for(child in _children){
 				child.removeParentInjector(injector);
 			}
 		}
@@ -199,7 +199,7 @@ class ComposeGroup extends ComposeItem
 	 * @param	TraitType		The type which the returned trait must implement.
 	 * @return		A trait object, returns null if no matching trait is found.
 	 */
-	public function getDescTraits<TraitType>(TraitType:Class<TraitType>=null):Array<TraitType>{
+	public function getDescTraits<TraitType>(TraitType:Class<TraitType>=null):Iterable<TraitType>{
 		return _descendantTraits.getTraits(TraitType);
 	}
 	/**
@@ -218,22 +218,22 @@ class ComposeGroup extends ComposeItem
 	}
 	override private function onParentAdd():Void{
 		super.onParentAdd();
-		for(trait in _descendantTraits.traits.list){
+		for(trait in _descendantTraits.traits){
 			_parentItem.addChildTrait(trait);
 		}
 		if(_childAscInjectors!=null){
-			for(injector in _childAscInjectors.list){
+			for(injector in _childAscInjectors){
 				_parentItem.addAscendingInjector(injector);
 			}
 		}
 	}
 	override private function onParentRemove():Void{
 		super.onParentRemove();
-		for(trait in _descendantTraits.traits.list){
+		for(trait in _descendantTraits.traits){
 			_parentItem.removeChildTrait(trait);
 		}
 		if(_childAscInjectors!=null){
-			for(injector in _childAscInjectors.list){
+			for(injector in _childAscInjectors){
 				_parentItem.removeAscendingInjector(injector);
 			}
 		}
@@ -246,12 +246,12 @@ class ComposeGroup extends ComposeItem
 		if(injector.shouldAscend(this)){
 			_addAscendingInjector(injector);
 		}else {
-			if(_ignoredChildAscInjectors==null)_ignoredChildAscInjectors = new IndexedList<IInjector>();
+			if(_ignoredChildAscInjectors==null)_ignoredChildAscInjectors = new UniqueList<IInjector>();
 			_ignoredChildAscInjectors.add(injector);
 		}
 	}
 	private function _addAscendingInjector(injector:IInjector):Void {
-		if(_childAscInjectors==null)_childAscInjectors = new IndexedList();
+		if(_childAscInjectors==null)_childAscInjectors = new UniqueList();
 		_childAscInjectors.add(injector);
 		if (_parentItem != null)_parentItem.addAscendingInjector(injector);
 	}
@@ -276,7 +276,7 @@ class ComposeGroup extends ComposeItem
 		if(injector.shouldDescend(this)){
 			addDescParentInjector(injector);
 		}else{
-			if(_ignoredParentDescInjectors==null)_ignoredParentDescInjectors = new IndexedList<IInjector>();
+			if(_ignoredParentDescInjectors==null)_ignoredParentDescInjectors = new UniqueList<IInjector>();
 			_ignoredParentDescInjectors.add(injector);
 		}
 	}
@@ -292,71 +292,52 @@ class ComposeGroup extends ComposeItem
 	}
 
 	private function checkForNewlyIgnoredInjectors():Void {
-		var	i:Int = 0;
-		if(_parentDescInjectors!=null){
-			while(i<_parentDescInjectors.list.length){
-				var injector:IInjector = _parentDescInjectors.list[i];
-				if(!injector.shouldDescend(this)){
-					removeDescParentInjector(injector);
-					if(_ignoredParentDescInjectors==null)_ignoredParentDescInjectors = new IndexedList<IInjector>();
-					_ignoredParentDescInjectors.add(injector);
-				}else{
-					++i;
-				}
+		if (_parentDescInjectors != null) {
+			
+			var shouldNotDesc:List<IInjector> = Lambda.filter(_parentDescInjectors, function(inj:IInjector):Bool { return !inj.shouldDescend(this); } );
+			for (inj in shouldNotDesc) {
+				removeDescParentInjector(inj);
+				if(_ignoredParentDescInjectors==null)_ignoredParentDescInjectors = new UniqueList<IInjector>();
+				_ignoredParentDescInjectors.add(inj);
 			}
 		}
 		if(_childAscInjectors!=null){
-			i = 0;
-			while(i<_childAscInjectors.list.length){
-				var injector:IInjector = _childAscInjectors.list[i];
-				if(!injector.shouldAscend(this)){
-					_removeAscendingInjector(injector);	
-					if(_ignoredChildAscInjectors==null)_ignoredChildAscInjectors = new IndexedList<IInjector>();
-					_ignoredChildAscInjectors.add(injector);
-				}else{
-					++i;
-				}
+			var shouldNotAsc:List<IInjector> = Lambda.filter(_childAscInjectors, function(inj:IInjector):Bool { return !inj.shouldAscend(this); } );
+			for (inj in shouldNotAsc) {
+				_removeAscendingInjector(inj);	
+				if(_ignoredChildAscInjectors==null)_ignoredChildAscInjectors = new UniqueList<IInjector>();
+				_ignoredChildAscInjectors.add(inj);
 			}
 		}
 	}
 	private function checkForNewlyUnignoredInjectors():Void{
-		var	i:Int = 0;
-		if(_ignoredParentDescInjectors!=null){
-			while(i<_ignoredParentDescInjectors.list.length){
-				var injector:IInjector = _ignoredParentDescInjectors.list[i];
-				if(injector.shouldDescend(this)){
-					addDescParentInjector(injector);
-					_ignoredParentDescInjectors.remove(injector);
-				}else{
-					++i;
-				}
+		if (_ignoredParentDescInjectors != null) {
+			var shouldDesc:List<IInjector> = Lambda.filter(_ignoredParentDescInjectors, function(inj:IInjector):Bool { return inj.shouldDescend(this); } );
+			for (inj in shouldDesc) {
+				addDescParentInjector(inj);
+				_ignoredParentDescInjectors.remove(inj);
 			}
 		}
 		if(_ignoredChildAscInjectors!=null){
-			i = 0;
-			while(i<_ignoredChildAscInjectors.list.length){
-				var injector:IInjector = _ignoredChildAscInjectors.list[i];
-				if (injector.shouldAscend(this)) {
-					_addAscendingInjector(injector);
-					_ignoredChildAscInjectors.remove(injector);
-				}else{
-					++i;
-				}
+			var shouldAsc:List<IInjector> = Lambda.filter(_ignoredChildAscInjectors, function(inj:IInjector):Bool { return inj.shouldAscend(this); } );
+			for (inj in shouldAsc) {
+					_addAscendingInjector(inj);
+					_ignoredChildAscInjectors.remove(inj);
 			}
 		}
 	}
 
 
 	private function addDescParentInjector(injector:IInjector):Void{
-		if(_parentDescInjectors==null)_parentDescInjectors = new IndexedList<IInjector>();
+		if(_parentDescInjectors==null)_parentDescInjectors = new UniqueList<IInjector>();
 		_parentDescInjectors.add(injector);
-		for(child in _children.list){
+		for(child in _children){
 			child.addParentInjector(injector);
 		}
 	}
 	private function removeDescParentInjector(injector:IInjector):Void{
 		_parentDescInjectors.remove(injector);
-		for(child in _children.list){
+		for(child in _children){
 			child.removeParentInjector(injector);
 		}
 	}

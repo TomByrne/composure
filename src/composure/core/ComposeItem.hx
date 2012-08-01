@@ -1,11 +1,11 @@
 package composure.core;
 
-import org.tbyrne.collections.IndexedList;
+import org.tbyrne.collections.UniqueList;
 import composure.injectors.IInjector;
 import composure.injectors.InjectorMarrier;
 import composure.traits.ITrait;
 import composure.traits.TraitCollection;
-import time.types.ds.ObjectHash;
+import cmtc.ds.hash.ObjectHash;
 
 
 /**
@@ -54,7 +54,7 @@ class ComposeItem
 	private var _traitCollection:TraitCollection;
 	private var _siblingMarrier:InjectorMarrier; // Marries traits owned by this Item to siblings' injectors
 	private var _parentMarrier:InjectorMarrier; // Marries traits owned by this Item to ascendants' injectors
-	private var _ascInjectors:IndexedList<IInjector>;
+	private var _ascInjectors:UniqueList<IInjector>;
 	private var _traitToCast:ObjectHash<Dynamic,ITrait>;
 
 	/**
@@ -90,7 +90,7 @@ class ComposeItem
 	 * 				CAUTION: Do not modify the returned Array, for performance reasons,
 	 * 				it is passed out by reference and reused internally.
 	 */
-	public function getTraits<TraitType>(TraitType:Class<TraitType>=null):Array<TraitType>{
+	public function getTraits<TraitType>(TraitType:Class<TraitType>=null):Iterable<TraitType>{
 		return _traitCollection.getTraits(TraitType);
 	}
 
@@ -155,7 +155,7 @@ class ComposeItem
 		if (_parentItem != null)_parentItem.addChildTrait(trait);
 		
 		if (castTrait != null) {
-			var castInjectors:Array<IInjector> = castTrait.getInjectors();
+			var castInjectors:Iterable<IInjector> = castTrait.getInjectors();
 			for(injector in castInjectors){
 				addTraitInjector(injector);
 			}
@@ -184,9 +184,8 @@ class ComposeItem
 	 * Removes all traits from this item.
 	 */
 	public function removeAllTraits():Void{
-		var list:Array<Dynamic> = _traitCollection.traits.list;
-		while(list.length>0){
-			_removeTrait(list[0]);
+		while(_traitCollection.traits.length>0){
+			_removeTrait(_traitCollection.traits.first());
 		}
 	}
 	private function _removeTrait(trait:Dynamic):Void{
@@ -199,7 +198,7 @@ class ComposeItem
 		var castTrait:ITrait = _traitToCast.get(trait);
 		if(castTrait!=null){
 			castTrait = cast(trait, ITrait);
-			var castInjectors:Array<IInjector> = castTrait.getInjectors();
+			var castInjectors:Iterable<IInjector> = castTrait.getInjectors();
 			for(injector in castInjectors){
 				removeTraitInjector(injector);
 			}
@@ -220,7 +219,7 @@ class ComposeItem
 			_siblingMarrier.addInjector(injector);
 		}
 		if(injector.ascendants){
-			if(_ascInjectors==null)_ascInjectors = new IndexedList();
+			if(_ascInjectors==null)_ascInjectors = new UniqueList();
 			_ascInjectors.add(injector);
 			if(_parentItem!=null)_parentItem.addAscendingInjector(injector);
 		}
@@ -237,21 +236,21 @@ class ComposeItem
 
 
 	private function onParentAdd():Void{
-		for(trait in _traitCollection.traits.list){
+		for(trait in _traitCollection.traits){
 			_parentItem.addChildTrait(trait);
 		}
 		if(_ascInjectors!=null){
-			for(injector in _ascInjectors.list){
+			for(injector in _ascInjectors){
 				_parentItem.addAscendingInjector(injector);
 			}
 		}
 	}
 	private function onParentRemove():Void{
-		for(trait in _traitCollection.traits.list){
+		for(trait in _traitCollection.traits){
 			_parentItem.removeChildTrait(trait);
 		}
 		if(_ascInjectors!=null){
-			for(injector in _ascInjectors.list){
+			for(injector in _ascInjectors){
 				_parentItem.removeAscendingInjector(injector);
 			}
 		}
