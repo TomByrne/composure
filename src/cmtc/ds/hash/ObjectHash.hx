@@ -92,11 +92,11 @@ class ObjectHash<Key, Val>
 				var fstid = Std.random(SAFE_NUM);
 				cls.prototype.__get_id__ = function()
 				{
-					if (this.___id___ == null)
+					if (__this__.___id___ == null)
 					{
-						return this.___id___ = Std.random(SAFE_NUM);
+						return __this__.___id___ = Std.random(SAFE_NUM);
 					}
-					return this.___id___;
+					return __this__.___id___;
 				}
 			}
 			return obj.__get_id__();
@@ -168,7 +168,7 @@ class ObjectHash<Key, Val>
 		return false;
 	}
 	
-	public function remove(k:Key):Bool
+	public function delete(k:Key):Bool
 	{
 		var oid = getObjectId(k);
 		

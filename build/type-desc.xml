@@ -1638,7 +1638,7 @@
 	<c path="composure.core.ComposeRoot"/>
 	<e path="Void"/>
 </f></setRoot>
-		<addItem public="1" set="method" line="58">
+		<addChild public="1" set="method" line="58">
 			<f a="item">
 				<c path="composure.core.ComposeItem"/>
 				<e path="Void"/>
@@ -1647,8 +1647,8 @@
 	 * Adds a child ComposeItem to this ComposeGroup.
 	 * @param	item		A ComposeItem object to add as a child to this group.
 	 </haxe_doc>
-		</addItem>
-		<removeItem public="1" set="method" line="88">
+		</addChild>
+		<removeChild public="1" set="method" line="88">
 			<f a="item">
 				<c path="composure.core.ComposeItem"/>
 				<e path="Void"/>
@@ -1657,7 +1657,7 @@
 	 * Removes a child ComposeItem from this ComposeGroup.
 	 * @param	item		A ComposeItem object to remove as a child from this group.
 	 </haxe_doc>
-		</removeItem>
+		</removeChild>
 		<removeAllItem public="1" set="method" line="117">
 			<f a=""><e path="Void"/></f>
 			<haxe_doc>
@@ -3466,11 +3466,11 @@
 	 * <pre>
 	 * package;
 	 * import hsl.haxe.direct.DirectSignaler;
-	 * import hsl.haxe.Signaler;
+	 * import msignal.Signal;
 	 * class Ball {
 	 * 	public var distanceUpdatedSignaler(default, null):DirectSignaler&lt;Float&gt;;
 	 * 	public function new():Void {
-	 * 		distanceUpdatedSignaler = new DirectSignaler(this);
+	 * 		distanceUpdatedSignaler = new Signal1();
 	 * 	}
 	 * 	public function move(x:Float, y:Float):Void {
 	 * 		if (distanceUpdatedSignaler.isListenedTo) {
@@ -4000,7 +4000,7 @@
 	 * import hsl.avm2.translating.AVM2Signaler;
 	 * import hsl.haxe.direct.DirectSignaler;
 	 * import hsl.haxe.Signal;
-	 * import hsl.haxe.Signaler;
+	 * import msignal.Signal;
 	 * class Main {
 	 * 	public static function addButton(x:Float, color:Int):Void {
 	 * 		var button:Button = new Button(color);
@@ -4101,7 +4101,7 @@
 	 * import hsl.haxe.direct.DirectSignaler;
 	 * import hsl.haxe.Bond;
 	 * import hsl.haxe.Signal;
-	 * import hsl.haxe.Signaler;
+	 * import msignal.Signal;
 	 * class Main {
 	 * 	public static function traceCheer():Void {
 	 * 		trace("Yay!");
@@ -4123,7 +4123,7 @@
 	 * class Speaker {
 	 * 	public var soundProducedSignaler(default, null):Signaler&lt;Void&gt;;
 	 * 	public function new():Void {
-	 * 		soundProducedSignaler = new DirectSignaler(this);
+	 * 		soundProducedSignaler = new Signal1();
 	 * 	}
 	 * 	public inline function produceSound():Void {
 	 * 		soundProducedSignaler.dispatch();
@@ -4196,21 +4196,21 @@
  * <pre>
  * package;
  * import hsl.haxe.direct.DirectSignaler;
- * import hsl.haxe.Signaler;
+ * import msignal.Signal;
  * class Main {
  * 	public static function traceSound(sound:String):Void {
  * 		trace(sound);
  * 	}
  * 	public static function main():Void {
  * 		var buddy:Dog = new Dog();
- * 		buddy.barkedSignaler.bind(traceSound);
+ * 		buddy.barkedSignaler.add(traceSound);
  * 		buddy.bark();
  * 	}
  * }
  * class Dog {
  * 	public var barkedSignaler(default, null):Signaler&lt;String&gt;;
  * 	public function new():Void {
- * 		barkedSignaler = new DirectSignaler(this);
+ * 		barkedSignaler = new Signal1();
  * 	}
  * 	public inline function bark():Void {
  * 		barkedSignaler.dispatch("Woof");

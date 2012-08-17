@@ -16,7 +16,7 @@ class HelloWorld
         item.addTrait(new MessageTrait("Hello World"));
         item.addTrait(new LogTrait());
 
-        root.addItem(item);
+        root.addChild(item);
     }
 	
 }

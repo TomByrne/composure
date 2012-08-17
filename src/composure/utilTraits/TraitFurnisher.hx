@@ -187,14 +187,14 @@ class TraitFurnisher extends AbstractTrait
 			currItem.removeTrait(trait);
 			origItem.addTrait(trait);
 		}
-		_originalItems.remove(trait);
+		_originalItems.delete(trait);
 		
 		var item:ComposeItem = getItem(trait);
 		var traitsAdded:Array<Dynamic> = _addedTraits.get(trait);
 		for (otherTrait in traitsAdded) {
 			item.removeTrait(otherTrait);
 		}
-		_addedTraits.remove(trait);
+		_addedTraits.delete(trait);
 		
 		unregisterItem(trait, item);
 		
@@ -269,8 +269,8 @@ class TraitFurnisher extends AbstractTrait
 				}
 				_originalParents.set(trait, origItem.parentItem);
 				if (origItem.parentItem != newParent) {
-					origItem.parentItem.removeItem(origItem);
-					newParent.addItem(origItem);
+					origItem.parentItem.removeChild(origItem);
+					newParent.addChild(origItem);
 				}
 			case AddType.item(specItem):
 				item = specItem;
@@ -278,24 +278,24 @@ class TraitFurnisher extends AbstractTrait
 				item = new ComposeGroup();
 				switch(_addType) {
 					case AddType.selfSibling:
-						this.item.parentItem.addItem(item);
+						this.item.parentItem.addChild(item);
 					case AddType.traitSibling:
-						origItem.parentItem.addItem(item);
+						origItem.parentItem.addChild(item);
 					case AddType.selfChild:
-						this.group.addItem(item);
+						this.group.addChild(item);
 					case AddType.traitChild:
 						if (Std.is(origItem, ComposeGroup)) {
 							var origGroup:ComposeGroup;
 							untyped origGroup = origItem;
-							origGroup.addItem(item);
+							origGroup.addChild(item);
 						}
 						#if debug
 						else Log.trace(new LogMsg("AddType traitChild must be used on a ComposeGroup"));
 						#end
 					case AddType.itemChild(group):
-						group.addItem(item);
+						group.addChild(item);
 					case AddType.itemSibling(sibling):
-						sibling.parentItem.addItem(item);
+						sibling.parentItem.addChild(item);
 					default:
 						Log.trace(new LogMsg("Unsupported AddType",[LogType.devError]));
 				}
@@ -306,20 +306,20 @@ class TraitFurnisher extends AbstractTrait
 	private function unregisterItem(trait:Dynamic, currItem:ComposeItem):Void {
 		switch(_addType) {
 			case AddType.traitSibling, AddType.selfSibling, AddType.traitChild, AddType.selfChild:
-				currItem.parentItem.removeItem(currItem);
+				currItem.parentItem.removeChild(currItem);
 			case AddType.itemChild(group):
-				currItem.parentItem.removeItem(currItem);
+				currItem.parentItem.removeChild(currItem);
 			case AddType.itemSibling(group):
-				currItem.parentItem.removeItem(currItem);
+				currItem.parentItem.removeChild(currItem);
 			case AddType.adoptItem(newParent):
 				var oldParent:ComposeGroup = _originalParents.get(trait);
 				if (oldParent != currItem.parentItem) {
-					item.parentItem.removeItem(currItem);
-					oldParent.addItem(currItem);
+					item.parentItem.removeChild(currItem);
+					oldParent.addChild(currItem);
 				}
 			default:
 		}
-		_traitToItems.remove(trait);
+		_traitToItems.delete(trait);
 	}
 }
 

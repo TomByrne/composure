@@ -1,4 +1,4 @@
-haxe -main composureTest.ClassIncluder -cp ../src -cp ../testSrc -lib hsl-1 -xml type-desc.xml
+haxe -main composureTest.ClassIncluder -cp ../src -cp ../testSrc -lib msignal -xml type-desc.xml
 cd chxdoc
 
 rd /s /q "../../github-wiki/docs"

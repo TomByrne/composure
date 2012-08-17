@@ -42,8 +42,9 @@ class ComposeGroup extends ComposeItem
 		_descendantTraits = new TraitCollection();
 		_children = new UniqueList<ComposeItem>();
 		_descInjectors = new UniqueList<IInjector>();
-		super(initTraits);
-		_childAscendingMarrier = new InjectorMarrier(this,_traitCollection);
+		super(); // don't send through initTraits until after _childAscendingMarrier is created
+		_childAscendingMarrier = new InjectorMarrier(this, _traitCollection);
+		if(initTraits!=null)addTraits(initTraits);
 	}
 	override private function setRoot(game:ComposeRoot):Void{
 		super.setRoot(game);
@@ -55,14 +56,14 @@ class ComposeGroup extends ComposeItem
 	 * Adds a child ComposeItem to this ComposeGroup.
 	 * @param	item		A ComposeItem object to add as a child to this group.
 	 */
-	public function addItem(item:ComposeItem):Void{
+	public function addChild(item:ComposeItem):Void{
 		#if debug
 		if (item == null) {
-			Log.trace(new LogMsg("ComposeGroup.addItem must have child ComposeItem supplied", [LogType.devWarning]));
+			Log.trace(new LogMsg("ComposeGroup.addChild must have child ComposeItem supplied", [LogType.devWarning]));
 			return;
 		}
 		if (_children.containsItem(item)) {
-			Log.trace(new LogMsg("ComposeGroup.addItem already contains child item.", [LogType.devWarning]));
+			Log.trace(new LogMsg("ComposeGroup.addChild already contains child item.", [LogType.devWarning]));
 			return;
 		}
 		#end
@@ -85,14 +86,14 @@ class ComposeGroup extends ComposeItem
 	 * Removes a child ComposeItem from this ComposeGroup.
 	 * @param	item		A ComposeItem object to remove as a child from this group.
 	 */
-	public function removeItem(item:ComposeItem):Void{
+	public function removeChild(item:ComposeItem):Void{
 		#if debug
 		if (item == null) {
-			Log.trace(new LogMsg("ComposeGroup.removeItem must have child ComposeItem supplied", [LogType.devWarning]));
+			Log.trace(new LogMsg("ComposeGroup.removeChild must have child ComposeItem supplied", [LogType.devWarning]));
 			return;
 		}
 		if (!_children.containsItem(item)) {
-			Log.trace(new LogMsg("ComposeGroup.removeItem doesn't contain child item.", [LogType.devWarning]));
+			Log.trace(new LogMsg("ComposeGroup.removeChild doesn't contain child item.", [LogType.devWarning]));
 			return;
 		}
 		#end
@@ -116,7 +117,7 @@ class ComposeGroup extends ComposeItem
 	 */
 	public function removeAllItem():Void{
 		while( _children.length>0 ){
-			removeItem(_children.first());
+			removeChild(_children.first());
 		}
 	}
 	/**

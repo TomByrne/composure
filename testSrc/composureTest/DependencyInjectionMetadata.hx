@@ -22,16 +22,16 @@ class DependencyInjectionMetadata extends Sprite
 	
         var stage:ComposeGroup = new ComposeGroup();
         stage.addTrait(new FrameUpdater(200)); // 5fps
-        root.addItem(stage);
+        root.addChild(stage);
 	
         var circle:ComposeGroup = new ComposeGroup();
         circle.addTrait(new CircleTrait(flash.Lib.current));
         circle.addTrait(new PositionTrait(100,100));
-        stage.addItem(circle);
+        stage.addChild(circle);
 	
         var fpsDisplay:ComposeGroup = new ComposeGroup();
         fpsDisplay.addTrait(new FPSTrait(flash.Lib.current));
-        stage.addItem(fpsDisplay);
+        stage.addChild(fpsDisplay);
     }
 	
 }

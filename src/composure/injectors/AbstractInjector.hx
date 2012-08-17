@@ -17,7 +17,7 @@ class AbstractInjector implements IInjector
 	public var ascendants:Bool;
 	public var acceptOwnerTrait:Bool;
 	
-	public var interestedTraitType:Class<Dynamic>;
+	public var interestedTraitType:Dynamic;
 
 
 	public var ownerTrait:Dynamic;
@@ -26,7 +26,7 @@ class AbstractInjector implements IInjector
 
 	private var _addedTraits:UniqueList<Dynamic>;
 
-	public function new(interestedTraitType:Class<Dynamic>, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool=true, descendants:Bool=false, ascendants:Bool=false){
+	public function new(interestedTraitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool=true, descendants:Bool=false, ascendants:Bool=false){
 		this.addHandler = addHandler;
 		this.removeHandler = removeHandler;
 		

@@ -46,7 +46,7 @@ class AbstractTrait implements ITrait
 				}
 				if(group!=null && _childItems!=null){
 					for (trait in _childItems) {
-						group.removeItem(trait);
+						group.removeChild(trait);
 					}
 				}
 				onItemRemove();
@@ -58,7 +58,7 @@ class AbstractTrait implements ITrait
 					group = cast(value, ComposeGroup);
 					if(_childItems!=null){
 						for (child in _childItems) {
-							group.addItem(child);
+							group.addChild(child);
 						}
 					}
 				}
@@ -125,7 +125,7 @@ class AbstractTrait implements ITrait
 				item.addTrait(trait);
 			}
 		}#if debug else{
-				Log.trace(new LogMsg("Attempting to add sibling twice",[LogType.performanceWarning]));
+				Log.trace(new LogMsg("Attempting to add sibling trait twice",[LogType.performanceWarning]));
 			}
 		#end
 	}
@@ -135,11 +135,11 @@ class AbstractTrait implements ITrait
 				item.removeTrait(trait);
 			}
 		}#if debug else{
-				Log.trace(new LogMsg("Attempting to remove non-added sibling",[LogType.performanceWarning]));
+				Log.trace(new LogMsg("Attempting to remove non-added sibling trait",[LogType.performanceWarning]));
 			}
 		#end
 	}
-	private function removeSiblingTraits(traits:Array<ITrait>):Void{
+	private function removeSiblingTraits(traits:Array<Dynamic>):Void{
 		for (trait in traits) {
 			removeSiblingTrait(trait);
 		}
@@ -149,7 +149,7 @@ class AbstractTrait implements ITrait
 		if(_childItems==null)_childItems = new UniqueList<ComposeItem>();
 		if(_childItems.add(child)){
 			if (group != null) {
-				group.addItem(child);
+				group.addChild(child);
 			}
 		}#if debug else{
 				Log.trace(new LogMsg("Attempting to add child twice",[LogType.performanceWarning]));
@@ -159,7 +159,7 @@ class AbstractTrait implements ITrait
 	private function removeChildItem(child:ComposeItem):Void{
 		if(_childItems!=null && _childItems.remove(child)){
 			if (group != null) {
-				group.removeItem(child);
+				group.removeChild(child);
 			}
 		}#if debug else{
 				Log.trace(new LogMsg("Attempting to remove non-added child",[LogType.performanceWarning]));

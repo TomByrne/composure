@@ -18,13 +18,13 @@ class InjectorMarrier
 	private function set_traits(value:TraitCollection):TraitCollection{
 		if(_traits!=value){
 			if(_traits!=null){
-				_traits.traitAdded.unbind(onTraitAdded);
-				_traits.traitRemoved.unbind(onTraitRemoved);
+				_traits.traitAdded.remove(onTraitAdded);
+				_traits.traitRemoved.remove(onTraitRemoved);
 			}
 			_traits = value;
 			if(_traits!=null){
-				_traits.traitAdded.bind(onTraitAdded);
-				_traits.traitRemoved.bind(onTraitRemoved);
+				_traits.traitAdded.add(onTraitAdded);
+				_traits.traitRemoved.add(onTraitRemoved);
 			}
 		}
 		return value;
@@ -95,7 +95,7 @@ class InjectorMarrier
 					traitLookup.remove(traitInjector);
 				}
 				traits.clear();
-				_injectorLookup.remove(traitInjector);
+				_injectorLookup.delete(traitInjector);
 			}
 		}
 	}
@@ -116,7 +116,7 @@ class InjectorMarrier
 				injectorLookup.remove(trait);
 			}
 			injectors.clear();
-			_traitLookup.remove(trait);
+			_traitLookup.delete(trait);
 		}
 	}
 

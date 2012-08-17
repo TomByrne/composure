@@ -75,10 +75,10 @@ class InjectorMacro
 			}
 		}
 		
-		if (addMethods != null || remMethods != null) {
+		var done:Hash<Bool> = new Hash<Bool>();
+		if (addMethods != null) {
 			if (addExpr == null) addExpr = [];
 			
-			var done:Hash<Bool> = new Hash<Bool>();
 			for (typePath in addMethods.keys()) {
 				if (!done.get(typePath)) {
 					done.set(typePath, true);
@@ -91,6 +91,9 @@ class InjectorMacro
 					createMethInjector(field, remMeth, typePathToExpr.get(typePath), addExpr, field.pos, addInjectorMethod);
 				}
 			}
+		}
+		if(remMethods!=null){
+			if (addExpr == null) addExpr = [];
 			for (typePath in remMethods.keys()) {
 				if (!done.get(typePath)) {
 					done.set(typePath, true);

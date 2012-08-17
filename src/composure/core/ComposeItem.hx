@@ -18,6 +18,17 @@ import cmtc.ds.hash.ObjectHash;
  */
 class ComposeItem
 {
+	public static function getRealTrait(trait:Dynamic):ITrait {
+		var getProxyTrait = Reflect.field(trait, "getProxiedTrait");
+		if (getProxyTrait != null) {
+			var proxy = trait.getProxiedTrait();
+			if (Std.is(proxy, ITrait)) return cast(proxy, ITrait);
+		}
+		if (Std.is(trait, ITrait)) {
+			return cast(trait, ITrait);
+		}
+		return null;
+	}
 
 
 	/**
@@ -65,11 +76,7 @@ class ComposeItem
 		_siblingMarrier = new InjectorMarrier(this,_traitCollection);
 		_parentMarrier = new InjectorMarrier(this, _traitCollection);
 		_traitToCast = new ObjectHash();
-		if(initTraits!=null){
-			for(trait in initTraits){
-				addTrait(trait);
-			}
-		}
+		if(initTraits!=null)addTraits(initTraits);
 	}
 	private function setRoot(root:ComposeRoot):Void{
 		_root = root;
@@ -136,16 +143,8 @@ class ComposeItem
 		}
 		#end*/
 		
-		var castTrait:ITrait = null;
+		var castTrait:ITrait = getRealTrait(trait);
 		
-		var getProxyTrait = Reflect.field(trait, "getProxiedTrait");
-		if (getProxyTrait != null) {
-			var proxy = trait.getProxiedTrait();
-			if (Std.is(proxy, ITrait)) castTrait = cast(proxy, ITrait);
-		}
-		if (castTrait == null && Std.is(trait, ITrait)) {
-			castTrait = cast(trait, ITrait);
-		}
 		if (castTrait != null) {
 			castTrait.item = this;
 			_traitToCast.set(trait, castTrait);
@@ -202,7 +201,7 @@ class ComposeItem
 			for(injector in castInjectors){
 				removeTraitInjector(injector);
 			}
-			_traitToCast.remove(trait);
+			_traitToCast.delete(trait);
 		}
 		
 		_traitCollection.removeTrait(trait);

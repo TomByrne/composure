@@ -6,8 +6,8 @@ import org.tbyrne.logging.LogMsg;
 import org.tbyrne.collections.UniqueList;
 import composure.core.ComposeItem;
 
-import hsl.haxe.Signaler;
-import hsl.haxe.DirectSignaler;
+import msignal.Signal;
+
 
 /**
  * The TraitCollection holds a collection of traits and has the
@@ -19,19 +19,19 @@ import hsl.haxe.DirectSignaler;
 class TraitCollection
 {
 	
-	public var traitAdded(getTraitAdded, null):Signaler<Dynamic>;
-	private function getTraitAdded():Signaler < Dynamic> {
-		if (_traitAdded == null)_traitAdded = new DirectSignaler(this);
+	public var traitAdded(getTraitAdded, null):Signal1<Dynamic>;
+	private function getTraitAdded():Signal1< Dynamic> {
+		if (_traitAdded == null)_traitAdded = new Signal1();
 		return _traitAdded;
 	}
-	public var traitRemoved(getTraitRemoved, null):Signaler<Dynamic>;
-	private function getTraitRemoved():Signaler<Dynamic>{
-		if (_traitRemoved == null)_traitRemoved = new DirectSignaler(this);
+	public var traitRemoved(getTraitRemoved, null):Signal1<Dynamic>;
+	private function getTraitRemoved():Signal1<Dynamic>{
+		if (_traitRemoved == null)_traitRemoved = new Signal1();
 		return _traitRemoved;
 	}
 
-	private var _traitRemoved:Signaler<Dynamic>;
-	private var _traitAdded:Signaler<Dynamic>;
+	private var _traitRemoved:Signal1<Dynamic>;
+	private var _traitAdded:Signal1<Dynamic>;
 	private var _traitTypeCache:Hash < TraitTypeCache<Dynamic> > ;
 	
 	public var traits(default, null):UniqueList<Dynamic>;
