@@ -22,10 +22,16 @@ class LoggerList
 	
 	public static var fallbackLogger:ILogger;
 	
-	static function __init__():Void {
-		_nativeTrace = Log.trace;
-		defaultTypes = [LogType.devInfo];
+	// can't use __init__ for this, as it could be inited before Log
+	private static var _inited:Bool = false;
+	static private function init():Void {
+		if (!_inited) {
+			_inited = true;
+			_nativeTrace = Log.trace;
+			defaultTypes = [LogType.devInfo];
+		}
 	}
+	
 	private static var _nativeTrace:Dynamic;
 	private static var _loggers:Hash<Array<ILogger>>;
 	
@@ -33,6 +39,7 @@ class LoggerList
 	
 	
 	public static function install():Void {
+		init();
 		Log.trace = LoggerList.trace;
 		if (fallbackLogger == null) {
 			#if flash
@@ -47,15 +54,13 @@ class LoggerList
 	public static function trace( v : Dynamic, ?infos : PosInfos):Void {
 		if (Std.is(v, LogMsg)) {
 			log(v, infos);
-		}else if(_nativeTrace!=null){
-			#if debug
-				#if (flash9 || flash10)
-					untyped __global__["trace"](v);
-				#elseif flash
-					flash.Lib.trace(v);
-				#end
+		}else {
+			#if (debug && (flash9 || flash10))
+				untyped __global__["trace"](v);
+			#elseif (debug && flash)
+				flash.Lib.trace(v);
 			#else
-				_nativeTrace(v, infos);
+				if(_nativeTrace!=null)_nativeTrace(v, infos);
 			#end
 		}
 	}

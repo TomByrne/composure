@@ -1,15 +1,10 @@
 package org.tbyrne.collections;
 import haxe.FastList;
 
-// TODO: pooling
 class UniqueList<T> {
 	
 	public function new(?list:Iterable<T>) {
-		#if flash
 		this.list = new FastList<T>();
-		#else
-		this.list = new List<T>();
-		#end
 		
 		if (list != null) {
 			for (item in list) add(item);
@@ -25,11 +20,7 @@ class UniqueList<T> {
 	}
 	
 	
-	#if flash
 	private var list:FastList<T>;
-	#else
-	private var list:List<T>;
-	#end
 	
 	private var _length:Int = 0;
 	
@@ -57,11 +48,7 @@ class UniqueList<T> {
 		}
 	}
 	public function clear():Void{
-		#if flash
 		list = new FastList<T>();
-		#else
-		list = new List<T>();
-		#end
 		_length = 0;
 	}
 }

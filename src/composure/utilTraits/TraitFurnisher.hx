@@ -30,8 +30,8 @@ import cmtc.ds.hash.ObjectHash;
 
 class TraitFurnisher extends AbstractTrait
 {
-	public var concernedTraitType(default, set_concernedTraitType):Class<Dynamic>;
-	private function set_concernedTraitType(value:Class<Dynamic>):Class<Dynamic> {
+	public var concernedTraitType(default, set_concernedTraitType):Dynamic;
+	private function set_concernedTraitType(value:Dynamic):Dynamic {
 		if (_injector == null) {
 			_injector = new Injector(value, onConcernedTraitAdded, onConcernedTraitRemoved, searchSiblings, searchDescendants, searchAscendants);
 			_injector.passThroughItem = true;
@@ -115,7 +115,7 @@ class TraitFurnisher extends AbstractTrait
 	
 	private var _ignoreTraitChanges:Bool;
 
-	public function new(addType:AddType, ?concernedTraitType:Class<Dynamic>,?traitTypes:Array<Dynamic>,?traitFactories:Array<Void->Dynamic>,searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false,?adoptTrait:Bool) 
+	public function new(addType:AddType, ?concernedTraitType:Dynamic,?traitTypes:Array<Dynamic>,?traitFactories:Array<Void->Dynamic>,searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false,?adoptTrait:Bool) 
 	{
 		super();
 		

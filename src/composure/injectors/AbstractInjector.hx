@@ -17,7 +17,14 @@ class AbstractInjector implements IInjector
 	public var ascendants:Bool;
 	public var acceptOwnerTrait:Bool;
 	
-	public var interestedTraitType:Dynamic;
+	public var interestedTraitType(default, set_interestedTraitType):Dynamic;
+	private function set_interestedTraitType(value:Dynamic):Dynamic {
+		interestedTraitType = value;
+		_enumValMode = Type.enumIndex(value) != -1;
+		return value;
+	}
+	
+	private var _enumValMode:Bool;
 
 
 	public var ownerTrait:Dynamic;
@@ -102,6 +109,10 @@ class AbstractInjector implements IInjector
 		return true;
 	}
 	public function isInterestedIn(item:ComposeItem, trait:Dynamic):Bool {
-		return Std.is(trait, interestedTraitType);
+		if(_enumValMode){
+			return Type.enumEq(trait, interestedTraitType);
+		}else {
+			return Std.is(trait, interestedTraitType);
+		}
 	}
 }
