@@ -13,11 +13,11 @@ class PropInjector extends Injector
 	private var isSet:Bool;
 	private var setTrait:Dynamic;
 
-	public function new(interestedTraitType:Dynamic, subject:Dynamic, prop:String, siblings:Bool = true, descendants:Bool = false, ascendants:Bool = false, writeOnly:Bool=false) {
+	public function new(interestedTraitType:Dynamic, subject:Dynamic, prop:String, siblings:Bool = true, descendants:Bool = false, ascendants:Bool = false, universal:Bool = false, writeOnly:Bool=false) {
 		this.subject = subject;
 		this.prop = prop;
 		this.writeOnly = writeOnly;
-		super(interestedTraitType, addProp, removeProp, siblings, descendants, ascendants);
+		super(interestedTraitType, addProp, removeProp, siblings, descendants, ascendants, universal);
 		
 	}
 	

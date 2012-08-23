@@ -15,12 +15,19 @@ class AbstractInjector implements IInjector
 	public var siblings:Bool;
 	public var descendants:Bool;
 	public var ascendants:Bool;
+	public var universal:Bool;
 	public var acceptOwnerTrait:Bool;
 	
 	public var interestedTraitType(default, set_interestedTraitType):Dynamic;
 	private function set_interestedTraitType(value:Dynamic):Dynamic {
 		interestedTraitType = value;
+		
+		#if cpp
 		_enumValMode = Type.enumIndex(value) != -1;
+		#else
+		_enumValMode = Type.getEnum(value) != null; // cpp returns 'Class'
+		#end
+		
 		return value;
 	}
 	
@@ -33,13 +40,14 @@ class AbstractInjector implements IInjector
 
 	private var _addedTraits:UniqueList<Dynamic>;
 
-	public function new(interestedTraitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool=true, descendants:Bool=false, ascendants:Bool=false){
+	public function new(interestedTraitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool=true, descendants:Bool=false, ascendants:Bool=false, universal:Bool=false){
 		this.addHandler = addHandler;
 		this.removeHandler = removeHandler;
 		
 		this.siblings = siblings;
 		this.descendants = descendants;
 		this.ascendants = ascendants;
+		this.universal = universal;
 		this.interestedTraitType = interestedTraitType;
 		_addedTraits = new UniqueList<Dynamic>();
 		passThroughInjector = false;

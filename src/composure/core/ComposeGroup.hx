@@ -43,7 +43,7 @@ class ComposeGroup extends ComposeItem
 		_children = new UniqueList<ComposeItem>();
 		_descInjectors = new UniqueList<IInjector>();
 		super(); // don't send through initTraits until after _childAscendingMarrier is created
-		_childAscendingMarrier = new InjectorMarrier(this, _traitCollection);
+		_childAscendingMarrier = new InjectorMarrier(_traitCollection);
 		if(initTraits!=null)addTraits(initTraits);
 	}
 	override private function setRoot(game:ComposeRoot):Void{
@@ -121,18 +121,20 @@ class ComposeGroup extends ComposeItem
 		}
 	}
 	/**
+	 * @private
 	 * This is an interal function of Composure. Do not call this method.
 	 */
-	public function addChildTrait(trait:Dynamic):Void{
-		_descendantTraits.addTrait(trait);
-		if(_parentItem!=null)_parentItem.addChildTrait(trait);
+	public function addChildTrait(traitPair:TraitPair<Dynamic>):Void{
+		_descendantTraits.addTrait(traitPair);
+		if(_parentItem!=null)_parentItem.addChildTrait(traitPair);
 	}
 	/**
+	 * @private
 	 * This is an interal function of Composure. Do not call this method.
 	 */
-	public function removeChildTrait(trait:Dynamic):Void{
-		_descendantTraits.removeTrait(trait);
-		if(_parentItem!=null)_parentItem.removeChildTrait(trait);
+	public function removeChildTrait(traitPair:TraitPair<Dynamic>):Void{
+		_descendantTraits.removeTrait(traitPair);
+		if(_parentItem!=null)_parentItem.removeChildTrait(traitPair);
 	}
 	/**
 	 * @inheritDoc
@@ -219,8 +221,8 @@ class ComposeGroup extends ComposeItem
 	}
 	override private function onParentAdd():Void{
 		super.onParentAdd();
-		for(trait in _descendantTraits.traits){
-			_parentItem.addChildTrait(trait);
+		for(traitPair in _descendantTraits.traitPairs){
+			_parentItem.addChildTrait(traitPair);
 		}
 		if(_childAscInjectors!=null){
 			for(injector in _childAscInjectors){
@@ -230,8 +232,8 @@ class ComposeGroup extends ComposeItem
 	}
 	override private function onParentRemove():Void{
 		super.onParentRemove();
-		for(trait in _descendantTraits.traits){
-			_parentItem.removeChildTrait(trait);
+		for(traitPair in _descendantTraits.traitPairs){
+			_parentItem.removeChildTrait(traitPair);
 		}
 		if(_childAscInjectors!=null){
 			for(injector in _childAscInjectors){
@@ -240,6 +242,7 @@ class ComposeGroup extends ComposeItem
 		}
 	}
 	/**
+	 * @private
 	 * This is an interal function of Composure. Do not call this method.
 	 */
 	public function addAscendingInjector(injector:IInjector):Void {
@@ -257,6 +260,7 @@ class ComposeGroup extends ComposeItem
 		if (_parentItem != null)_parentItem.addAscendingInjector(injector);
 	}
 	/**
+	 * @private
 	 * This is an interal function of Composure. Do not call this method.
 	 */
 	public function removeAscendingInjector(injector:IInjector):Void {

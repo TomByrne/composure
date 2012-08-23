@@ -38,18 +38,15 @@ class InjectorMarrier
 	private var _traitInjectors:UniqueList<IInjector>;
 
 	// mapped injector > [traits]
-	private var _injectorLookup:ObjectHash<IInjector,UniqueList<Dynamic>>;
+	private var _injectorLookup:ObjectHash<IInjector,UniqueList<TraitPair<Dynamic>>>;
 
 	// mapped trait > [injectors]
 	private var _traitLookup:ObjectHash < Dynamic, UniqueList<IInjector> > ;
 
-	private var _item:ComposeItem;
-
-	public function new(item:ComposeItem, traits:TraitCollection) {
+	public function new(traits:TraitCollection) {
 		_traitInjectors = new UniqueList<IInjector>();
-		_injectorLookup = new ObjectHash < IInjector, UniqueList<Dynamic> > ();
+		_injectorLookup = new ObjectHash < IInjector, UniqueList<TraitPair<Dynamic>> > ();
 		_traitLookup = new ObjectHash < Dynamic, UniqueList<IInjector> > ();
-		_item = item;
 		this.traits = traits;
 		
 	}
@@ -67,8 +64,8 @@ class InjectorMarrier
 		#end
 		if(_traitInjectors.add(traitInjector)){
 			
-			for(trait in _traits.traits){
-				compareTrait(trait, traitInjector);
+			for(traitPair in _traits.traitPairs){
+				compareTrait(traitPair, traitInjector);
 			}
 		}
 	}
@@ -86,61 +83,61 @@ class InjectorMarrier
 		
 		if(_traitInjectors.remove(traitInjector)){
 		
-			var traits:UniqueList<Dynamic> = _injectorLookup.get(traitInjector);
-			if(traits!=null){
-				for(trait in traits){
-					traitInjector.injectorRemoved(trait, _item);
+			var traitPairs:UniqueList<TraitPair<Dynamic>> = _injectorLookup.get(traitInjector);
+			if(traitPairs!=null){
+				for(traitPair in traitPairs){
+					traitInjector.injectorRemoved(traitPair.trait, traitPair.item);
 					
-					var traitLookup:UniqueList<IInjector> = _traitLookup.get(trait);
+					var traitLookup:UniqueList<IInjector> = _traitLookup.get(traitPair.trait);
 					traitLookup.remove(traitInjector);
 				}
-				traits.clear();
+				traitPairs.clear();
 				_injectorLookup.delete(traitInjector);
 			}
 		}
 	}
 
-	private function onTraitAdded(trait:Dynamic):Void{
+	private function onTraitAdded(traitPair:TraitPair<Dynamic>):Void{
 		for(traitInjector in _traitInjectors){
-			compareTrait(trait, traitInjector);
+			compareTrait(traitPair, traitInjector);
 		}
 	}
 
-	private function onTraitRemoved(trait:Dynamic):Void{
-		var injectors:UniqueList<IInjector> = _traitLookup.get(trait);
+	private function onTraitRemoved(traitPair:TraitPair<Dynamic>):Void{
+		var injectors:UniqueList<IInjector> = _traitLookup.get(traitPair.trait);
 		if(injectors!=null){
 			for(traitInjector in injectors){
-				traitInjector.injectorRemoved(trait, _item);
+				traitInjector.injectorRemoved(traitPair.trait, traitPair.item);
 				
 				var injectorLookup:UniqueList<Dynamic> = _injectorLookup.get(traitInjector);
-				injectorLookup.remove(trait);
+				injectorLookup.remove(traitPair.trait);
 			}
 			injectors.clear();
-			_traitLookup.delete(trait);
+			_traitLookup.delete(traitPair.trait);
 		}
 	}
 
 
-	private function compareTrait(trait:Dynamic, traitInjector:IInjector):Void {
-		if((trait!=traitInjector.ownerTrait || traitInjector.acceptOwnerTrait) && traitInjector.isInterestedIn(_item, trait)){
+	private function compareTrait(traitPair:TraitPair<Dynamic>, traitInjector:IInjector):Void {
+		if((traitPair.trait!=traitInjector.ownerTrait || traitInjector.acceptOwnerTrait) && traitInjector.isInterestedIn(traitPair.item, traitPair.trait)){
 		
 			// add to injector lookup
-			var injectorList:UniqueList<Dynamic> = _injectorLookup.get(traitInjector);
+			var injectorList:UniqueList<TraitPair<Dynamic>> = _injectorLookup.get(traitInjector);
 			if(injectorList==null){
-				injectorList = new UniqueList<Dynamic>();
+				injectorList = new UniqueList<TraitPair<Dynamic>>();
 				_injectorLookup.set(traitInjector,injectorList);
 			}
-			injectorList.add(trait);
+			injectorList.add(traitPair);
 			
 			// add to trait lookup
-			var traitList:UniqueList<IInjector> = _traitLookup.get(trait);
+			var traitList:UniqueList<IInjector> = _traitLookup.get(traitPair.trait);
 			if(traitList==null){
 				traitList = new UniqueList<IInjector>();
-				_traitLookup.set(trait, traitList);
+				_traitLookup.set(traitPair.trait, traitList);
 			}
 			traitList.add(traitInjector);
 			
-			traitInjector.injectorAdded(trait, _item);
+			traitInjector.injectorAdded(traitPair.trait, traitPair.item);
 		}
 	}
 }

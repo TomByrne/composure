@@ -208,13 +208,13 @@ class InjectorMacro
 		}else {
 			addExpr = EConst(CIdent("null"));
 		}
-		var expr:Expr = { expr : ECall( addInjectorMeth, [ { expr : ENew( { name : "Injector", pack : ["composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : addExpr, pos :pos}, { expr : remExpr, pos :pos}, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
+		var expr:Expr = { expr : ECall( addInjectorMeth, [ { expr : ENew( { name : "Injector", pack : ["composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : addExpr, pos :pos}, { expr : remExpr, pos :pos}, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.universal?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
 		addTo.push(expr);
 	}
 	private static function createPropInjector(fieldName:String, typeExpr:ExprDef, writeOnly:Bool, meta:{ name : String, params : Array<Expr>, pos : Position }, addTo:Array<Expr>, pos:Position, addInjectorMethod:Expr):Void {
 		var injectorAccess:InjectorAccess = new InjectorAccess();
 		checkMetaAccess(injectorAccess, meta);
-		var expr:Expr = { expr : ECall( addInjectorMethod, [ { expr : ENew( { name : "PropInjector", pack : ["composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : EConst(CIdent("this")), pos : pos }, { expr : EConst(CString(fieldName)), pos : pos }, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(writeOnly?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
+		var expr:Expr = { expr : ECall( addInjectorMethod, [ { expr : ENew( { name : "PropInjector", pack : ["composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : EConst(CIdent("this")), pos : pos }, { expr : EConst(CString(fieldName)), pos : pos }, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.universal?"true":"false")), pos : pos } , { expr : EConst(CIdent(writeOnly?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
 		addTo.push(expr);
 	}
 	private static function checkMetaAccess(injectorAccess:InjectorAccess, meta: { name : String, params : Array<Expr>, pos : Position } ):Void {
@@ -228,6 +228,8 @@ class InjectorMacro
 							injectorAccess.descendants = getBool(metaField.expr, meta.pos, metaField.field);
 						}else if (metaField.field == "asc" || metaField.field == "ascendants") {
 							injectorAccess.ascendants = getBool(metaField.expr, meta.pos, metaField.field);
+						}else if (metaField.field == "uni" || metaField.field == "universal") {
+							injectorAccess.universal = getBool(metaField.expr, meta.pos, metaField.field);
 						}
 					}
 				default:
@@ -300,11 +302,13 @@ private class InjectorAccess {
 	public var siblings:Bool;
 	public var descendants:Bool;
 	public var ascendants:Bool;
+	public var universal:Bool;
 	
 	public function new() {
 		siblings = true;
 		descendants = false;
 		ascendants = false;
+		universal = false;
 	}
 	
 }

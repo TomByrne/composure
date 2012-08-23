@@ -1,5 +1,8 @@
 package composure.core;
+import composure.injectors.IInjector;
+import composure.injectors.InjectorMarrier;
 import composure.traits.ITrait;
+import composure.traits.TraitCollection;
 
 /**
  * ComposeRoot is the root item for the Composure library.
@@ -15,8 +18,28 @@ import composure.traits.ITrait;
  */
 class ComposeRoot extends ComposeGroup
 {
+	private var _universalMarrier:InjectorMarrier;
+	
 	public function new(initTraits:Array<ITrait>=null){
 		super(initTraits);
+		_universalMarrier = new InjectorMarrier(_descendantTraits);
 		setRoot(this);
+	}
+	public function getAllTraits():TraitCollection {
+		return _descendantTraits;
+	}
+	
+	/**
+	 * @private
+	 */
+	public function addUniversalInjector(injector:IInjector):Void {
+		_universalMarrier.addInjector(injector);
+	}
+	
+	/**
+	 * @private
+	 */
+	public function removeUniversalInjector(injector:IInjector):Void {
+		_universalMarrier.removeInjector(injector);
 	}
 }

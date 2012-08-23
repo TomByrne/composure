@@ -10,6 +10,7 @@ interface IInjector
 	public var siblings(default, null):Bool;
 	public var ascendants(default, null):Bool;
 	public var descendants(default, null):Bool;
+	public var universal(default, null):Bool;
 	public var acceptOwnerTrait(default, null):Bool;
 
 	public var ownerTrait:Dynamic;

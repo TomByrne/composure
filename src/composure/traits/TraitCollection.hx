@@ -5,6 +5,7 @@ import org.tbyrne.logging.LogMsg;
 
 import org.tbyrne.collections.UniqueList;
 import composure.core.ComposeItem;
+import cmtc.ds.hash.ObjectHash;
 
 import msignal.Signal;
 
@@ -19,28 +20,28 @@ import msignal.Signal;
 class TraitCollection
 {
 	
-	public var traitAdded(getTraitAdded, null):Signal1<Dynamic>;
-	private function getTraitAdded():Signal1< Dynamic> {
+	public var traitAdded(getTraitAdded, null):Signal1<TraitPair<Dynamic>>;
+	private function getTraitAdded():Signal1<TraitPair<Dynamic>> {
 		if (_traitAdded == null)_traitAdded = new Signal1();
 		return _traitAdded;
 	}
-	public var traitRemoved(getTraitRemoved, null):Signal1<Dynamic>;
-	private function getTraitRemoved():Signal1<Dynamic>{
+	public var traitRemoved(getTraitRemoved, null):Signal1<TraitPair<Dynamic>>;
+	private function getTraitRemoved():Signal1<TraitPair<Dynamic>>{
 		if (_traitRemoved == null)_traitRemoved = new Signal1();
 		return _traitRemoved;
 	}
 
-	private var _traitRemoved:Signal1<Dynamic>;
-	private var _traitAdded:Signal1<Dynamic>;
+	private var _traitRemoved:Signal1<TraitPair<Dynamic>>;
+	private var _traitAdded:Signal1<TraitPair<Dynamic>>;
 	private var _traitTypeCache:Hash < TraitTypeCache<Dynamic> > ;
 	
-	public var traits(default, null):UniqueList<Dynamic>;
+	public var traitPairs(default, null):UniqueList<TraitPair<Dynamic>>;
 
 
 	public function new()
 	{
-		_traitTypeCache = new Hash< TraitTypeCache<Dynamic>>();
-		traits = new UniqueList<Dynamic>();
+		_traitTypeCache = new Hash();
+		traitPairs = new UniqueList();
 	}
 
 	public function getTrait<TraitType>(TraitType:Class<TraitType>):TraitType{
@@ -77,25 +78,25 @@ class TraitCollection
 		untyped{
 			cache = _traitTypeCache.get(typeName);
 		}
-		var invalid;
+		var invalid:UniqueList<TraitPair<Dynamic>>;
 		
 		if(cache!=null){
 			invalid = cache.invalid;
 		}else{
 			cache = new TraitTypeCache<TraitType>();
 			_traitTypeCache.set(typeName, cache);
-			invalid = traits;
+			invalid = traitPairs;
 		}
 		if(!cache.methodCachesSafe){
-			for(trait in invalid){
-				if(Std.is(trait, matchType)){
-					untyped cache.matched.add(trait);
+			for(traitPair in invalid){
+				if(Std.is(traitPair.trait, matchType)){
+					untyped cache.matched.add(traitPair);
+					untyped cache.getTraitsList.add(traitPair.trait);
 				}
 			}
 			cache.invalid.clear();
 			cache.methodCachesSafe = true;
-			cache.getTraits = cache.matched;
-			cache.getTrait = cache.matched.first();
+			cache.getTrait = cache.getTraitsList.first();
 		}
 		return cache;
 	}
@@ -115,11 +116,11 @@ class TraitCollection
 		if(params!=null){
 			realParams = realParams.concat(params);
 		}
-		var invalid;
+		var invalid:UniqueList<TraitPair<Dynamic>>;
 		
 		if(cache!=null){
-			for(trait in cache.matched){
-				realParams[1] = trait;
+			for(traitPair in cache.matched){
+				realParams[1] = traitPair.trait;
 				Reflect.callMethod(thisObj, func, realParams);
 			}
 			invalid = cache.invalid;
@@ -128,14 +129,17 @@ class TraitCollection
 				cache = new TraitTypeCache();
 				_traitTypeCache.set(typeName, cache);
 			}
-			invalid = traits;
+			invalid = traitPairs;
 		}
 		if(matchingType){
 			if(cache!=null && cache.methodCachesSafe==false){
-				for(trait in invalid){
-					if(Std.is(trait, matchType)){
-						realParams[1] = trait;
-						if (matchingType) untyped cache.matched.add(trait);
+				for(traitPair in invalid){
+					if(Std.is(traitPair.trait, matchType)){
+						realParams[1] = traitPair.trait;
+						if (matchingType) {
+							untyped cache.matched.add(traitPair);
+							untyped cache.getTraitsList.add(traitPair.trait);
+						}
 						if (collectReturns != null){
 							collectReturns.push(Reflect.callMethod(thisObj, func, realParams));
 						}else {
@@ -145,8 +149,7 @@ class TraitCollection
 				}
 				cache.invalid.clear();
 				cache.methodCachesSafe = true;
-				cache.getTraits = cache.matched;
-				cache.getTrait = cache.matched.first();
+				cache.getTrait = cache.getTraitsList.first();
 			}
 		}else{
 			for(trait in invalid){
@@ -159,26 +162,23 @@ class TraitCollection
 			}
 		}
 	}
-	public function addTrait(trait:Dynamic):Void {
-		traits.add(trait);
-		//var type:Class<Dynamic>;
+	public function addTrait(traitPair:TraitPair<Dynamic>):Void {
+		traitPairs.add(traitPair);
 		for (cache in _traitTypeCache) {
-			//var cache = _traitTypeCache.get(type);
-			cache.invalid.add(trait);
+			cache.invalid.add(traitPair);
 			cache.methodCachesSafe = false;
 		}
-		if (_traitAdded != null)_traitAdded.dispatch(trait);
+		if (_traitAdded != null)_traitAdded.dispatch(traitPair);
 	}
-	public function removeTrait(trait:Dynamic):Void{
-		traits.remove(trait);
-		//var type:Class<Dynamic>;
+	public function removeTrait(traitPair:TraitPair<Dynamic>):Void{
+		traitPairs.remove(traitPair);
 		for (cache in _traitTypeCache) {
-			//var cache = _traitTypeCache.get(type);
-			cache.matched.remove(trait);
-			cache.invalid.remove(trait);
+			cache.getTraitsList.remove(traitPair.trait);
+			cache.matched.remove(traitPair);
+			cache.invalid.remove(traitPair);
 			cache.methodCachesSafe = false;
 		}
-		if(_traitRemoved!=null)_traitRemoved.dispatch(trait);
+		if(_traitRemoved!=null)_traitRemoved.dispatch(traitPair);
 	}
 }
 
@@ -187,12 +187,19 @@ private class TraitTypeCache<TraitType>
 	public var methodCachesSafe:Bool;
 	public var getTrait:TraitType;
 	public var getTraits:Iterable<TraitType>;
+	public var getTraitsList:UniqueList<TraitType>;
 
-	public var matched:UniqueList<TraitType>;
-	public var invalid:UniqueList<Dynamic>;
+	public var matched:UniqueList<TraitPair<TraitType>>;
+	public var invalid:UniqueList<TraitPair<TraitType>>;
 	
 	public function new() {
-		matched = new UniqueList<TraitType>();
-		invalid = new UniqueList<Dynamic>();
+		matched = new UniqueList<TraitPair<TraitType>>();
+		invalid = new UniqueList<TraitPair<TraitType>>();
+		getTraitsList = new UniqueList<TraitType>();
+		getTraits = getTraitsList;
 	}
+}
+typedef TraitPair<TraitType> =  {
+	var trait:TraitType;
+	var item:ComposeItem;
 }

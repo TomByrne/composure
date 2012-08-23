@@ -11,8 +11,8 @@ class Injector extends AbstractInjector
 
 	public var maxMatches:Int;
 
-	public function new(traitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool = true, descendants:Bool = false, ascendants:Bool = false) {
-		super(traitType, addHandler, removeHandler, siblings, descendants, ascendants);
+	public function new(traitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool = true, descendants:Bool = false, ascendants:Bool = false, universal:Bool = false) {
+		super(traitType, addHandler, removeHandler, siblings, descendants, ascendants, universal);
 		
 		maxMatches = -1;
 	}

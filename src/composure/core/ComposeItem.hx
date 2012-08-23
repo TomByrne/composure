@@ -66,20 +66,29 @@ class ComposeItem
 	private var _siblingMarrier:InjectorMarrier; // Marries traits owned by this Item to siblings' injectors
 	private var _parentMarrier:InjectorMarrier; // Marries traits owned by this Item to ascendants' injectors
 	private var _ascInjectors:UniqueList<IInjector>;
+	private var _uniInjectors:UniqueList<IInjector>;
 	private var _traitToCast:ObjectHash<Dynamic,ITrait>;
+	private var _traitToPair:ObjectHash<Dynamic, TraitPair<Dynamic>>;
 
 	/**
 	 * @param	initTraits		A list of traits to add to this ComposeItem initially.
 	 */
 	public function new(initTraits:Array<Dynamic>=null){
 		_traitCollection = new TraitCollection();
-		_siblingMarrier = new InjectorMarrier(this,_traitCollection);
-		_parentMarrier = new InjectorMarrier(this, _traitCollection);
+		_siblingMarrier = new InjectorMarrier(_traitCollection);
+		_parentMarrier = new InjectorMarrier(_traitCollection);
 		_traitToCast = new ObjectHash();
+		_traitToPair = new ObjectHash();
 		if(initTraits!=null)addTraits(initTraits);
 	}
-	private function setRoot(root:ComposeRoot):Void{
+	private function setRoot(root:ComposeRoot):Void {
+		if (_root != null) {
+			onRootRemove();
+		}
 		_root = root;
+		if (_root != null) {
+			onRootAdd();
+		}
 	}
 	/**
 	 * Gets the first trait of a certain type.
@@ -123,7 +132,7 @@ class ComposeItem
 	 * return an ITrait object to operate as it's proxy regarding other traits etc.
 	 * @param	trait		The trait to add to this item.
 	 */
-	public function addTrait(trait:Dynamic):Void{
+	public function addTrait(trait:Dynamic):Void {
 		_addTrait(trait);
 	}
 	/**
@@ -143,6 +152,9 @@ class ComposeItem
 		}
 		#end*/
 		
+		var traitPair:TraitPair<Dynamic> = { trait:trait, item:this };
+		_traitToPair.set(trait, traitPair);
+		
 		var castTrait:ITrait = getRealTrait(trait);
 		
 		if (castTrait != null) {
@@ -150,8 +162,8 @@ class ComposeItem
 			_traitToCast.set(trait, castTrait);
 		}
 		
-		_traitCollection.addTrait(trait);
-		if (_parentItem != null)_parentItem.addChildTrait(trait);
+		_traitCollection.addTrait(traitPair);
+		if (_parentItem != null)_parentItem.addChildTrait(traitPair);
 		
 		if (castTrait != null) {
 			var castInjectors:Iterable<IInjector> = castTrait.getInjectors();
@@ -183,8 +195,8 @@ class ComposeItem
 	 * Removes all traits from this item.
 	 */
 	public function removeAllTraits():Void{
-		while(_traitCollection.traits.length>0){
-			_removeTrait(_traitCollection.traits.first());
+		while(_traitCollection.traitPairs.length>0){
+			_removeTrait(_traitCollection.traitPairs.first());
 		}
 	}
 	private function _removeTrait(trait:Dynamic):Void{
@@ -193,6 +205,9 @@ class ComposeItem
 			Log.trace("WARNING:: ITrait being removed while ComposeItem added to root");
 		}
 		#end*/
+		
+		var traitPair:TraitPair<Dynamic> = _traitToPair.get(trait);
+		_traitToPair.delete(trait);
 		
 		var castTrait:ITrait = _traitToCast.get(trait);
 		if(castTrait!=null){
@@ -204,8 +219,8 @@ class ComposeItem
 			_traitToCast.delete(trait);
 		}
 		
-		_traitCollection.removeTrait(trait);
-		if(_parentItem!=null)_parentItem.removeChildTrait(trait);
+		_traitCollection.removeTrait(traitPair);
+		if(_parentItem!=null)_parentItem.removeChildTrait(traitPair);
 		
 		if(castTrait!=null){
 			castTrait.item = null;
@@ -222,6 +237,11 @@ class ComposeItem
 			_ascInjectors.add(injector);
 			if(_parentItem!=null)_parentItem.addAscendingInjector(injector);
 		}
+		if (injector.universal) {
+			if(_uniInjectors==null)_uniInjectors = new UniqueList();
+			_uniInjectors.add(injector);
+			if(_root!=null)_root.addUniversalInjector(injector);
+		}
 	}
 	private function removeTraitInjector(injector:IInjector):Void{
 		if(injector.siblings){
@@ -231,12 +251,16 @@ class ComposeItem
 			_ascInjectors.remove(injector);
 			if(_parentItem!=null)_parentItem.removeAscendingInjector(injector);
 		}
+		if(injector.universal){
+			_uniInjectors.remove(injector);
+			if(_root!=null)_root.removeUniversalInjector(injector);
+		}
 	}
 
 
 	private function onParentAdd():Void{
-		for(trait in _traitCollection.traits){
-			_parentItem.addChildTrait(trait);
+		for(traitPair in _traitCollection.traitPairs){
+			_parentItem.addChildTrait(traitPair);
 		}
 		if(_ascInjectors!=null){
 			for(injector in _ascInjectors){
@@ -245,12 +269,26 @@ class ComposeItem
 		}
 	}
 	private function onParentRemove():Void{
-		for(trait in _traitCollection.traits){
-			_parentItem.removeChildTrait(trait);
+		for(traitPair in _traitCollection.traitPairs){
+			_parentItem.removeChildTrait(traitPair);
 		}
 		if(_ascInjectors!=null){
 			for(injector in _ascInjectors){
 				_parentItem.removeAscendingInjector(injector);
+			}
+		}
+	}
+	private function onRootAdd():Void{
+		if(_uniInjectors!=null){
+			for(injector in _uniInjectors){
+				_root.addUniversalInjector(injector);
+			}
+		}
+	}
+	private function onRootRemove():Void{
+		if(_uniInjectors!=null){
+			for(injector in _uniInjectors){
+				_root.removeUniversalInjector(injector);
 			}
 		}
 	}
