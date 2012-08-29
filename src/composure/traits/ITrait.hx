@@ -34,3 +34,8 @@ interface ITrait
 	 */
 	public function getInjectors():Iterable<IInjector>;
 }
+
+typedef TraitPair<TraitType> =  {
+	var trait:TraitType;
+	var item:ComposeItem;
+}

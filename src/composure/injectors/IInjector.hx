@@ -15,8 +15,8 @@ interface IInjector
 
 	public var ownerTrait:Dynamic;
 
-	function injectorAdded(trait:Dynamic, item:ComposeItem):Void;
-	function injectorRemoved(trait:Dynamic, item:ComposeItem):Void;
+	function injectorAdded(traitPair:TraitPair<Dynamic>, item:ComposeItem):Void;
+	function injectorRemoved(traitPair:TraitPair<Dynamic>, item:ComposeItem):Void;
 
 	function shouldDescend(item:ComposeItem):Bool;
 	function shouldAscend(item:ComposeItem):Bool;

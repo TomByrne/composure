@@ -56,8 +56,9 @@ class AbstractInjector implements IInjector
 
 
 
-	public function injectorAdded(trait:Dynamic, item:ComposeItem):Void {
-		if (_addedTraits.add(trait) && addHandler != null) {
+	public function injectorAdded(traitPair:TraitPair<Dynamic>, item:ComposeItem):Void {
+		if (_addedTraits.add(traitPair) && addHandler != null) {
+			var trait:Dynamic = traitPair.trait;
 			if (passThroughInjector) {
 				if(passThroughItem){	
 					addHandler(this, trait, item);
@@ -74,8 +75,9 @@ class AbstractInjector implements IInjector
 		}
 	}
 
-	public function injectorRemoved(trait:Dynamic, item:ComposeItem):Void{
-		if (_addedTraits.remove(trait) && removeHandler!=null) {
+	public function injectorRemoved(traitPair:TraitPair<Dynamic>, item:ComposeItem):Void{
+		if (_addedTraits.remove(traitPair) && removeHandler!=null) {
+			var trait:Dynamic = traitPair.trait;
 			if (passThroughInjector) {
 				if (passThroughItem) {
 					removeHandler(this, trait, item);

@@ -6,6 +6,7 @@ import composure.traits.TraitCollection;
 import cmtc.ds.hash.ObjectHash;
 import haxe.Log;
 import org.tbyrne.logging.LogMsg;
+import composure.traits.ITrait;
 
 
 class InjectorMarrier
@@ -137,7 +138,7 @@ class InjectorMarrier
 			}
 			traitList.add(traitInjector);
 			
-			traitInjector.injectorAdded(traitPair.trait, traitPair.item);
+			traitInjector.injectorAdded(traitPair, traitPair.item);
 		}
 	}
 }

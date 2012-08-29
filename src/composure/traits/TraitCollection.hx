@@ -6,6 +6,7 @@ import org.tbyrne.logging.LogMsg;
 import org.tbyrne.collections.UniqueList;
 import composure.core.ComposeItem;
 import cmtc.ds.hash.ObjectHash;
+import composure.traits.ITrait;
 
 import msignal.Signal;
 
@@ -198,8 +199,4 @@ private class TraitTypeCache<TraitType>
 		getTraitsList = new UniqueList<TraitType>();
 		getTraits = getTraitsList;
 	}
-}
-typedef TraitPair<TraitType> =  {
-	var trait:TraitType;
-	var item:ComposeItem;
 }

@@ -6,6 +6,7 @@ import composure.injectors.InjectorMarrier;
 import composure.injectors.IInjector;
 import composure.traits.TraitCollection;
 import org.tbyrne.logging.LogMsg;
+import composure.traits.ITrait;
 
 
 /**
