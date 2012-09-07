@@ -18,9 +18,14 @@ import msignal.Signal;
  * 
  * @author Tom Byrne
  */
-@:build(SignalMacro.add({traitAdded:["TraitPair<Dynamic>"], traitRemoved:["TraitPair<Dynamic>"]}))
+@:build(LazyInst.check())
 class TraitCollection
 {
+	@lazyInst
+	public var traitAdded(default, null):Signal1<TraitPair<Dynamic>>;
+	
+	@lazyInst
+	public var traitRemoved(default, null):Signal1<TraitPair<Dynamic>>;
 	
 	public var testSignal(get_testSignal, null):Signal1<Dynamic>;
 	private function get_testSignal():Signal1<Dynamic>{
@@ -163,7 +168,7 @@ class TraitCollection
 			cache.invalid.add(traitPair);
 			cache.methodCachesSafe = false;
 		}
-		SignalMacro.dispatch("traitAdded", traitPair);
+		LazyInst.get(traitAdded).dispatch(traitPair);
 	}
 	public function removeTrait(traitPair:TraitPair<Dynamic>):Void{
 		traitPairs.remove(traitPair);
@@ -173,7 +178,7 @@ class TraitCollection
 			cache.invalid.remove(traitPair);
 			cache.methodCachesSafe = false;
 		}
-		SignalMacro.dispatch("traitRemoved", traitPair);
+		LazyInst.get(traitRemoved).dispatch(traitPair);
 	}
 }
 

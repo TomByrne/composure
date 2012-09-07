@@ -7,7 +7,7 @@
     <tag v="dependency"/>
     <tag v="injection"/>
     <description><![CDATA[A haxe library to assist coding in a composition design pattern. The library also allows for dependency injection via metadata.<br/><a href='http://www.tbyrne.org/introducing-composure-for-haxe-with-dependency-injection' target='_blank'>Intro to Composure - with Hello World</a><br/><a href='http://github.com/TomByrne/composure-hx/wiki' target='_blank'>Composure Wiki</a><br/><a href='http://github.com/TomByrne/composure-hx/wiki/Documentation---All-Classes' target='_blank'>Generated Documentation</a>]]></description>
-    <version name="0.92"><![CDATA[Fixed issue with trait removal introduced in v0.90.<br/>Created Macro to add signals.]]></version>
+    <version name="0.93"><![CDATA[Rebuilt and generalised 'Lazy Instantiation Macro']]></version>
 
     <depends name="msignal"/>
 </project>
