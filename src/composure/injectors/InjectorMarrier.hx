@@ -87,7 +87,7 @@ class InjectorMarrier
 			var traitPairs:UniqueList<TraitPair<Dynamic>> = _injectorLookup.get(traitInjector);
 			if(traitPairs!=null){
 				for(traitPair in traitPairs){
-					traitInjector.injectorRemoved(traitPair.trait, traitPair.item);
+					traitInjector.injectorRemoved(traitPair);
 					
 					var traitLookup:UniqueList<IInjector> = _traitLookup.get(traitPair.trait);
 					traitLookup.remove(traitInjector);
@@ -108,7 +108,7 @@ class InjectorMarrier
 		var injectors:UniqueList<IInjector> = _traitLookup.get(traitPair.trait);
 		if(injectors!=null){
 			for(traitInjector in injectors){
-				traitInjector.injectorRemoved(traitPair.trait, traitPair.item);
+				traitInjector.injectorRemoved(traitPair);
 				
 				var injectorLookup:UniqueList<Dynamic> = _injectorLookup.get(traitInjector);
 				injectorLookup.remove(traitPair.trait);
@@ -138,7 +138,7 @@ class InjectorMarrier
 			}
 			traitList.add(traitInjector);
 			
-			traitInjector.injectorAdded(traitPair, traitPair.item);
+			traitInjector.injectorAdded(traitPair);
 		}
 	}
 }

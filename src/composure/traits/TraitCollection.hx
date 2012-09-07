@@ -18,26 +18,20 @@ import msignal.Signal;
  * 
  * @author Tom Byrne
  */
+@:build(SignalMacro.add({traitAdded:["TraitPair<Dynamic>"], traitRemoved:["TraitPair<Dynamic>"]}))
 class TraitCollection
 {
 	
-	public var traitAdded(getTraitAdded, null):Signal1<TraitPair<Dynamic>>;
-	private function getTraitAdded():Signal1<TraitPair<Dynamic>> {
-		if (_traitAdded == null)_traitAdded = new Signal1();
-		return _traitAdded;
+	public var testSignal(get_testSignal, null):Signal1<Dynamic>;
+	private function get_testSignal():Signal1<Dynamic>{
+		if (_testSignal == null)_testSignal = new Signal1();
+		return _testSignal;
 	}
-	public var traitRemoved(getTraitRemoved, null):Signal1<TraitPair<Dynamic>>;
-	private function getTraitRemoved():Signal1<TraitPair<Dynamic>>{
-		if (_traitRemoved == null)_traitRemoved = new Signal1();
-		return _traitRemoved;
-	}
-
-	private var _traitRemoved:Signal1<TraitPair<Dynamic>>;
-	private var _traitAdded:Signal1<TraitPair<Dynamic>>;
+	private var _testSignal:Signal1<Dynamic>;
+	
 	private var _traitTypeCache:Hash < TraitTypeCache<Dynamic> > ;
 	
 	public var traitPairs(default, null):UniqueList<TraitPair<Dynamic>>;
-
 
 	public function new()
 	{
@@ -169,7 +163,7 @@ class TraitCollection
 			cache.invalid.add(traitPair);
 			cache.methodCachesSafe = false;
 		}
-		if (_traitAdded != null)_traitAdded.dispatch(traitPair);
+		SignalMacro.dispatch("traitAdded", traitPair);
 	}
 	public function removeTrait(traitPair:TraitPair<Dynamic>):Void{
 		traitPairs.remove(traitPair);
@@ -179,7 +173,7 @@ class TraitCollection
 			cache.invalid.remove(traitPair);
 			cache.methodCachesSafe = false;
 		}
-		if(_traitRemoved!=null)_traitRemoved.dispatch(traitPair);
+		SignalMacro.dispatch("traitRemoved", traitPair);
 	}
 }
 

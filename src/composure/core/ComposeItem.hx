@@ -211,7 +211,7 @@ class ComposeItem
 		
 		var castTrait:ITrait = _traitToCast.get(trait);
 		if(castTrait!=null){
-			castTrait = cast(trait, ITrait);
+			//castTrait = cast(trait, ITrait);
 			var castInjectors:Iterable<IInjector> = castTrait.getInjectors();
 			for(injector in castInjectors){
 				removeTraitInjector(injector);
