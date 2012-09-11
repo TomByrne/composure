@@ -14,16 +14,11 @@ import msignal.Signal;
 class LazyInst 
 {
 	private static var _metaName:String = "lazyInst";
-	//private static var TYPE_PARAM_PATTERN:EReg = ~/^(.*?)<(.*)>$/;
 
 	@:macro public static function check() :Array<Field>
 	{
 		var fields:Array<Field> = Context.getBuildFields();
 		var pos:Position = Context.getLocalClass().get().pos;
-		
-		/*for (field in fields) {
-			trace(field);
-		}*/
 		
 		var signalNames:Array<String> = [];
 		var signalInfos:Array<SignalInfo> = [];
@@ -85,36 +80,146 @@ class LazyInst
 		}
 		return fields;
 	}
-	@:macro public static function get<PropType>(prop:ExprOf<PropType>):ExprOf<PropType> 
+	@:macro public static function exec(expr:Expr):Expr
 	{
 		// The get macro adds something like this:
 		//	if (_prop != null)_prop
 		// which will then be followed by whatever expression was used after the get() call
 		
 		var pos:Position = Context.currentPos();
+		var fields:Array<ClassField> = Context.getLocalClass().get().fields.get();
 		
-		var wrongFormat:Bool;
-		var privateName:String;
-		switch(prop.expr) {
-			case EConst(c):
-				switch(c) {
-					case CIdent(str):
-						privateName = "_" + str;
-					default:
-						wrongFormat = true;
-				}
-			default:
-				wrongFormat = true;
-		}
-		if (wrongFormat) {
-			throw new Error("Lazy getting must reference a lazy property, as tagged with the @lazyInst metadata.", pos);
-			return null;
+		var reads:Array<String> = [];
+		findLocalReads(reads, expr, fields);
+		if (reads.length==0) {
+			throw new Error("No lazy props were found", pos);
 		}
 		
-		return { expr : EIf( { expr : EBinop(OpNotEq, { expr : EConst(CIdent(privateName)), pos : pos }, { expr : EConst(CIdent("null")), pos : pos } ), pos : pos }, { expr : EConst(CIdent(privateName)), pos : pos }, null), pos : pos };
+		var ifExpr:Expr;
+		for (prop in reads) {
+			var newExpr = EBinop(OpNotEq, { expr : EConst(CIdent("_"+prop)), pos : pos }, { expr : EConst(CIdent("null")), pos : pos } );
+			if (ifExpr != null) {
+				ifExpr = { expr : EBinop(OpBoolAnd,ifExpr,{ expr:newExpr, pos:pos }), pos : pos };
+			}else {
+				ifExpr = { expr:newExpr, pos:pos };
+			}
+		}
+		return { expr : EIf( ifExpr, expr, null), pos : pos };
 	}
 	
 	#if macro
+	private static function findLocalReads(reads:Array<String>, expr:Expr, fields:Array<ClassField>):Void {
+		switch(expr.expr) {
+			case EConst(c):
+				switch(c) {
+					case CIdent(str):
+						if (hasLazyField(fields, str)) {
+							if (Lambda.indexOf(reads, str)==-1)reads.push(str);
+							
+							expr.expr = EConst(CIdent("_"+str));
+						}
+					default:
+				}
+			case ECall(e,params):
+				findLocalReads(reads, e, fields);
+				for (e in params) {
+					findLocalReads(reads, e, fields);
+				}
+			case EBlock(exprList):
+				for (e in exprList) {
+					findLocalReads(reads, e, fields);
+				}
+			case EArray( e1, e2 ):
+				findLocalReads(reads, e1, fields);
+				findLocalReads(reads, e2, fields);
+			case EBinop( op, e1, e2 ):
+				findLocalReads(reads, e1, fields);
+				findLocalReads(reads, e2, fields);
+			case EField( e , field ):
+				findLocalReads(reads, e, fields);
+				switch(e.expr) {
+					case EConst(c):
+						switch(c) {
+							case CIdent(str):
+								if (str == "this" && hasLazyField(fields, field)) {
+									if (Lambda.indexOf(reads, field)==-1)reads.push(field);
+							
+									expr.expr = EField(e, "_"+field);
+								}
+							default:
+						}
+					default:
+				}
+			case EParenthesis( e ):
+				findLocalReads(reads, e, fields);
+			case EObjectDecl( decFields ):
+				for (field in decFields) {
+					findLocalReads(reads, field.expr, fields);
+				}
+			case EArrayDecl( values ):
+				for (e in values) {
+					findLocalReads(reads, e, fields);
+				}
+			case EUnop( op, postFix, e ):
+				findLocalReads(reads, e, fields);
+			case EVars( vars ):
+				for (vari in vars) {
+					findLocalReads(reads, vari.expr, fields);
+				}
+			case EFor( it, expr ):
+				findLocalReads(reads, expr, fields);
+			case EIn( e1, e2 ):
+				findLocalReads(reads, e1, fields);
+				findLocalReads(reads, e2, fields);
+			case EIf( econd, eif, eelse ):
+				findLocalReads(reads, econd, fields);
+				findLocalReads(reads, eif, fields);
+				if(eelse!=null)findLocalReads(reads, eelse, fields);
+			case EWhile( econd, e, normalWhile ):
+				findLocalReads(reads, econd, fields);
+				findLocalReads(reads, e, fields);
+			case ESwitch( e, cases, edef  ):
+				findLocalReads(reads, e, fields);
+				for (caseinfo in cases) {
+					findLocalReads(reads, caseinfo.expr, fields);
+				}
+				if(edef!=null)findLocalReads(reads, edef, fields);
+			case ETry( e, catches ):
+				findLocalReads(reads, e, fields);
+				for (catchinfo in catches) {
+					findLocalReads(reads, catchinfo.expr, fields);
+				}
+			case EReturn( e ):
+				if(e!=null)findLocalReads(reads, e, fields);
+			case EUntyped( e ):
+				findLocalReads(reads, e, fields);
+			case EThrow( e ):
+				findLocalReads(reads, e, fields);
+			case ECast( e, t ):
+				findLocalReads(reads, e, fields);
+			case EDisplay( e, isCall ):
+				findLocalReads(reads, e, fields);
+			case ETernary( econd, eif, eelse ):
+				findLocalReads(reads, econd, fields);
+				findLocalReads(reads, eif, fields);
+				findLocalReads(reads, eelse, fields);
+			case ECheckType( e, t ):
+				findLocalReads(reads, e, fields);
+			#if !haxe3
+			case EType( e, field ):
+				findLocalReads(reads, e, fields);
+			#end
+			default:
+		}
+	}
+	private static function hasLazyField(fields:Array<ClassField>, fieldName:String):Bool {
+		for (field in fields) {
+			if (field.name == fieldName) {
+				return field.meta.has(_metaName);
+			}
+		}
+		return false;
+	}
 	private static function findField(fields:Array<Field>, fieldName:String):Field {
 		for (field in fields) {
 			if (field.name == fieldName) {

@@ -22,10 +22,13 @@ import msignal.Signal;
 class TraitCollection
 {
 	@lazyInst
-	public var traitAdded(default, null):Signal1<TraitPair<Dynamic>>;
+	public var traitAdded:Signal1<TraitPair<Dynamic>>;
 	
 	@lazyInst
-	public var traitRemoved(default, null):Signal1<TraitPair<Dynamic>>;
+	public var traitRemoved:Signal1<TraitPair<Dynamic>>;
+	
+	@lazyInst
+	public var teest:Signal1<TraitPair<Dynamic>>;
 	
 	public var testSignal(get_testSignal, null):Signal1<Dynamic>;
 	private function get_testSignal():Signal1<Dynamic>{
@@ -168,7 +171,8 @@ class TraitCollection
 			cache.invalid.add(traitPair);
 			cache.methodCachesSafe = false;
 		}
-		LazyInst.get(traitAdded).dispatch(traitPair);
+		LazyInst.exec(traitAdded.dispatch(traitPair));
+		LazyInst.exec(teest.dispatch(traitPair));
 	}
 	public function removeTrait(traitPair:TraitPair<Dynamic>):Void{
 		traitPairs.remove(traitPair);
@@ -178,7 +182,7 @@ class TraitCollection
 			cache.invalid.remove(traitPair);
 			cache.methodCachesSafe = false;
 		}
-		LazyInst.get(traitRemoved).dispatch(traitPair);
+		LazyInst.exec(traitRemoved.dispatch(traitPair));
 	}
 }
 
