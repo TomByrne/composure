@@ -1,4 +1,9 @@
 package composure.utilTraits;
+
+#if macro
+import haxe.macro.Context;
+import haxe.macro.Expr;
+#else
 import haxe.Log;
 import org.tbyrne.collections.UniqueList;
 import composure.injectors.Injector;
@@ -7,17 +12,18 @@ import composure.core.ComposeItem;
 import composure.traits.AbstractTrait;
 import org.tbyrne.logging.LogMsg;
 import cmtc.ds.hash.ObjectHash;
+#end
 
 /**
- * The TraitFurnisher class is used to add traits to an item in response
+ * The Furnisher class is used to add traits to an item in response
  * to a certain type of trait being added to the item.<br/>
  * <br/>
  * This is very useful when creating interchangable libraries. For example,
  * when wanting to add a platform specific display trait to a items in the
  * presence of another trait:
  * <pre><code>
- * var traitFurnisher:TraitFurnisher = new TraitFurnisher(AddType.traitItem, RectangleInfo, [HtmlRectangleDisplay]);
- * stage.addTrait(traitFurnisher);
+ * var furnisher:Furnisher = new Furnisher(RectangleInfo, [TType(HtmlRectangleDisplay)]);
+ * stage.addTrait(furnisher);
  * </code></pre>
  * In this example, any item which has a RectangleInfo trait added to it (representing
  * a rectangle's position and size) will also get a HtmlRectangleDisplay trait added to
@@ -28,8 +34,36 @@ import cmtc.ds.hash.ObjectHash;
  * @author Tom Byrne
  */
 
-class TraitFurnisher extends AbstractTrait
+class Furnisher
+#if !macro
+extends AbstractTrait
+#end
 {
+	/* wraps an expression in TFact(function():Dynamic{ return ...  expr  ...  })
+	 * It will only add the return statement on the last line of your expression (if there isn't already one)
+	 */
+	@:macro public static function fact(expr:Expr):Expr {
+		var pos = Context.currentPos();
+		switch(expr.expr) {
+			case EReturn(e):
+				//ignore
+			case EBlock(exprs):
+				var lastExpr:Expr = exprs[exprs.length - 1];
+				switch(lastExpr.expr) {
+					case EReturn(e):
+						// ignore
+					default:
+						exprs[exprs.length - 1] = { expr:EReturn( lastExpr ), pos:pos };
+						expr.expr = EBlock(exprs);
+				}
+			default:
+				expr = { expr:EReturn( expr ), pos:pos };
+		}
+		return { expr : ECall({ expr : EConst(CIdent("TFact")), pos : pos },[{ expr : EFunction(null,{ args : [], expr : expr, params : [], ret : TPath({ name : "Dynamic", pack : [], params : [], sub : null }) }), pos : pos }]), pos : pos }
+	}
+	
+	#if !macro
+	
 	public var concernedTraitType(default, set_concernedTraitType):Dynamic;
 	private function set_concernedTraitType(value:Dynamic):Dynamic {
 		if (_injector == null) {
@@ -75,38 +109,10 @@ class TraitFurnisher extends AbstractTrait
 		searchAscendants = value;
 		return value;
 	}
-	public var adoptTrait(default, set_adoptTrait):Bool;
-	private function set_adoptTrait(value:Bool):Bool{
-		adoptTrait = value;
-		if(_foundTraits!=null){
-			if (value) {
-				for (trait in _foundTraits) {
-					var item = getItem(trait);
-					var origItem = _originalItems.get(trait);
-					if (item != origItem) {
-						origItem.removeTrait(trait);
-						item.addTrait(trait);
-					}
-				}
-			}else {
-				for (trait in _foundTraits) {
-					var item = getItem(trait);
-					var origItem = _originalItems.get(trait);
-					if (item != origItem) {
-						item.removeTrait(trait);
-						origItem.addTrait(trait);
-					}
-				}
-			}
-		}
-		return value;
-	}
 	
 	private var _addType:AddType;
 	private var _injector:Injector;
-	private var _traits:UniqueList<Dynamic>;
-	private var _traitTypes:UniqueList<Dynamic>;
-	private var _traitFactories:UniqueList<Void->Dynamic>;
+	private var _addTraits:UniqueList<AddTrait>;
 	private var _foundTraits:UniqueList<Dynamic>;
 	private var _addedTraits:ObjectHash<Dynamic,Array<Dynamic>>;
 	private var _traitToItems:ObjectHash<Dynamic,ComposeItem>;
@@ -115,18 +121,17 @@ class TraitFurnisher extends AbstractTrait
 	
 	private var _ignoreTraitChanges:Bool;
 
-	public function new(addType:AddType, ?concernedTraitType:Dynamic,?traitTypes:Array<Dynamic>,?traitFactories:Array<Void->Dynamic>,searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false,?adoptTrait:Bool) 
+	public function new(?concernedTraitType:Dynamic, ?addTraits:Array<AddTrait>, ?addType:AddType, searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false) 
 	{
 		super();
 		
-		_addType = addType;
+		if (addType != null)_addType = addType;
+		else _addType = AddType.traitItem;
 		
 		_addedTraits = new ObjectHash < Dynamic, Array<Dynamic> > ();
 		
-		if(traitTypes!=null)_traitTypes = new UniqueList<Dynamic>(traitTypes);
-		if(traitFactories!=null)_traitFactories = new UniqueList<Void->Dynamic>(traitFactories);
+		_addTraits = new UniqueList<AddTrait>(addTraits);
 		
-		this.adoptTrait = adoptTrait;
 		this.searchSiblings = searchSiblings;
 		this.searchDescendants = searchDescendants;
 		this.searchAscendants = searchAscendants;
@@ -147,30 +152,13 @@ class TraitFurnisher extends AbstractTrait
 		_originalItems.set(trait, origItem);
 		
 		var item:ComposeItem = registerItem(trait, origItem);
-		if (adoptTrait && item != origItem) {
-			origItem.removeTrait(trait);
-			item.addTrait(trait);
-		}
 		
 		var traitsAdded:Array<Dynamic> = [];
-		if (_traits != null) {
-			for (otherTrait in _traits) {
-				item.addTrait(otherTrait);
-				traitsAdded.push(otherTrait);
-			}
-		}
-		if (_traitTypes != null) {
-			for (traitType in _traitTypes) {
-				var otherTrait:Dynamic = Type.createInstance(traitType,[]);
-				item.addTrait(otherTrait);
-				traitsAdded.push(otherTrait);
-			}
-		}
-		if (_traitFactories != null) {
-			for (traitFactory in _traitFactories) {
-				var otherTrait:Dynamic = traitFactory();
-				item.addTrait(otherTrait);
-				traitsAdded.push(otherTrait);
+		for (addTrait in _addTraits) {
+			var newTrait = getTrait(trait, origItem, addTrait);
+			if (newTrait != null) {
+				item.addTrait(newTrait);
+				traitsAdded.push(newTrait);
 			}
 		}
 		_addedTraits.set(trait, traitsAdded);
@@ -183,10 +171,6 @@ class TraitFurnisher extends AbstractTrait
 		_foundTraits.remove(trait);
 		
 		var origItem = _originalItems.get(trait);
-		if (adoptTrait && origItem != currItem) {
-			currItem.removeTrait(trait);
-			origItem.addTrait(trait);
-		}
 		_originalItems.delete(trait);
 		
 		var item:ComposeItem = getItem(trait);
@@ -196,55 +180,57 @@ class TraitFurnisher extends AbstractTrait
 		}
 		_addedTraits.delete(trait);
 		
-		unregisterItem(trait, item);
+		unregisterItem(trait, item, origItem);
 		
 		_ignoreTraitChanges = false;
 	}
 	
-	public function addTrait(trait:Dynamic):Void {
-		if (_traits == null) {
-			_traits = new UniqueList<Dynamic>();
-		}
-		_traits.add(trait);
+	public function addTrait(addTrait:AddTrait):Void {
+		_addTraits.add(addTrait);
 		
 		if(_foundTraits!=null){
 			for (foundTrait in _foundTraits) {
-				getItem(foundTrait).addTrait(trait);
-				var traitsAdded:Array<Dynamic> = _addedTraits.get(foundTrait);
-				traitsAdded.push(trait);
+				var item = getItem(foundTrait);
+				var trait = getTrait(foundTrait, item, addTrait);
+				if (trait != null) {
+					item.addTrait(trait);
+					var traitsAdded:Array<Dynamic> = _addedTraits.get(foundTrait);
+					traitsAdded.push(trait);
+				}
 			}
 		}
 	}
 	
-	public function addTraitType(traitType:Class<Dynamic>):Void {
-		if (_traitTypes == null) {
-			_traitTypes = new UniqueList<Dynamic>();
+	private function getTrait(foundTrait:Dynamic, item:ComposeItem, addTrait:AddTrait):Dynamic {
+		switch(addTrait) {
+			case TType(t, rules):
+				if (testRules(foundTrait, item, rules)) {
+					return Type.createInstance(t,[]);
+				}
+			case TFact(f, rules):
+				if (testRules(foundTrait, item, rules)) {
+					return f();
+				}
+			case TInst(t, rules):
+				if (testRules(foundTrait, item, rules)) {
+					return t;
+				}
 		}
-		_traitTypes.add(traitType);
-		
-		if(_foundTraits!=null){
-			for (trait in _foundTraits) {
-				var otherTrait:Dynamic = Type.createInstance(traitType,[]);
-				getItem(trait).addTrait(otherTrait);
-				var traitsAdded:Array<Dynamic> = _addedTraits.get(trait);
-				traitsAdded.push(otherTrait);
-			}
-		}
+		return null;
 	}
-	
-	public function addTraitFactory(traitFactory:Void->Dynamic):Void {
-		if (_traitFactories == null) {
-			_traitFactories = new UniqueList<Void->Dynamic>();
-		}
-		_traitFactories.add(traitFactory);
-		
-		if(_foundTraits!=null){
-			for (trait in _foundTraits) {
-				var otherTrait:Dynamic = traitFactory();
-				getItem(trait).addTrait(otherTrait);
-				var traitsAdded:Array<Dynamic> = _addedTraits.get(trait);
-				traitsAdded.push(otherTrait);
+	private function testRules(foundTrait:Dynamic, item:ComposeItem, rules:Array<AddRule>):Bool {
+		if (rules == null) {
+			return true;
+		}else {
+			for (rule in rules) {
+				switch(rule) {
+					case IfHas(t):
+						if (item.getTrait(t) == null) return false;
+					case UnlessHas(t):
+						if (item.getTrait(t) != null) return false;
+				}
 			}
+			return true;
 		}
 	}
 	
@@ -256,14 +242,17 @@ class TraitFurnisher extends AbstractTrait
 			_traitToItems = new ObjectHash<Dynamic,ComposeItem>();
 		}
 		var item:ComposeItem;
+		var adoptTrait:Bool = false;
 		
 		switch(_addType) {
-			case AddType.selfItem:
+			case AddType.selfItem(adoptMatchedTrait):
 				item = this.item;
+				adoptTrait = adoptMatchedTrait;
 			case AddType.traitItem:
 				item = origItem;
-			case AddType.adoptItem(newParent):
+			case AddType.adoptItem(newParent, adoptMatchedTrait):
 				item = origItem;
+				adoptTrait = adoptMatchedTrait;
 				if (_originalParents == null) {
 					_originalParents = new ObjectHash<Dynamic,ComposeGroup>();
 				}
@@ -272,18 +261,23 @@ class TraitFurnisher extends AbstractTrait
 					origItem.parentItem.removeChild(origItem);
 					newParent.addChild(origItem);
 				}
-			case AddType.item(specItem):
+			case AddType.item(specItem, adoptMatchedTrait):
 				item = specItem;
+				adoptTrait = adoptMatchedTrait;
 			default:
 				item = new ComposeGroup();
 				switch(_addType) {
-					case AddType.selfSibling:
+					case AddType.selfSibling(adoptMatchedTrait):
 						this.item.parentItem.addChild(item);
-					case AddType.traitSibling:
+						adoptTrait = adoptMatchedTrait;
+					case AddType.traitSibling(adoptMatchedTrait):
 						origItem.parentItem.addChild(item);
-					case AddType.selfChild:
+						adoptTrait = adoptMatchedTrait;
+					case AddType.selfChild(adoptMatchedTrait):
 						this.group.addChild(item);
-					case AddType.traitChild:
+						adoptTrait = adoptMatchedTrait;
+					case AddType.traitChild(adoptMatchedTrait):
+						adoptTrait = adoptMatchedTrait;
 						if (Std.is(origItem, ComposeGroup)) {
 							var origGroup:ComposeGroup;
 							untyped origGroup = origItem;
@@ -292,49 +286,84 @@ class TraitFurnisher extends AbstractTrait
 						#if debug
 						else Log.trace(new LogMsg("AddType traitChild must be used on a ComposeGroup"));
 						#end
-					case AddType.itemChild(group):
+					case AddType.itemChild(group, adoptMatchedTrait):
 						group.addChild(item);
-					case AddType.itemSibling(sibling):
+						adoptTrait = adoptMatchedTrait;
+					case AddType.itemSibling(sibling, adoptMatchedTrait):
 						sibling.parentItem.addChild(item);
+						adoptTrait = adoptMatchedTrait;
 					default:
 						Log.trace(new LogMsg("Unsupported AddType",[LogType.devError]));
 				}
 		}
 		_traitToItems.set(trait, item);
+		
+		if (adoptTrait && item != origItem) {
+			origItem.removeTrait(trait);
+			item.addTrait(trait);
+		}
 		return item;
 	}
-	private function unregisterItem(trait:Dynamic, currItem:ComposeItem):Void {
+	private function unregisterItem(trait:Dynamic, currItem:ComposeItem, origItem:ComposeItem):Void {
+		var adoptTrait:Bool;
 		switch(_addType) {
-			case AddType.traitSibling, AddType.selfSibling, AddType.traitChild, AddType.selfChild:
+			case AddType.traitSibling(adoptMatchedTrait), AddType.selfSibling(adoptMatchedTrait), AddType.traitChild(adoptMatchedTrait), AddType.selfChild(adoptMatchedTrait):
 				currItem.parentItem.removeChild(currItem);
-			case AddType.itemChild(group):
+				adoptTrait = adoptMatchedTrait;
+			case AddType.itemChild(group, adoptMatchedTrait):
 				currItem.parentItem.removeChild(currItem);
-			case AddType.itemSibling(group):
+				adoptTrait = adoptMatchedTrait;
+			case AddType.itemSibling(group, adoptMatchedTrait):
 				currItem.parentItem.removeChild(currItem);
-			case AddType.adoptItem(newParent):
+				adoptTrait = adoptMatchedTrait;
+			case AddType.adoptItem(newParent, adoptMatchedTrait):
 				var oldParent:ComposeGroup = _originalParents.get(trait);
 				if (oldParent != currItem.parentItem) {
 					item.parentItem.removeChild(currItem);
 					oldParent.addChild(currItem);
 				}
-			default:
+				adoptTrait = adoptMatchedTrait;
+			case AddType.selfItem(adoptMatchedTrait):
+				adoptTrait = adoptMatchedTrait;
+			case AddType.item(specItem, adoptMatchedTrait):
+				adoptTrait = adoptMatchedTrait;
+			case AddType.traitItem:
+				adoptTrait = false;
 		}
 		_traitToItems.delete(trait);
+		
+		if (adoptTrait && origItem != currItem) {
+			currItem.removeTrait(trait);
+			origItem.addTrait(trait);
+		}
 	}
+	#end
+}
+
+#if !macro
+enum AddTrait {
+	TType(t:Class<Dynamic>, ?rules:Array<AddRule>);
+	TFact(f:Void->Dynamic, ?rules:Array<AddRule>);
+	TInst(t:Dynamic, ?rules:Array<AddRule>);
+}
+enum AddRule {
+	IfHas(t:Class<Dynamic>);
+	UnlessHas(t:Class<Dynamic>);
 }
 
 enum AddType {
-	adoptItem(newParent:ComposeGroup);
+	adoptItem(newParent:ComposeGroup, ?adoptMatchedTrait:Bool);
 	
 	traitItem;
-	traitSibling;
-	traitChild;
+	traitSibling(?adoptMatchedTrait:Bool);
+	traitChild(?adoptMatchedTrait:Bool);
 	
-	selfItem;
-	selfSibling;
-	selfChild;
+	selfItem(?adoptMatchedTrait:Bool);
+	selfSibling(?adoptMatchedTrait:Bool);
+	selfChild(?adoptMatchedTrait:Bool);
 	
-	item(item:ComposeItem);
-	itemChild(group:ComposeGroup);
-	itemSibling(item:ComposeItem);
+	item(item:ComposeItem, ?adoptMatchedTrait:Bool);
+	itemChild(group:ComposeGroup, ?adoptMatchedTrait:Bool);
+	itemSibling(item:ComposeItem, ?adoptMatchedTrait:Bool);
 }
+#end

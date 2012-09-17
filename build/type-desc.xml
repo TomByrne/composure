@@ -2484,14 +2484,14 @@
 	<e path="Void"/>
 </f></new>
 		<haxe_doc><![CDATA[
- * The TraitFurnisher class is used to add traits to an item in response
+ * The Furnisher class is used to add traits to an item in response
  * to a certain type of trait being added to the item.<br/>
  * <br/>
  * This is very useful when creating interchangable libraries. For example,
  * when wanting to add a platform specific display trait to a items in the
  * presence of another trait:
  * <pre><code>
- * var traitFurnisher:TraitFurnisher = new TraitFurnisher(AddType.traitItem, RectangleInfo, [HtmlRectangleDisplay]);
+ * var traitFurnisher:Furnisher = new Furnisher(AddType.traitItem, RectangleInfo, [HtmlRectangleDisplay]);
  * stage.addTrait(traitFurnisher);
  * </code></pre>
  * In this example, any item which has a RectangleInfo trait added to it (representing

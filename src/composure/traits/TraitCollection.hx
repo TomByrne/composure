@@ -27,9 +27,6 @@ class TraitCollection
 	@lazyInst
 	public var traitRemoved:Signal1<TraitPair<Dynamic>>;
 	
-	@lazyInst
-	public var teest:Signal1<TraitPair<Dynamic>>;
-	
 	public var testSignal(get_testSignal, null):Signal1<Dynamic>;
 	private function get_testSignal():Signal1<Dynamic>{
 		if (_testSignal == null)_testSignal = new Signal1();
@@ -172,7 +169,6 @@ class TraitCollection
 			cache.methodCachesSafe = false;
 		}
 		LazyInst.exec(traitAdded.dispatch(traitPair));
-		LazyInst.exec(teest.dispatch(traitPair));
 	}
 	public function removeTrait(traitPair:TraitPair<Dynamic>):Void{
 		traitPairs.remove(traitPair);

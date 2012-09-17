@@ -23,7 +23,7 @@ class InjectorMarrier
 				_traits.traitRemoved.remove(onTraitRemoved);
 			}
 			_traits = value;
-			if(_traits!=null){
+			if (_traits != null) {
 				_traits.traitAdded.add(onTraitAdded);
 				_traits.traitRemoved.add(onTraitRemoved);
 			}
