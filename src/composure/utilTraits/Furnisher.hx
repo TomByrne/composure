@@ -34,6 +34,7 @@ import cmtc.ds.hash.ObjectHash;
  * @author Tom Byrne
  */
 
+@:keep
 class Furnisher
 #if !macro
 extends AbstractTrait

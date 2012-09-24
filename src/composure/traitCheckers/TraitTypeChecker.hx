@@ -7,6 +7,7 @@ import composure.injectors.Injector;
  * @author Tom Byrne
  */
 
+@:keep
 class TraitTypeChecker 
 {
 

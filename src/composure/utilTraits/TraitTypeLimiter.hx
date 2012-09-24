@@ -3,7 +3,7 @@ import composure.core.ComposeItem;
 import composure.injectors.AbstractInjector;
 import composure.injectors.Injector;
 import composure.traits.AbstractTrait;
-import time.types.ds.ObjectHash;
+import cmtc.ds.hash.ObjectHash;
 
 /**
  * TraitTypeLimiter is used to restrict the amount of a certain type of trait
@@ -18,6 +18,7 @@ import time.types.ds.ObjectHash;
  * @author Tom Byrne
  */
 
+@:keep
 class TraitTypeLimiter extends AbstractTrait
 {
 	

@@ -7,8 +7,10 @@ import composure.utilTraits.Furnisher;
 import composure.utilTraits.TraitTypeLimiter;
 import composure.injectors.PropInjector;
 import composure.macro.InjectorMacro;
+import LazyInst;
 
 class ClassIncluder {
 	static function main() {
+		
 	}
 }

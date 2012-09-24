@@ -1,0 +1,30 @@
+-swf9 testBin/HelloWorld.swf
+-main composureTest.HelloWorld
+-debug
+-D fdb
+-swf-version 9
+-swf-header 100:100:60:0
+-cp ../src
+-cp ../testSrc
+-lib msignal
+
+--next
+
+-swf9 ../bin/Composure.swc
+-main composureTest.ClassIncluder
+-swf-version 9
+-swf-header 100:100:60:0
+-cp ../src
+-cp ../testSrc
+-lib msignal
+--dead-code-elimination
+
+--next
+
+-js ../bin/Composure.js
+-main composureTest.ClassIncluder
+-D fdb
+-cp ../src
+-cp ../testSrc
+-lib msignal
+--dead-code-elimination

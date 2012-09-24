@@ -10,6 +10,7 @@ import org.tbyrne.logging.LogMsg;
  * @author Tom Byrne
  */
 
+@:keep
 class GenerationChecker 
 {
 
