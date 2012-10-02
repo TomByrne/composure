@@ -56,8 +56,10 @@ class InjectorMacro
 						if (addExpr == null) addExpr = [];
 						switch(field.kind) {
 							case FVar( t , e  ):
+								makeAccessPublic(field);
 								createPropInjector(field.name, getTypeExpr(t, pos), false, meta, addExpr, pos, addInjectorMethod);
 							case FProp( get , set , t , e  ):
+								makeAccessPublic(field);
 								createPropInjector(field.name, getTypeExpr(t, pos), (get=="null" || get=="never"), meta, addExpr, pos, addInjectorMethod);
 							default:
 								//ignore
@@ -142,6 +144,9 @@ class InjectorMacro
     }
 	
 	#if macro
+	private static function makeAccessPublic(field:Field):Void {
+		field.access = [APublic];
+	}
 	private static function doesTypeInherit(classpath:String, type:Type):Bool {
 		switch(type) {
 			
