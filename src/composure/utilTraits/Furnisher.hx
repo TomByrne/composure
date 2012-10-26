@@ -40,7 +40,7 @@ class Furnisher
 extends AbstractTrait
 #end
 {
-	/* wraps an expression in TFact(function():Dynamic{ return ...  expr  ...  })
+	/* wraps an expression in TFact(function(tag:Dynamic):Dynamic{ return ...  expr  ...  })
 	 * It will only add the return statement on the last line of your expression (if there isn't already one)
 	 */
 	@:macro public static function fact(expr:Expr):Expr {
@@ -60,7 +60,8 @@ extends AbstractTrait
 			default:
 				expr = { expr:EReturn( expr ), pos:pos };
 		}
-		return { expr : ECall({ expr : EConst(CIdent("TFact")), pos : pos },[{ expr : EFunction(null,{ args : [], expr : expr, params : [], ret : TPath({ name : "Dynamic", pack : [], params : [], sub : null }) }), pos : pos }]), pos : pos }
+		var args = [ { name : "tag", type : TPath( { name : "Dynamic", pack : [], params : [], sub : null } ), opt : false, value : null } ];
+		return { expr : ECall({ expr : EConst(CIdent("TFact")), pos : pos },[{ expr : EFunction(null,{ args : args, expr : expr, params : [], ret : TPath({ name : "Dynamic", pack : [], params : [], sub : null }) }), pos : pos }]), pos : pos }
 	}
 	
 	#if !macro
@@ -210,7 +211,7 @@ extends AbstractTrait
 				}
 			case TFact(f, rules):
 				if (testRules(foundTrait, item, rules)) {
-					return f();
+					return f(foundTrait);
 				}
 			case TInst(t, rules):
 				if (testRules(foundTrait, item, rules)) {
@@ -344,7 +345,7 @@ extends AbstractTrait
 #if !macro
 enum AddTrait {
 	TType(t:Class<Dynamic>, ?rules:Array<AddRule>);
-	TFact(f:Void->Dynamic, ?rules:Array<AddRule>);
+	TFact(f:Dynamic->Dynamic, ?rules:Array<AddRule>);
 	TInst(t:Dynamic, ?rules:Array<AddRule>);
 }
 enum AddRule {
