@@ -955,6 +955,10 @@
 	<t path="composure.traits.TraitPair"><d/></t>
 	<e path="Void"/>
 </f></injectorAdded>
+		<ownerTraitTyped public="1">
+			<c path="composure.traits.ITrait"/>
+			<meta/>
+		</ownerTraitTyped>
 		<ownerTrait public="1">
 			<d/>
 			<meta/>
@@ -982,7 +986,7 @@
 	</class>
 	<class path="composure.injectors.AbstractInjector" params="" file="../src/composure/injectors/AbstractInjector.hx">
 		<implements path="composure.injectors.IInjector"/>
-		<isInterestedIn public="1" set="method" line="123">
+		<isInterestedIn public="1" set="method" line="138">
 			<f a="item:trait">
 				<c path="composure.core.ComposeItem"/>
 				<d/>
@@ -990,28 +994,28 @@
 			</f>
 			<meta/>
 		</isInterestedIn>
-		<shouldAscend public="1" set="method" line="119">
+		<shouldAscend public="1" set="method" line="131">
 			<f a="item">
 				<c path="composure.core.ComposeItem"/>
 				<e path="Bool"/>
 			</f>
 			<meta/>
 		</shouldAscend>
-		<shouldDescend public="1" set="method" line="115">
+		<shouldDescend public="1" set="method" line="124">
 			<f a="item">
 				<c path="composure.core.ComposeItem"/>
 				<e path="Bool"/>
 			</f>
 			<meta/>
 		</shouldDescend>
-		<injectorRemoved public="1" set="method" line="79">
+		<injectorRemoved public="1" set="method" line="88">
 			<f a="traitPair">
 				<t path="composure.traits.TraitPair"><d/></t>
 				<e path="Void"/>
 			</f>
 			<meta/>
 		</injectorRemoved>
-		<injectorAdded public="1" set="method" line="59">
+		<injectorAdded public="1" set="method" line="68">
 			<f a="traitPair">
 				<t path="composure.traits.TraitPair"><d/></t>
 				<e path="Void"/>
@@ -1030,6 +1034,10 @@
 			<e path="Bool"/>
 			<meta/>
 		</passThroughInjector>
+		<ownerTraitTyped public="1">
+			<c path="composure.traits.ITrait"/>
+			<meta/>
+		</ownerTraitTyped>
 		<ownerTrait public="1">
 			<d/>
 			<meta/>
@@ -1038,7 +1046,7 @@
 			<e path="Bool"/>
 			<meta/>
 		</_enumValMode>
-		<set_interestedTraitType set="method" line="22">
+		<set_interestedTraitType set="method" line="28">
 			<f a="value">
 				<d/>
 				<d/>
@@ -1049,6 +1057,37 @@
 			<d/>
 			<meta/>
 		</interestedTraitType>
+		<maxMatches public="1">
+			<c path="Int"/>
+			<meta/>
+		</maxMatches>
+		<stopAscendingAt public="1">
+			<f a="::">
+				<c path="composure.core.ComposeItem"/>
+				<d/>
+				<c path="composure.injectors.AbstractInjector"/>
+				<e path="Bool"/>
+			</f>
+			<meta/>
+		</stopAscendingAt>
+		<stopDescendingAt public="1">
+			<f a="::">
+				<c path="composure.core.ComposeItem"/>
+				<d/>
+				<c path="composure.injectors.AbstractInjector"/>
+				<e path="Bool"/>
+			</f>
+			<meta/>
+		</stopDescendingAt>
+		<matchTrait public="1">
+			<f a="::">
+				<c path="composure.core.ComposeItem"/>
+				<d/>
+				<c path="composure.injectors.AbstractInjector"/>
+				<e path="Bool"/>
+			</f>
+			<meta/>
+		</matchTrait>
 		<acceptOwnerTrait public="1">
 			<e path="Bool"/>
 			<meta/>
@@ -1077,7 +1116,7 @@
 			<d/>
 			<meta/>
 		</addHandler>
-		<new public="1" set="method" line="43">
+		<new public="1" set="method" line="50">
 			<f a="interestedTraitType:addHandler:removeHandler:?siblings:?descendants:?ascendants:?universal">
 				<d/>
 				<d/>
@@ -1094,60 +1133,7 @@
 	</class>
 	<class path="composure.injectors.Injector" params="" file="../src/composure/injectors/Injector.hx">
 		<extends path="composure.injectors.AbstractInjector"/>
-		<isInterestedIn public="1" set="method" line="35" override="1">
-			<f a="item:trait">
-				<c path="composure.core.ComposeItem"/>
-				<d/>
-				<e path="Bool"/>
-			</f>
-			<meta/>
-		</isInterestedIn>
-		<shouldAscend public="1" set="method" line="28" override="1">
-			<f a="item">
-				<c path="composure.core.ComposeItem"/>
-				<e path="Bool"/>
-			</f>
-			<meta/>
-		</shouldAscend>
-		<shouldDescend public="1" set="method" line="21" override="1">
-			<f a="item">
-				<c path="composure.core.ComposeItem"/>
-				<e path="Bool"/>
-			</f>
-			<meta/>
-		</shouldDescend>
-		<maxMatches public="1">
-			<c path="Int"/>
-			<meta/>
-		</maxMatches>
-		<stopAscendingAt public="1">
-			<f a="::">
-				<c path="composure.core.ComposeItem"/>
-				<d/>
-				<c path="composure.injectors.Injector"/>
-				<e path="Bool"/>
-			</f>
-			<meta/>
-		</stopAscendingAt>
-		<stopDescendingAt public="1">
-			<f a="::">
-				<c path="composure.core.ComposeItem"/>
-				<d/>
-				<c path="composure.injectors.Injector"/>
-				<e path="Bool"/>
-			</f>
-			<meta/>
-		</stopDescendingAt>
-		<matchTrait public="1">
-			<f a="::">
-				<c path="composure.core.ComposeItem"/>
-				<d/>
-				<c path="composure.injectors.Injector"/>
-				<e path="Bool"/>
-			</f>
-			<meta/>
-		</matchTrait>
-		<new public="1" set="method" line="14">
+		<new public="1" set="method" line="9">
 			<f a="traitType:addHandler:removeHandler:?siblings:?descendants:?ascendants:?universal">
 				<d/>
 				<d/>
@@ -1250,7 +1236,7 @@
 		<meta/>
 	</class>
 	<class path="composure.injectors.PropInjector" params="" file="../src/composure/injectors/PropInjector.hx" extern="1">
-		<extends path="composure.injectors.Injector"/>
+		<extends path="composure.injectors.AbstractInjector"/>
 		<haxe_doc>* ...
  * @author Tom Byrne</haxe_doc>
 		<meta><m n=":native"><e>Dynamic</e></m></meta>
@@ -1400,7 +1386,7 @@
 	</class>
 	<class path="composure.traits.AbstractTrait" params="" file="../src/composure/traits/AbstractTrait.hx">
 		<implements path="composure.traits.ITrait"/>
-		<removeInjector public="1" set="method" line="195">
+		<removeInjector public="1" set="method" line="196">
 			<f a="injector">
 				<c path="composure.injectors.IInjector"/>
 				<e path="Void"/>
@@ -1624,7 +1610,7 @@
 	</class>
 	<class path="composure.utilTraits.Furnisher" params="" file="../src/composure/utilTraits/Furnisher.hx">
 		<extends path="composure.traits.AbstractTrait"/>
-		<unregisterItem set="method" line="308">
+		<unregisterItem set="method" line="309">
 			<f a="trait:currItem:origItem">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1633,7 +1619,7 @@
 			</f>
 			<meta/>
 		</unregisterItem>
-		<registerItem set="method" line="241">
+		<registerItem set="method" line="242">
 			<f a="trait:origItem">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1641,14 +1627,14 @@
 			</f>
 			<meta/>
 		</registerItem>
-		<getItem set="method" line="238">
+		<getItem set="method" line="239">
 			<f a="trait">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
 			</f>
 			<meta/>
 		</getItem>
-		<testRules set="method" line="222">
+		<testRules set="method" line="223">
 			<f a="foundTrait:item:rules">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1657,7 +1643,7 @@
 			</f>
 			<meta/>
 		</testRules>
-		<getTrait set="method" line="205">
+		<getTrait set="method" line="206">
 			<f a="foundTrait:item:addTrait">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1666,14 +1652,14 @@
 			</f>
 			<meta/>
 		</getTrait>
-		<addTrait public="1" set="method" line="189">
+		<addTrait public="1" set="method" line="190">
 			<f a="addTrait">
 				<e path="composure.utilTraits.AddTrait"/>
 				<e path="Void"/>
 			</f>
 			<meta/>
 		</addTrait>
-		<onConcernedTraitRemoved set="method" line="168">
+		<onConcernedTraitRemoved set="method" line="169">
 			<f a="trait:currItem">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1681,7 +1667,7 @@
 			</f>
 			<meta/>
 		</onConcernedTraitRemoved>
-		<onConcernedTraitAdded set="method" line="143">
+		<onConcernedTraitAdded set="method" line="144">
 			<f a="trait:origItem">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1737,7 +1723,7 @@
 			<e path="composure.utilTraits.AddType"/>
 			<meta/>
 		</_addType>
-		<set_searchAscendants set="method" line="104">
+		<set_searchAscendants set="method" line="105">
 			<f a="value">
 				<e path="Bool"/>
 				<e path="Bool"/>
@@ -1748,7 +1734,7 @@
 			<e path="Bool"/>
 			<meta/>
 		</searchAscendants>
-		<set_searchDescendants set="method" line="94">
+		<set_searchDescendants set="method" line="95">
 			<f a="value">
 				<e path="Bool"/>
 				<e path="Bool"/>
@@ -1759,7 +1745,7 @@
 			<e path="Bool"/>
 			<meta/>
 		</searchDescendants>
-		<set_searchSiblings set="method" line="84">
+		<set_searchSiblings set="method" line="85">
 			<f a="value">
 				<e path="Bool"/>
 				<e path="Bool"/>
@@ -1770,7 +1756,7 @@
 			<e path="Bool"/>
 			<meta/>
 		</searchSiblings>
-		<set_concernedTraitType set="method" line="69">
+		<set_concernedTraitType set="method" line="70">
 			<f a="value">
 				<d/>
 				<d/>
@@ -1781,7 +1767,7 @@
 			<d/>
 			<meta/>
 		</concernedTraitType>
-		<new public="1" set="method" line="125"><f a="?concernedTraitType:?addTraits:?addType:?searchSiblings:?searchDescendants:?searchAscendants">
+		<new public="1" set="method" line="126"><f a="?concernedTraitType:?addTraits:?addType:?searchSiblings:?searchDescendants:?searchAscendants">
 	<d/>
 	<c path="Array"><e path="composure.utilTraits.AddTrait"/></c>
 	<e path="composure.utilTraits.AddType"/>
@@ -1825,7 +1811,10 @@
 			<c path="Array"><e path="composure.utilTraits.AddRule"/></c>
 		</TInst>
 		<TFact a="f:?rules">
-			<f a=""><d/></f>
+			<f a="">
+				<d/>
+				<d/>
+			</f>
 			<c path="Array"><e path="composure.utilTraits.AddRule"/></c>
 		</TFact>
 		<meta/>
@@ -1859,6 +1848,22 @@
 			<e path="Bool"/>
 		</adoptItem>
 		<meta/>
+	</enum>
+	<class path="composure.utilTraits.LazyTraitMap" params="MatchType" file="../src/composure/utilTraits/LazyTraitMap.hx" extern="1">
+		<haxe_doc>* ...
+ * @author Tom Byrne</haxe_doc>
+		<meta><m n=":native"><e>Dynamic</e></m></meta>
+	</class>
+	<enum path="composure.utilTraits.TypeCreator" params="MatchType" file="../src/composure/utilTraits/LazyTraitMap.hx" module="composure.utilTraits.LazyTraitMap">
+		<FInst a="trait:?addToContext">
+			<d/>
+			<e path="Bool"/>
+		</FInst>
+		<FFact a="factory"><f a=""><c path="composure.utilTraits.TypeCreator.MatchType"/></f></FFact>
+		<FClass a="type:?args">
+			<c path="Class"><c path="composure.utilTraits.TypeCreator.MatchType"/></c>
+			<c path="Array"><d/></c>
+		</FClass>
 	</enum>
 	<class path="composure.utilTraits.TraitTypeLimiter" params="" file="../src/composure/utilTraits/TraitTypeLimiter.hx">
 		<extends path="composure.traits.AbstractTrait"/>
@@ -1994,7 +1999,7 @@
 		<meta/>
 	</class>
 	<class path="composureTest.ClassIncluder" params="" file="../testSrc/composureTest/ClassIncluder.hx">
-		<main set="method" line="13" static="1">
+		<main set="method" line="14" static="1">
 			<f a=""><e path="Void"/></f>
 			<meta/>
 		</main>

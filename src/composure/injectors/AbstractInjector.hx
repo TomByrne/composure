@@ -18,6 +18,12 @@ class AbstractInjector implements IInjector
 	public var universal:Bool;
 	public var acceptOwnerTrait:Bool;
 	
+	public var matchTrait:ComposeItem->Dynamic->AbstractInjector->Bool;
+	public var stopDescendingAt:ComposeItem->Dynamic->AbstractInjector->Bool;
+	public var stopAscendingAt:ComposeItem->Dynamic->AbstractInjector->Bool;
+
+	public var maxMatches:Int;
+	
 	public var interestedTraitType(default, set_interestedTraitType):Dynamic;
 	private function set_interestedTraitType(value:Dynamic):Dynamic {
 		interestedTraitType = value;
@@ -35,6 +41,7 @@ class AbstractInjector implements IInjector
 
 
 	public var ownerTrait:Dynamic;
+	public var ownerTraitTyped:ITrait;
 	public var passThroughInjector:Bool;
 	public var passThroughItem:Bool;
 
@@ -43,6 +50,8 @@ class AbstractInjector implements IInjector
 	public function new(interestedTraitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool=true, descendants:Bool=false, ascendants:Bool=false, universal:Bool=false){
 		this.addHandler = addHandler;
 		this.removeHandler = removeHandler;
+		
+		maxMatches = -1;
 		
 		this.siblings = siblings;
 		this.descendants = descendants;
@@ -113,14 +122,24 @@ class AbstractInjector implements IInjector
 		return false;
 	}
 	public function shouldDescend(item:ComposeItem):Bool{
-		// override me
-		return true;
+		if(stopDescendingAt!=null){
+			return !stopDescendingAt(item,null,this);
+		}else{
+			return true;
+		}
 	}
 	public function shouldAscend(item:ComposeItem):Bool{
-		// override me
-		return true;
+		if(stopAscendingAt!=null){
+			return !stopAscendingAt(item,null,this);
+		}else{
+			return true;
+		}
 	}
 	public function isInterestedIn(item:ComposeItem, trait:Dynamic):Bool {
+		if((matchTrait != null && !matchTrait(item, trait, this)) ||
+					(maxMatches != -1 && _addedTraits.length >= maxMatches)) {
+			return false;
+		}
 		if(_enumValMode){
 			return Type.enumEq(trait, interestedTraitType);
 		}else {

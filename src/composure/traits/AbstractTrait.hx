@@ -180,7 +180,8 @@ class AbstractTrait implements ITrait
 	 */
 	public function addInjector(injector:IInjector):Void{
 		if(_injectors==null)_injectors = new UniqueList<IInjector>();
-		if(_injectors.add(injector)){
+		if (_injectors.add(injector)) {
+			injector.ownerTraitTyped = this;
 			injector.ownerTrait = _ownerTrait;
 		}#if debug else{
 				Log.trace(new LogMsg("Attempting to add injector twice",[LogType.performanceWarning]));
@@ -194,6 +195,7 @@ class AbstractTrait implements ITrait
 	 */
 	public function removeInjector(injector:IInjector):Void{
 		if(_injectors!=null && _injectors.remove(injector)){
+			injector.ownerTraitTyped = null;
 			injector.ownerTrait = null;
 		}#if debug else{
 				Log.trace(new LogMsg("Attempting to remove non-added injector",[LogType.performanceWarning]));

@@ -14,6 +14,7 @@ interface IInjector
 	public var acceptOwnerTrait(default, null):Bool;
 
 	public var ownerTrait:Dynamic;
+	public var ownerTraitTyped:ITrait;
 
 	function injectorAdded(traitPair:TraitPair<Dynamic>):Void;
 	function injectorRemoved(traitPair:TraitPair<Dynamic>):Void;

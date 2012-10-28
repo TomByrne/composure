@@ -759,6 +759,7 @@ composure.injectors.AbstractInjector = function(interestedTraitType,addHandler,r
 	if(siblings == null) siblings = true;
 	this.addHandler = addHandler;
 	this.removeHandler = removeHandler;
+	this.maxMatches = -1;
 	this.siblings = siblings;
 	this.descendants = descendants;
 	this.ascendants = ascendants;
@@ -772,13 +773,14 @@ composure.injectors.AbstractInjector.__name__ = ["composure","injectors","Abstra
 composure.injectors.AbstractInjector.__interfaces__ = [composure.injectors.IInjector];
 composure.injectors.AbstractInjector.prototype = {
 	isInterestedIn: function(item,trait) {
+		if(this.matchTrait != null && !this.matchTrait(item,trait,this) || this.maxMatches != -1 && this._addedTraits.get_length() >= this.maxMatches) return false;
 		if(this._enumValMode) return Type.enumEq(trait,this.interestedTraitType); else return js.Boot.__instanceof(trait,this.interestedTraitType);
 	}
 	,shouldAscend: function(item) {
-		return true;
+		if(this.stopAscendingAt != null) return !this.stopAscendingAt(item,null,this); else return true;
 	}
 	,shouldDescend: function(item) {
-		return true;
+		if(this.stopDescendingAt != null) return !this.stopDescendingAt(item,null,this); else return true;
 	}
 	,injectorRemoved: function(traitPair) {
 		if(this._addedTraits.remove(traitPair) && this.removeHandler != null) {
@@ -811,21 +813,11 @@ composure.injectors.Injector = function(traitType,addHandler,removeHandler,sibli
 	if(descendants == null) descendants = false;
 	if(siblings == null) siblings = true;
 	composure.injectors.AbstractInjector.call(this,traitType,addHandler,removeHandler,siblings,descendants,ascendants,universal);
-	this.maxMatches = -1;
 };
 composure.injectors.Injector.__name__ = ["composure","injectors","Injector"];
 composure.injectors.Injector.__super__ = composure.injectors.AbstractInjector;
 composure.injectors.Injector.prototype = $extend(composure.injectors.AbstractInjector.prototype,{
-	isInterestedIn: function(item,trait) {
-		return composure.injectors.AbstractInjector.prototype.isInterestedIn.call(this,item,trait) && (this.matchTrait == null || this.matchTrait(item,trait,this)) && (this.maxMatches == -1 || this._addedTraits.get_length() < this.maxMatches);
-	}
-	,shouldAscend: function(item) {
-		if(this.stopAscendingAt != null) return !this.stopAscendingAt(item,null,this); else return true;
-	}
-	,shouldDescend: function(item) {
-		if(this.stopDescendingAt != null) return !this.stopDescendingAt(item,null,this); else return true;
-	}
-	,__class__: composure.injectors.Injector
+	__class__: composure.injectors.Injector
 });
 composure.injectors.InjectorMarrier = function(traits) {
 	this._traitInjectors = new org.tbyrne.collections.UniqueList();
@@ -1033,11 +1025,17 @@ composure.traits.AbstractTrait.__name__ = ["composure","traits","AbstractTrait"]
 composure.traits.AbstractTrait.__interfaces__ = [composure.traits.ITrait];
 composure.traits.AbstractTrait.prototype = {
 	removeInjector: function(injector) {
-		if(this._injectors != null && this._injectors.remove(injector)) injector.ownerTrait = null;
+		if(this._injectors != null && this._injectors.remove(injector)) {
+			injector.ownerTraitTyped = null;
+			injector.ownerTrait = null;
+		}
 	}
 	,addInjector: function(injector) {
 		if(this._injectors == null) this._injectors = new org.tbyrne.collections.UniqueList();
-		if(this._injectors.add(injector)) injector.ownerTrait = this._ownerTrait;
+		if(this._injectors.add(injector)) {
+			injector.ownerTraitTyped = this;
+			injector.ownerTrait = this._ownerTrait;
+		}
 	}
 	,getInjectors: function() {
 		if(this._injectors == null) this._injectors = new org.tbyrne.collections.UniqueList();
@@ -1315,7 +1313,7 @@ composure.utilTraits.Furnisher.prototype = $extend(composure.traits.AbstractTrai
 				adoptTrait = adoptMatchedTrait;
 				break;
 			default:
-				haxe.Log.trace(new org.tbyrne.logging.LogMsg("Unsupported AddType",[org.tbyrne.logging.LogType.devError]),{ fileName : "Furnisher.hx", lineNumber : 297, className : "composure.utilTraits.Furnisher", methodName : "registerItem"});
+				haxe.Log.trace(new org.tbyrne.logging.LogMsg("Unsupported AddType",[org.tbyrne.logging.LogType.devError]),{ fileName : "Furnisher.hx", lineNumber : 298, className : "composure.utilTraits.Furnisher", methodName : "registerItem"});
 			}
 		}
 		this._traitToItems.set(trait,item);
@@ -1358,7 +1356,7 @@ composure.utilTraits.Furnisher.prototype = $extend(composure.traits.AbstractTrai
 			break;
 		case 1:
 			var rules = $e[3], f = $e[2];
-			if(this.testRules(foundTrait,item,rules)) return f();
+			if(this.testRules(foundTrait,item,rules)) return f(foundTrait);
 			break;
 		case 2:
 			var rules = $e[3], t = $e[2];

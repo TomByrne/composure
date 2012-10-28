@@ -23,7 +23,7 @@
   <build>
     <option directives="" />
     <option flashStrict="False" />
-    <option mainClass="composureTest.HelloWorld" />
+    <option mainClass="composureTest.ClassIncluder" />
     <option enabledebug="True" />
     <option additional="" />
   </build>

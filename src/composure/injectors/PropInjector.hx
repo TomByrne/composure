@@ -5,7 +5,7 @@ package composure.injectors;
  * @author Tom Byrne
  */
 
-class PropInjector extends Injector
+class PropInjector extends AbstractInjector
 {
 	private var subject:Dynamic;
 	private var prop:String;

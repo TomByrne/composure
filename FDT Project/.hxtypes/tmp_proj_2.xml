@@ -1,5 +1,9 @@
 <haxe>
 	<class path="Array" params="T" file="C:\Motion-Twin\haxe\std/js/_std/Array.hx" extern="1">
+		<iterator public="1" get="inline" set="null" line="56">
+			<f a=""><t path="Iterator"><c path="Array.T"/></t></f>
+			<meta><m n=":runtime"/></meta>
+		</iterator>
 		<unshift public="1" set="method"><f a="x">
 	<c path="Array.T"/>
 	<e path="Void"/>
@@ -741,6 +745,12 @@
 			<f a=""><c path="composure.core.ComposeRoot"/></f>
 			<meta/>
 		</getRoot>
+		<root public="1" get="getRoot" set="null">
+			<c path="composure.core.ComposeRoot"/>
+			<meta/>
+			<haxe_doc>* The ComposeRoot which is the top-level parent, if this is the root 'root' will be a self-reference.
+	 * This value is set automatically and shouldn't be manually changed.</haxe_doc>
+		</root>
 		<setParentItem set="method" line="42">
 			<f a="value">
 				<c path="composure.core.ComposeGroup"/>
@@ -982,6 +992,10 @@
 			<f a=""><t path="Iterable"><c path="composure.core.ComposeItem"/></t></f>
 			<meta/>
 		</get_children>
+		<children public="1" get="get_children" set="null">
+			<t path="Iterable"><c path="composure.core.ComposeItem"/></t>
+			<meta/>
+		</children>
 		<new public="1" set="method" line="42">
 			<f a="?initTraits">
 				<c path="Array"><d/></c>
@@ -1368,23 +1382,106 @@
 		<meta><m n=":native"><e>Dynamic</e></m></meta>
 	</class>
 	<class path="composure.macro._InjectorMacro.InjectorAccess" params="" file="../src/composure/macro/InjectorMacro.hx" private="1" module="composure.macro.InjectorMacro" extern="1"><meta><m n=":native"><e>Dynamic</e></m></meta></class>
-	<class path="composure.traitCheckers.GenerationChecker" params="" file="../src/composure/traitCheckers/GenerationChecker.hx" extern="1">
+	<class path="composure.traitCheckers.GenerationChecker" params="" file="../src/composure/traitCheckers/GenerationChecker.hx">
+		<create public="1" set="method" line="39" static="1">
+			<f a="?maxGenerations:?descending:?relatedItem">
+				<c path="Int"/>
+				<e path="Bool"/>
+				<e path="composure.traitCheckers.ItemType"/>
+				<f a="::">
+					<c path="composure.core.ComposeItem"/>
+					<d/>
+					<c path="composure.injectors.Injector"/>
+					<e path="Bool"/>
+				</f>
+			</f>
+			<meta/>
+			<haxe_doc><![CDATA[* The create method can be used to limit the scope of a certain Injector
+	 * to a certain amount of generations. It generates a function which can be assigned
+	 * to either the stopDescendingAt or stopAscendingAt properties of the Injector class.<br/>
+	 * <br/>
+	 * For example, if you wanted to get all position traits from child items (but not
+	 * grandchild items) you could do something like this:
+	 * <pre><code>
+	 * var injector:Injector = new Injector(IPositionTrait, childPosAdded, childPosRemoved, false, true, false);
+	 * injector.stopDescendingAt = GenerationChecker.create(1,true,ItemType.injectorItem);
+	 * addInjector(injector);
+	 * </code></pre>
+	 * 
+	 * @param maxGenerations The maximum amount of generations that the injector should
+	 * have scope over. Defaults to '1', meaning the parent or child generation (depending on
+	 * descending).
+	 * 
+	 * @param descending Whether the check should go up the hierarchy or down.
+	 * 
+	 * @param relatedItem Which ComposeItem/ComposeGroup should the generations be relative to.
+	 * Defaults to the item which the trait is added.]]></haxe_doc>
+		</create>
+		<searchForDesc set="method" line="64" static="1">
+			<f a="remainingGenerations:startGroup:findItem">
+				<c path="Int"/>
+				<c path="composure.core.ComposeGroup"/>
+				<c path="composure.core.ComposeItem"/>
+				<e path="Bool"/>
+			</f>
+			<meta/>
+		</searchForDesc>
 		<haxe_doc>* @author Tom Byrne</haxe_doc>
-		<meta><m n=":native"><e>Dynamic</e></m></meta>
+		<meta><m n=":keep"/></meta>
 	</class>
 	<enum path="composure.traitCheckers.ItemType" params="" file="../src/composure/traitCheckers/GenerationChecker.hx" module="composure.traitCheckers.GenerationChecker">
 		<specific a="ItemType"><c path="composure.core.ComposeItem"/></specific>
 		<root/>
 		<injectorItem/>
+		<meta/>
 	</enum>
 	<class path="composure.traitCheckers.MatchProps" params="" file="../src/composure/traitCheckers/MatchProps.hx" extern="1">
 		<haxe_doc>* ...
  * @author Tom Byrne</haxe_doc>
 		<meta><m n=":native"><e>Dynamic</e></m></meta>
 	</class>
-	<class path="composure.traitCheckers.TraitTypeChecker" params="" file="../src/composure/traitCheckers/TraitTypeChecker.hx" extern="1">
+	<class path="composure.traitCheckers.TraitTypeChecker" params="" file="../src/composure/traitCheckers/TraitTypeChecker.hx">
+		<createMulti public="1" set="method" line="14" static="1">
+			<f a="types:?useOrCheck:?invertResponse:?unlessIsTraits:?dontMatchFrom">
+				<c path="Array"><c path="Class"><d/></c></c>
+				<e path="Bool"/>
+				<e path="Bool"/>
+				<c path="Array"><d/></c>
+				<e path="Bool"/>
+				<f a="::">
+					<c path="composure.core.ComposeItem"/>
+					<d/>
+					<c path="composure.injectors.Injector"/>
+					<e path="Bool"/>
+				</f>
+			</f>
+			<meta/>
+		</createMulti>
+		<create public="1" set="method" line="37" static="1">
+			<f a="type:?invertResponse:?unlessIsTrait:?dontMatchFrom">
+				<c path="Class"><d/></c>
+				<e path="Bool"/>
+				<d/>
+				<e path="Bool"/>
+				<f a="::">
+					<c path="composure.core.ComposeItem"/>
+					<d/>
+					<c path="composure.injectors.Injector"/>
+					<e path="Bool"/>
+				</f>
+			</f>
+			<meta/>
+		</create>
+		<contains set="method" line="46" static="1">
+			<f a="traits:trait">
+				<c path="Array"><d/></c>
+				<d/>
+				<e path="Bool"/>
+			</f>
+			<meta/>
+		</contains>
 		<haxe_doc>* @author Tom Byrne</haxe_doc>
-		<meta><m n=":native"><e>Dynamic</e></m></meta>
+		<meta><m n=":keep"/></meta>
 	</class>
 	<class path="composure.traits.ITrait" params="" file="../src/composure/traits/ITrait.hx" interface="1">
 		<getInjectors public="1" set="method">
@@ -1455,6 +1552,11 @@
 			<d/>
 			<meta/>
 		</_ownerTrait>
+		<_groupOnly>
+			<e path="Bool"/>
+			<meta/>
+			<haxe_doc>* Set to true to force Trait to only be added for groups.</haxe_doc>
+		</_groupOnly>
 		<_childItems>
 			<c path="org.tbyrne.collections.UniqueList"><c path="composure.core.ComposeItem"/></c>
 			<meta/>
@@ -1487,6 +1589,15 @@
 			<haxe_doc>* The group to which this item is added. This is a method of convenience,
 	 * and returns the 'item' property cast as a ComposeGroup.</haxe_doc>
 		</group>
+		<new public="1" set="method" line="97">
+			<f a="?ownerTrait">
+				<d/>
+				<e path="Void"/>
+			</f>
+			<meta/>
+			<haxe_doc>* @param ownerTrait When using this Class as a Proxied Trait, pass through the actual trait
+	 * object as the first parameter.</haxe_doc>
+		</new>
 		<haxe_doc><![CDATA[* The AbstractTrait class can be extended by any trait to gain access
  * to the trait to which it is added. It also allows traits to access
  * other traits in the application either via the injection metadata
@@ -1626,7 +1737,7 @@
 	</class>
 	<class path="composure.utilTraits.Furnisher" params="" file="../src/composure/utilTraits/Furnisher.hx">
 		<extends path="composure.traits.AbstractTrait"/>
-		<unregisterItem set="method" line="307">
+		<unregisterItem set="method" line="308">
 			<f a="trait:currItem:origItem">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1635,7 +1746,7 @@
 			</f>
 			<meta/>
 		</unregisterItem>
-		<registerItem set="method" line="240">
+		<registerItem set="method" line="241">
 			<f a="trait:origItem">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1643,14 +1754,14 @@
 			</f>
 			<meta/>
 		</registerItem>
-		<getItem set="method" line="237">
+		<getItem set="method" line="238">
 			<f a="trait">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
 			</f>
 			<meta/>
 		</getItem>
-		<testRules set="method" line="221">
+		<testRules set="method" line="222">
 			<f a="foundTrait:item:rules">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1659,7 +1770,7 @@
 			</f>
 			<meta/>
 		</testRules>
-		<getTrait set="method" line="204">
+		<getTrait set="method" line="205">
 			<f a="foundTrait:item:addTrait">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1668,7 +1779,14 @@
 			</f>
 			<meta/>
 		</getTrait>
-		<onConcernedTraitRemoved set="method" line="167">
+		<addTrait public="1" set="method" line="189">
+			<f a="addTrait">
+				<e path="composure.utilTraits.AddTrait"/>
+				<e path="Void"/>
+			</f>
+			<meta/>
+		</addTrait>
+		<onConcernedTraitRemoved set="method" line="168">
 			<f a="trait:currItem">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1676,7 +1794,7 @@
 			</f>
 			<meta/>
 		</onConcernedTraitRemoved>
-		<onConcernedTraitAdded set="method" line="142">
+		<onConcernedTraitAdded set="method" line="143">
 			<f a="trait:origItem">
 				<d/>
 				<c path="composure.core.ComposeItem"/>
@@ -1732,7 +1850,7 @@
 			<e path="composure.utilTraits.AddType"/>
 			<meta/>
 		</_addType>
-		<set_searchAscendants set="method" line="103">
+		<set_searchAscendants set="method" line="104">
 			<f a="value">
 				<e path="Bool"/>
 				<e path="Bool"/>
@@ -1743,7 +1861,7 @@
 			<e path="Bool"/>
 			<meta/>
 		</searchAscendants>
-		<set_searchDescendants set="method" line="93">
+		<set_searchDescendants set="method" line="94">
 			<f a="value">
 				<e path="Bool"/>
 				<e path="Bool"/>
@@ -1754,7 +1872,7 @@
 			<e path="Bool"/>
 			<meta/>
 		</searchDescendants>
-		<set_searchSiblings set="method" line="83">
+		<set_searchSiblings set="method" line="84">
 			<f a="value">
 				<e path="Bool"/>
 				<e path="Bool"/>
@@ -1765,7 +1883,7 @@
 			<e path="Bool"/>
 			<meta/>
 		</searchSiblings>
-		<set_concernedTraitType set="method" line="68">
+		<set_concernedTraitType set="method" line="69">
 			<f a="value">
 				<d/>
 				<d/>
@@ -1776,6 +1894,15 @@
 			<d/>
 			<meta/>
 		</concernedTraitType>
+		<new public="1" set="method" line="125"><f a="?concernedTraitType:?addTraits:?addType:?searchSiblings:?searchDescendants:?searchAscendants">
+	<d/>
+	<c path="Array"><e path="composure.utilTraits.AddTrait"/></c>
+	<e path="composure.utilTraits.AddType"/>
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<e path="Void"/>
+</f></new>
 		<haxe_doc><![CDATA[* The Furnisher class is used to add traits to an item in response
  * to a certain type of trait being added to the item.<br/>
  * <br/>
@@ -1798,6 +1925,7 @@
 			<m n=":autoBuild"><e>'???'</e></m>
 			<m n=":build"><e>'???'</e></m>
 			<m n=":autoBuild"><e>'???'</e></m>
+			<m n=":keep"/>
 		</meta>
 	</class>
 	<enum path="composure.utilTraits.AddTrait" params="" file="../src/composure/utilTraits/Furnisher.hx" module="composure.utilTraits.Furnisher">
@@ -1847,7 +1975,15 @@
 	</enum>
 	<class path="composure.utilTraits.TraitTypeLimiter" params="" file="../src/composure/utilTraits/TraitTypeLimiter.hx">
 		<extends path="composure.traits.AbstractTrait"/>
-		<reAddTrait set="method" line="156">
+		<attemptTransmit set="method" line="169">
+			<f a="toTrait:fromTrait">
+				<d/>
+				<d/>
+				<e path="Void"/>
+			</f>
+			<meta/>
+		</attemptTransmit>
+		<reAddTrait set="method" line="157">
 			<f a="item:added:removed">
 				<c path="composure.core.ComposeItem"/>
 				<c path="Array"><d/></c>
@@ -1856,10 +1992,40 @@
 			</f>
 			<meta/>
 		</reAddTrait>
-		<checkTraits set="method" line="93">
+		<onTraitRemoved set="method" line="143">
+			<f a="trait:item">
+				<d/>
+				<c path="composure.core.ComposeItem"/>
+				<e path="Void"/>
+			</f>
+			<meta/>
+		</onTraitRemoved>
+		<onTraitAdded set="method" line="110">
+			<f a="trait:item">
+				<d/>
+				<c path="composure.core.ComposeItem"/>
+				<e path="Void"/>
+			</f>
+			<meta/>
+		</onTraitAdded>
+		<checkTraits set="method" line="94">
 			<f a=""><e path="Void"/></f>
 			<meta/>
 		</checkTraits>
+		<reAddAll set="method" line="78">
+			<f a=""><e path="Void"/></f>
+			<meta/>
+		</reAddAll>
+		<setConcern public="1" set="method" line="62">
+			<f a="traitType:?siblings:?descendants:?ascendants">
+				<c path="Class"><d/></c>
+				<e path="Bool"/>
+				<e path="Bool"/>
+				<e path="Bool"/>
+				<e path="Void"/>
+			</f>
+			<meta/>
+		</setConcern>
 		<_ignoreChanges>
 			<e path="Bool"/>
 			<meta/>
@@ -1878,11 +2044,19 @@
 			</c>
 			<meta/>
 		</_added>
+		<added>
+			<e path="Bool"/>
+			<meta/>
+		</added>
+		<injector>
+			<c path="composure.injectors.Injector"/>
+			<meta/>
+		</injector>
 		<policy public="1">
 			<e path="composure.utilTraits.LimitPolicy"/>
 			<meta/>
 		</policy>
-		<set_maxCount set="method" line="25">
+		<set_maxCount set="method" line="26">
 			<f a="value">
 				<c path="Int"/>
 				<c path="Int"/>
@@ -1893,6 +2067,15 @@
 			<c path="Int"/>
 			<meta/>
 		</maxCount>
+		<new public="1" set="method" line="44"><f a="?traitType:?policy:?maxCount:?siblings:?descendants:?ascendants">
+	<c path="Class"><d/></c>
+	<e path="composure.utilTraits.LimitPolicy"/>
+	<c path="Int"/>
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<e path="Bool"/>
+	<e path="Void"/>
+</f></new>
 		<haxe_doc><![CDATA[* TraitTypeLimiter is used to restrict the amount of a certain type of trait
  * which can be added to a certain item. It could be used, for example, to limit the
  * amount of IMatrixTransform traits on a certain item to 1.<br/>
@@ -1908,6 +2091,7 @@
 			<m n=":autoBuild"><e>'???'</e></m>
 			<m n=":build"><e>'???'</e></m>
 			<m n=":autoBuild"><e>'???'</e></m>
+			<m n=":keep"/>
 		</meta>
 	</class>
 	<enum path="composure.utilTraits.LimitPolicy" params="" file="../src/composure/utilTraits/TraitTypeLimiter.hx" module="composure.utilTraits.TraitTypeLimiter">
@@ -1915,10 +2099,13 @@
 		<FirstInFirstOut/>
 		<meta/>
 	</enum>
-	<class path="composure.utilTraits.ITransmittableTrait" params="" file="../src/composure/utilTraits/TraitTypeLimiter.hx" module="composure.utilTraits.TraitTypeLimiter" interface="1"><transmitFrom public="1" set="method"><f a="trait">
+	<class path="composure.utilTraits.ITransmittableTrait" params="" file="../src/composure/utilTraits/TraitTypeLimiter.hx" module="composure.utilTraits.TraitTypeLimiter" interface="1">
+		<transmitFrom public="1" set="method"><f a="trait">
 	<d/>
 	<e path="Void"/>
-</f></transmitFrom></class>
+</f></transmitFrom>
+		<meta/>
+	</class>
 	<class path="composureTest.ClassIncluder" params="" file="../testSrc/composureTest/ClassIncluder.hx">
 		<main set="method" line="13" static="1">
 			<f a=""><e path="Void"/></f>

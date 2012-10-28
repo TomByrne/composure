@@ -1719,6 +1719,7 @@
 	<t path="composure.traits.TraitPair"><d/></t>
 	<e path="Void"/>
 </f></injectorAdded>
+		<ownerTraitTyped public="1"><c path="composure.traits.ITrait"/></ownerTraitTyped>
 		<ownerTrait public="1"><d/></ownerTrait>
 		<acceptOwnerTrait public="1" set="null"><e path="Bool"/></acceptOwnerTrait>
 		<universal public="1" set="null"><e path="Bool"/></universal>
@@ -1728,47 +1729,67 @@
 	</class>
 	<class path="composure.injectors.AbstractInjector" params="" file="../src/composure/injectors/AbstractInjector.hx">
 		<implements path="composure.injectors.IInjector"/>
-		<isInterestedIn public="1" set="method" line="123"><f a="item:trait">
+		<isInterestedIn public="1" set="method" line="138"><f a="item:trait">
 	<c path="composure.core.ComposeItem"/>
 	<d/>
 	<e path="Bool"/>
 </f></isInterestedIn>
-		<shouldAscend public="1" set="method" line="119"><f a="item">
+		<shouldAscend public="1" set="method" line="131"><f a="item">
 	<c path="composure.core.ComposeItem"/>
 	<e path="Bool"/>
 </f></shouldAscend>
-		<shouldDescend public="1" set="method" line="115"><f a="item">
+		<shouldDescend public="1" set="method" line="124"><f a="item">
 	<c path="composure.core.ComposeItem"/>
 	<e path="Bool"/>
 </f></shouldDescend>
-		<itemMatchesAny set="method" line="107"><f a="item:traitTypes">
+		<itemMatchesAny set="method" line="116"><f a="item:traitTypes">
 	<c path="composure.core.ComposeItem"/>
 	<c path="Array"><c path="Class"><d/></c></c>
 	<e path="Bool"/>
 </f></itemMatchesAny>
-		<itemMatchesAll set="method" line="99"><f a="item:traitTypes">
+		<itemMatchesAll set="method" line="108"><f a="item:traitTypes">
 	<c path="composure.core.ComposeItem"/>
 	<c path="Array"><c path="Class"><d/></c></c>
 	<e path="Bool"/>
 </f></itemMatchesAll>
-		<injectorRemoved public="1" set="method" line="79"><f a="traitPair">
+		<injectorRemoved public="1" set="method" line="88"><f a="traitPair">
 	<t path="composure.traits.TraitPair"><d/></t>
 	<e path="Void"/>
 </f></injectorRemoved>
-		<injectorAdded public="1" set="method" line="59"><f a="traitPair">
+		<injectorAdded public="1" set="method" line="68"><f a="traitPair">
 	<t path="composure.traits.TraitPair"><d/></t>
 	<e path="Void"/>
 </f></injectorAdded>
 		<_addedTraits><c path="org.tbyrne.collections.UniqueList"><d/></c></_addedTraits>
 		<passThroughItem public="1"><e path="Bool"/></passThroughItem>
 		<passThroughInjector public="1"><e path="Bool"/></passThroughInjector>
+		<ownerTraitTyped public="1"><c path="composure.traits.ITrait"/></ownerTraitTyped>
 		<ownerTrait public="1"><d/></ownerTrait>
 		<_enumValMode><e path="Bool"/></_enumValMode>
-		<set_interestedTraitType set="method" line="22"><f a="value">
+		<set_interestedTraitType set="method" line="28"><f a="value">
 	<d/>
 	<d/>
 </f></set_interestedTraitType>
 		<interestedTraitType public="1" set="set_interestedTraitType"><d/></interestedTraitType>
+		<maxMatches public="1"><c path="Int"/></maxMatches>
+		<stopAscendingAt public="1"><f a="::">
+	<c path="composure.core.ComposeItem"/>
+	<d/>
+	<c path="composure.injectors.AbstractInjector"/>
+	<e path="Bool"/>
+</f></stopAscendingAt>
+		<stopDescendingAt public="1"><f a="::">
+	<c path="composure.core.ComposeItem"/>
+	<d/>
+	<c path="composure.injectors.AbstractInjector"/>
+	<e path="Bool"/>
+</f></stopDescendingAt>
+		<matchTrait public="1"><f a="::">
+	<c path="composure.core.ComposeItem"/>
+	<d/>
+	<c path="composure.injectors.AbstractInjector"/>
+	<e path="Bool"/>
+</f></matchTrait>
 		<acceptOwnerTrait public="1"><e path="Bool"/></acceptOwnerTrait>
 		<universal public="1"><e path="Bool"/></universal>
 		<ascendants public="1"><e path="Bool"/></ascendants>
@@ -1776,52 +1797,7 @@
 		<siblings public="1"><e path="Bool"/></siblings>
 		<removeHandler public="1"><d/></removeHandler>
 		<addHandler public="1"><d/></addHandler>
-		<new public="1" set="method" line="43"><f a="interestedTraitType:addHandler:removeHandler:?siblings:?descendants:?ascendants:?universal">
-	<d/>
-	<d/>
-	<d/>
-	<e path="Bool"/>
-	<e path="Bool"/>
-	<e path="Bool"/>
-	<e path="Bool"/>
-	<e path="Void"/>
-</f></new>
-	</class>
-	<class path="composure.injectors.Injector" params="" file="../src/composure/injectors/Injector.hx">
-		<extends path="composure.injectors.AbstractInjector"/>
-		<isInterestedIn public="1" set="method" line="35" override="1"><f a="item:trait">
-	<c path="composure.core.ComposeItem"/>
-	<d/>
-	<e path="Bool"/>
-</f></isInterestedIn>
-		<shouldAscend public="1" set="method" line="28" override="1"><f a="item">
-	<c path="composure.core.ComposeItem"/>
-	<e path="Bool"/>
-</f></shouldAscend>
-		<shouldDescend public="1" set="method" line="21" override="1"><f a="item">
-	<c path="composure.core.ComposeItem"/>
-	<e path="Bool"/>
-</f></shouldDescend>
-		<maxMatches public="1"><c path="Int"/></maxMatches>
-		<stopAscendingAt public="1"><f a="::">
-	<c path="composure.core.ComposeItem"/>
-	<d/>
-	<c path="composure.injectors.Injector"/>
-	<e path="Bool"/>
-</f></stopAscendingAt>
-		<stopDescendingAt public="1"><f a="::">
-	<c path="composure.core.ComposeItem"/>
-	<d/>
-	<c path="composure.injectors.Injector"/>
-	<e path="Bool"/>
-</f></stopDescendingAt>
-		<matchTrait public="1"><f a="::">
-	<c path="composure.core.ComposeItem"/>
-	<d/>
-	<c path="composure.injectors.Injector"/>
-	<e path="Bool"/>
-</f></matchTrait>
-		<new public="1" set="method" line="14"><f a="traitType:addHandler:removeHandler:?siblings:?descendants:?ascendants:?universal">
+		<new public="1" set="method" line="50"><f a="interestedTraitType:addHandler:removeHandler:?siblings:?descendants:?ascendants:?universal">
 	<d/>
 	<d/>
 	<d/>
@@ -1878,7 +1854,7 @@
 </f></new>
 	</class>
 	<class path="composure.injectors.PropInjector" params="" file="../src/composure/injectors/PropInjector.hx">
-		<extends path="composure.injectors.Injector"/>
+		<extends path="composure.injectors.AbstractInjector"/>
 		<removeProp set="method" line="38"><f a="trait">
 	<d/>
 	<e path="Void"/>
@@ -1933,7 +1909,7 @@
 	</class>
 	<class path="composure.traits.AbstractTrait" params="" file="../src/composure/traits/AbstractTrait.hx">
 		<implements path="composure.traits.ITrait"/>
-		<removeInjector public="1" set="method" line="195">
+		<removeInjector public="1" set="method" line="196">
 			<f a="injector">
 				<c path="composure.injectors.IInjector"/>
 				<e path="Void"/>
