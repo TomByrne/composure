@@ -1,7 +1,7 @@
 package composure.traitCheckers;
 import composure.core.ComposeItem;
 import composure.traits.ITrait;
-import composure.injectors.Injector;
+import composure.injectors.AbstractInjector;
 
 /**
  * @author Tom Byrne
@@ -11,9 +11,9 @@ import composure.injectors.Injector;
 class TraitTypeChecker 
 {
 
-	public static function createMulti(types:Array<Class<Dynamic>>, useOrCheck:Bool=false, invertResponse:Bool=false, ?unlessIsTraits:Array<Dynamic>, dontMatchFrom:Bool=true):ComposeItem->Dynamic->Injector->Bool{
+	public static function createMulti(types:Array<Class<Dynamic>>, useOrCheck:Bool=false, invertResponse:Bool=false, ?unlessIsTraits:Array<Dynamic>, dontMatchFrom:Bool=true):ComposeItem->Dynamic->AbstractInjector->Bool{
 		if (useOrCheck) {
-			return function(item:ComposeItem, trait:Dynamic, from:Injector):Bool {
+			return function(item:ComposeItem, trait:Dynamic, from:AbstractInjector):Bool {
 				for (type in types) {
 					var otherTrait:Dynamic = item.getTrait(type);
 					if (otherTrait != null && (unlessIsTraits==null || !contains(unlessIsTraits,otherTrait)) && (dontMatchFrom==false || otherTrait!=trait)) {
@@ -23,7 +23,7 @@ class TraitTypeChecker
 				return invertResponse;
 			}
 		}else {
-			return function(item:ComposeItem, trait:Dynamic, from:Injector):Bool {
+			return function(item:ComposeItem, trait:Dynamic, from:AbstractInjector):Bool {
 				for (type in types) {
 					var otherTrait:Dynamic = item.getTrait(type);
 					if (otherTrait == null || (unlessIsTraits!=null && contains(unlessIsTraits,otherTrait)) || (dontMatchFrom==true && otherTrait==trait)) {
@@ -34,8 +34,8 @@ class TraitTypeChecker
 			}
 		}
 	}
-	public static function create(type:Class<Dynamic>, invertResponse:Bool=false, ?unlessIsTrait:Dynamic, dontMatchFrom:Bool=true):ComposeItem->Dynamic->Injector->Bool {
-		return function(item:ComposeItem, trait:Dynamic, from:Injector):Bool {
+	public static function create(type:Class<Dynamic>, invertResponse:Bool=false, ?unlessIsTrait:Dynamic, dontMatchFrom:Bool=true):ComposeItem->Dynamic->AbstractInjector->Bool {
+		return function(item:ComposeItem, trait:Dynamic, from:AbstractInjector):Bool {
 			var otherTrait:Dynamic = item.getTrait(type);
 			if (otherTrait != null && (unlessIsTrait==null || unlessIsTrait!=otherTrait) && (dontMatchFrom==false || otherTrait!=trait)) {
 				return !invertResponse;
