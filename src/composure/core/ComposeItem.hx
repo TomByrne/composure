@@ -92,11 +92,11 @@ class ComposeItem
 	}
 	/**
 	 * Gets the first trait of a certain type.
-	 * @param	TraitType		The type which the returned trait must implement.
+	 * @param	traitType		The type which the returned trait must implement.
 	 * @return		A trait object, returns null if no matching trait is found.
 	 */
-	public function getTrait<TraitType>(TraitType:Class<TraitType>):TraitType{
-		return _traitCollection.getTrait(TraitType);
+	public function getTrait(traitType:Dynamic):Dynamic{
+		return _traitCollection.getTrait(traitType);
 	}
 	/**
 	 * Gets a list of traits of a certain type.
@@ -106,7 +106,7 @@ class ComposeItem
 	 * 				CAUTION: Do not modify the returned Array, for performance reasons,
 	 * 				it is passed out by reference and reused internally.
 	 */
-	public function getTraits<TraitType>(TraitType:Class<TraitType>=null):Iterable<TraitType>{
+	public function getTraits(TraitType:Dynamic=null):Iterable<Dynamic>{
 		return _traitCollection.getTraits(TraitType);
 	}
 

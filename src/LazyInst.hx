@@ -233,7 +233,8 @@ class LazyInst
 		 * Adds:
 		 * private var {privateName}:{T};
 		 */
-		var privateProp = { kind : FVar(t, null), meta : [], name : privateName, doc : null, pos : pos, access : [APrivate] };
+		var kind:FieldType = FieldType.FVar(t, null);
+		var privateProp = { kind :kind, meta : [], name : privateName, doc : null, pos : pos, access : [APrivate] };
 		fields.push(privateProp);
 			
 	}

@@ -44,13 +44,13 @@ class TraitCollection
 		traitPairs = new UniqueList();
 	}
 
-	public function getTrait<TraitType>(TraitType:Class<TraitType>):TraitType{
+	public function getTrait(traitType:Dynamic):Dynamic{
 		
-		if(TraitType==null){
+		if(traitType==null){
 			Log.trace("TraitCollection.getTrait must be supplied an ITrait class to match");
 			return null;
 		}else{
-			var cache:TraitTypeCache<TraitType> = validateCache(TraitType);
+			var cache:TraitTypeCache<Dynamic> = validateCache(traitType);
 			if(cache!=null){
 				return cache.getTrait;
 			}else {
@@ -58,8 +58,8 @@ class TraitCollection
 			}
 		}
 	}
-	public function getTraits<TraitType>(TraitType:Class<TraitType> = null):Iterable<TraitType> {
-		var cache:TraitTypeCache<TraitType> = validateCache(TraitType);
+	public function getTraits(traitType:Dynamic = null):Iterable<Dynamic> {
+		var cache:TraitTypeCache<Dynamic> = validateCache(traitType);
 		if(cache!=null){
 			return cache.getTraits;
 		}else {
@@ -67,14 +67,19 @@ class TraitCollection
 		}
 	}
 
-	public function validateCache<TraitType>(matchType:Class<TraitType>):TraitTypeCache<TraitType> {
+	public function validateCache(matchType:Dynamic):TraitTypeCache<Dynamic> {
 		#if debug
 		if(matchType==null)Log.trace(new LogMsg("TraitCollection.validateCache must be called with a matchType",[LogType.devError]));
 		#end
 		
-		var typeName:String = Type.getClassName(matchType);
+		var typeName:String;
+		if(Std.is(matchType, EnumValue)){
+			typeName = Type.getEnumName(matchType);
+		}else{
+			typeName = Type.getClassName(matchType);
+		}
 		
-		var cache:TraitTypeCache<TraitType>;
+		var cache:TraitTypeCache<Dynamic>;
 		untyped{
 			cache = _traitTypeCache.get(typeName);
 		}
@@ -83,7 +88,7 @@ class TraitCollection
 		if(cache!=null){
 			invalid = cache.invalid;
 		}else{
-			cache = new TraitTypeCache<TraitType>();
+			cache = new TraitTypeCache<Dynamic>();
 			_traitTypeCache.set(typeName, cache);
 			invalid = traitPairs;
 		}
