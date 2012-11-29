@@ -21,6 +21,8 @@ class AbstractInjector implements IInjector
 	public var matchTrait:ComposeItem->Dynamic->AbstractInjector->Bool;
 	public var stopDescendingAt:ComposeItem->Dynamic->AbstractInjector->Bool;
 	public var stopAscendingAt:ComposeItem->Dynamic->AbstractInjector->Bool;
+	
+	public var checkEnumParams:Array<Int>;
 
 	public var maxMatches:Int;
 	
@@ -140,8 +142,30 @@ class AbstractInjector implements IInjector
 					(maxMatches != -1 && _addedTraits.length >= maxMatches)) {
 			return false;
 		}
-		if(_enumValMode){
-			return Type.enumEq(trait, interestedTraitType);
+		if (_enumValMode) {
+			if (checkEnumParams == null) {
+				return Type.enumEq(trait, interestedTraitType);
+			}else {
+				var traitEnum = Type.getEnum(trait);
+				var intEnum = Type.getEnum(interestedTraitType);
+				if (traitEnum != intEnum) return false;
+				if (Type.enumIndex(trait) != Type.enumIndex(interestedTraitType)) return false;
+				
+				var traitParams:Array<Dynamic> = Type.enumParameters(trait);
+				var intParams:Array<Dynamic> = Type.enumParameters(interestedTraitType);
+				for (index in checkEnumParams) {
+					var intVal:Dynamic = intParams[index];
+					var traitVal:Dynamic = traitParams[index];
+					
+					switch(Type.typeof(intVal)) {
+						case TEnum(e):
+							if (!Type.enumEq(intVal, traitVal)) return false;
+						default:
+							if (intVal!=traitVal) return false;
+					}
+				}
+				return true;
+			}
 		}else {
 			return Std.is(trait, interestedTraitType);
 		}

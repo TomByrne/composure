@@ -73,7 +73,7 @@ class TraitCollection
 		#end
 		
 		var typeName:String;
-		if(Std.is(matchType, EnumValue)){
+		if(Std.is(matchType, Enum)){
 			typeName = Type.getEnumName(matchType);
 		}else{
 			typeName = Type.getClassName(matchType);

@@ -68,52 +68,72 @@ extends AbstractTrait
 	
 	public var concernedTraitType(default, set_concernedTraitType):Dynamic;
 	private function set_concernedTraitType(value:Dynamic):Dynamic {
-		if (_injector == null) {
-			_injector = new Injector(value, onConcernedTraitAdded, onConcernedTraitRemoved, searchSiblings, searchDescendants, searchAscendants);
-			_injector.passThroughItem = true;
-		}else {
+		if (_injectorAdded) {
 			removeInjector(_injector);
-			_injector.interestedTraitType = value;
+			_injectorAdded = false;
 		}
+		_injector.interestedTraitType = value;
 		concernedTraitType = value;
 		if (concernedTraitType != null) {
 			addInjector(_injector);
+			_injectorAdded = true;
 		}
 		return value;
 	}
 	public var searchSiblings(default, set_searchSiblings):Bool;
 	private function set_searchSiblings(value:Bool):Bool{
-		if (_injector != null) {
+		if (_injectorAdded) {
 			removeInjector(_injector);
-			_injector.siblings = value;
+		}
+		_injector.siblings = value;
+		searchSiblings = value;
+		if(_injectorAdded){
 			addInjector(_injector);
 		}
-		searchSiblings = value;
 		return value;
 	}
 	public var searchDescendants(default, set_searchDescendants):Bool;
 	private function set_searchDescendants(value:Bool):Bool{
-		if (_injector != null) {
+		if (_injectorAdded) {
 			removeInjector(_injector);
-			_injector.descendants = value;
+		}
+		_injector.descendants = value;
+		searchDescendants = value;
+		if(_injectorAdded){
 			addInjector(_injector);
 		}
-		searchDescendants = value;
 		return value;
 	}
 	public var searchAscendants(default, set_searchAscendants):Bool;
 	private function set_searchAscendants(value:Bool):Bool{
-		if (_injector != null) {
+		if (_injectorAdded) {
 			removeInjector(_injector);
-			_injector.ascendants = value;
+		}
+		_injector.ascendants = value;
+		searchAscendants = value;
+		if(_injectorAdded){
 			addInjector(_injector);
 		}
-		searchAscendants = value;
 		return value;
+	}
+	public var checkEnumParams(get_checkEnumParams, set_checkEnumParams):Array<Int>;
+	public function get_checkEnumParams():Array<Int>{
+		return _injector.checkEnumParams;
+	}
+	public function set_checkEnumParams(value:Array<Int>):Array<Int> {
+		if (_injectorAdded) {
+			removeInjector(_injector);
+		}
+		var ret = (_injector.checkEnumParams = value);
+		if (_injectorAdded) {
+			addInjector(_injector);
+		}
+		return ret;
 	}
 	
 	private var _addType:AddType;
 	private var _injector:Injector;
+	private var _injectorAdded:Bool;
 	private var _addTraits:UniqueList<AddTrait>;
 	private var _foundTraits:UniqueList<Dynamic>;
 	private var _addedTraits:ObjectHash<Dynamic,Array<Dynamic>>;
@@ -122,10 +142,14 @@ extends AbstractTrait
 	private var _originalParents:ObjectHash<Dynamic,ComposeGroup>;
 	
 	private var _ignoreTraitChanges:Bool;
+	
 
 	public function new(?concernedTraitType:Dynamic, ?addTraits:Array<AddTrait>, ?addType:AddType, searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false) 
 	{
 		super();
+		
+		_injector = new Injector(null, onConcernedTraitAdded, onConcernedTraitRemoved, searchSiblings, searchDescendants, searchAscendants);
+		_injector.passThroughItem = true;
 		
 		if (addType != null)_addType = addType;
 		else _addType = AddType.traitItem;
@@ -154,7 +178,6 @@ extends AbstractTrait
 		_originalItems.set(trait, origItem);
 		
 		var item:ComposeItem = registerItem(trait, origItem);
-		
 		var traitsAdded:Array<Dynamic> = [];
 		for (addTrait in _addTraits) {
 			var newTrait = getTrait(trait, origItem, addTrait);
