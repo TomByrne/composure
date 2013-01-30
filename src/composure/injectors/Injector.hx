@@ -6,8 +6,8 @@ import composure.traits.ITrait;
 class Injector extends AbstractInjector
 {
 
-	public function new(traitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool = true, descendants:Bool = false, ascendants:Bool = false, universal:Bool = false) {
-		super(traitType, addHandler, removeHandler, siblings, descendants, ascendants, universal);
+	public function new(traitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool = true, descendants:Bool = false, ascendants:Bool = false, universal:Bool = false, passThroughItem:Bool=false, passThroughInjector:Bool=false) {
+		super(traitType, addHandler, removeHandler, siblings, descendants, ascendants, universal, passThroughItem, passThroughInjector);
 	}
 
 

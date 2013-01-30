@@ -31,6 +31,8 @@ class InjectorMacro
 		var addMethods:Hash<Field>;
 		var remMethods:Hash<Field>;
 		var typePathToExpr:Hash<ExprDef>;
+		var typePathToPassItem:Hash<Bool>;
+		var typePathToPassInj:Hash<Bool>;
 		
 		var type:Type = Context.getLocalType();
 		var isTrait:Bool = doesTypeInherit("composure.traits.ITrait", type);
@@ -66,12 +68,20 @@ class InjectorMacro
 						}
 					}else if (meta.name == "injectAdd") {
 						if (addMethods == null) addMethods = new Hash<Field>();
-						if (typePathToExpr == null) typePathToExpr = new Hash<ExprDef>();
-						addInjectMethod(field, addMethods, typePathToExpr);
+						if (typePathToExpr == null) {
+							typePathToExpr = new Hash<ExprDef>();
+							typePathToPassItem = new Hash<Bool>();
+							typePathToPassInj = new Hash<Bool>();
+						}
+						addInjectMethod(field, addMethods, typePathToExpr, typePathToPassItem, typePathToPassInj);
 					}else if (meta.name == "injectRemove" || meta.name == "injectRem") {
 						if (remMethods == null) remMethods = new Hash<Field>();
-						if (typePathToExpr == null) typePathToExpr = new Hash<ExprDef>();
-						addInjectMethod(field, remMethods, typePathToExpr);
+						if (typePathToExpr == null) {
+							typePathToExpr = new Hash<ExprDef>();
+							typePathToPassItem = new Hash<Bool>();
+							typePathToPassInj = new Hash<Bool>();
+						}
+						addInjectMethod(field, remMethods, typePathToExpr, typePathToPassItem, typePathToPassInj);
 					}
 				}
 			}
@@ -90,7 +100,7 @@ class InjectorMacro
 					if(remMethods!=null){
 						remMeth = remMethods.get(typePath);
 					}
-					createMethInjector(field, remMeth, typePathToExpr.get(typePath), addExpr, field.pos, addInjectorMethod);
+					createMethInjector(field, remMeth, typePathToExpr.get(typePath), addExpr, field.pos, addInjectorMethod, typePathToPassItem.get(typePath), typePathToPassInj.get(typePath));
 				}
 			}
 		}
@@ -101,7 +111,7 @@ class InjectorMacro
 					done.set(typePath, true);
 					
 					var field = remMethods.get(typePath);
-					createMethInjector(null, field, typePathToExpr.get(typePath), addExpr, field.pos, addInjectorMethod);
+					createMethInjector(null, field, typePathToExpr.get(typePath), addExpr, field.pos, addInjectorMethod, typePathToPassItem.get(typePath), typePathToPassInj.get(typePath));
 				}
 			}
 		}
@@ -173,14 +183,19 @@ class InjectorMacro
 		}
 		return false;
 	}
-	private static function addInjectMethod(field:Field, toHash:Hash<Field>, typePathToExpr:Hash<ExprDef>):Void {
+	private static function addInjectMethod(field:Field, toHash:Hash<Field>, typePathToExpr:Hash<ExprDef>, typePathToPassItem:Hash<Bool>, typePathToPassInj:Hash<Bool>):Void {
 		switch(field.kind) {
 			case FFun( f ):
-				if (f.args.length != 1) {
-					throw new Error("Injectible functions must have only one argument", field.pos);
-				}
+				if (f.args.length == 0)  throw new Error("Injectible functions must have a minimum of one argument.", field.pos);
 				var arg = f.args[0];
 				var typePath:String = getComplexTypePath(arg.type, field.pos);
+				if (f.args.length > 1 && !f.args[1].opt) {
+					typePathToPassItem.set(typePath, true);
+					if (f.args.length > 2 && !f.args[2].opt) {
+						typePathToPassInj.set(typePath, true);
+						if (f.args.length > 3)  throw new Error("Injectible functions can have a maximum of three arguments.", field.pos);
+					}
+				}
 				toHash.set(typePath, field);
 				if (!typePathToExpr.exists(typePath)) {
 					typePathToExpr.set(typePath, getTypeExpr(arg.type, field.pos));
@@ -189,7 +204,7 @@ class InjectorMacro
 				//ignore
 		}
 	}
-	private static function createMethInjector(addMeth:Field, remMeth:Field, typeExpr:ExprDef, addTo:Array<Expr>, pos:Position, addInjectorMeth:Expr):Void {
+	private static function createMethInjector(addMeth:Field, remMeth:Field, typeExpr:ExprDef, addTo:Array<Expr>, pos:Position, addInjectorMeth:Expr, passItem:Bool, passInj:Bool):Void {
 		var injectorAccess:InjectorAccess = new InjectorAccess();
 		var remExpr:ExprDef;
 		if(remMeth!=null){
@@ -216,7 +231,7 @@ class InjectorMacro
 		}else {
 			addExpr = EConst(CIdent("null"));
 		}
-		var expr:Expr = { expr : ECall( addInjectorMeth, [ { expr : ENew( { name : "Injector", pack : ["composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : addExpr, pos :pos}, { expr : remExpr, pos :pos}, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.universal?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
+		var expr:Expr = { expr : ECall( addInjectorMeth, [ { expr : ENew( { name : "Injector", pack : ["composure", "injectors"], params : [], sub : null }, [ { expr : typeExpr, pos : pos }, { expr : addExpr, pos :pos}, { expr : remExpr, pos :pos}, { expr : EConst(CIdent(injectorAccess.siblings?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.descendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.ascendants?"true":"false")), pos : pos }, { expr : EConst(CIdent(injectorAccess.universal?"true":"false")), pos : pos }, { expr : EConst(CIdent(passItem?"true":"false")), pos : pos }, { expr : EConst(CIdent(passInj?"true":"false")), pos : pos } ]), pos : pos } ]), pos : pos };
 		addTo.push(expr);
 	}
 	private static function createPropInjector(fieldName:String, typeExpr:ExprDef, writeOnly:Bool, meta:{ name : String, params : Array<Expr>, pos : Position }, addTo:Array<Expr>, pos:Position, addInjectorMethod:Expr):Void {

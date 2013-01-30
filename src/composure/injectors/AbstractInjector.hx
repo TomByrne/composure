@@ -49,7 +49,7 @@ class AbstractInjector implements IInjector
 
 	private var _addedTraits:UniqueList<Dynamic>;
 
-	public function new(interestedTraitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool=true, descendants:Bool=false, ascendants:Bool=false, universal:Bool=false){
+	public function new(interestedTraitType:Dynamic, addHandler:Dynamic, removeHandler:Dynamic, siblings:Bool=true, descendants:Bool=false, ascendants:Bool=false, universal:Bool=false, passThroughItem:Bool=false, passThroughInjector:Bool=false){
 		this.addHandler = addHandler;
 		this.removeHandler = removeHandler;
 		
@@ -61,8 +61,8 @@ class AbstractInjector implements IInjector
 		this.universal = universal;
 		this.interestedTraitType = interestedTraitType;
 		_addedTraits = new UniqueList<Dynamic>();
-		passThroughInjector = false;
-		passThroughItem = false;
+		this.passThroughInjector = passThroughInjector;
+		this.passThroughItem = passThroughItem;
 	}
 
 
@@ -138,13 +138,12 @@ class AbstractInjector implements IInjector
 		}
 	}
 	public function isInterestedIn(item:ComposeItem, trait:Dynamic):Bool {
-		if((matchTrait != null && !matchTrait(item, trait, this)) ||
-					(maxMatches != -1 && _addedTraits.length >= maxMatches)) {
+		if(maxMatches != -1 && _addedTraits.length >= maxMatches) {
 			return false;
 		}
 		if (_enumValMode) {
 			if (checkEnumParams == null) {
-				return Type.enumEq(trait, interestedTraitType);
+				return Type.enumEq(trait, interestedTraitType) && (matchTrait == null || matchTrait(item, trait, this));
 			}else {
 				var traitEnum = Type.getEnum(trait);
 				var intEnum = Type.getEnum(interestedTraitType);
@@ -164,10 +163,10 @@ class AbstractInjector implements IInjector
 							if (intVal!=traitVal) return false;
 					}
 				}
-				return true;
+				return (matchTrait == null || matchTrait(item, trait, this));
 			}
 		}else {
-			return Std.is(trait, interestedTraitType);
+			return Std.is(trait, interestedTraitType) && (matchTrait == null || matchTrait(item, trait, this));
 		}
 	}
 }

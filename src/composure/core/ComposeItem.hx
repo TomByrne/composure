@@ -146,11 +146,14 @@ class ComposeItem
 		}
 	}
 	private function _addTrait(trait:Dynamic):Void{
-		/*#if debug
-		if(_root && _root!=this){
+		#if debug
+		/*if(_root!=null && _root!=this){
 			Log.trace("WARNING:: ITrait being added while ComposeItem added to root");
+		}*/
+		if(trait==null){
+			throw "Null trait being added";
 		}
-		#end*/
+		#end
 		
 		var traitPair:TraitPair<Dynamic> = { trait:trait, item:this };
 		_traitToPair.set(trait, traitPair);
