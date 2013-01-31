@@ -142,13 +142,15 @@ class AbstractInjector implements IInjector
 			return false;
 		}
 		if (_enumValMode) {
+			
+			var traitEnum = Type.getEnum(trait);
+			var intEnum = Type.getEnum(interestedTraitType);
+			if (traitEnum != intEnum) return false;
+			if (Type.enumIndex(trait) != Type.enumIndex(interestedTraitType)) return false;
+			
 			if (checkEnumParams == null) {
-				return Type.enumEq(trait, interestedTraitType) && (matchTrait == null || matchTrait(item, trait, this));
+				return (matchTrait == null || matchTrait(item, trait, this));
 			}else {
-				var traitEnum = Type.getEnum(trait);
-				var intEnum = Type.getEnum(interestedTraitType);
-				if (traitEnum != intEnum) return false;
-				if (Type.enumIndex(trait) != Type.enumIndex(interestedTraitType)) return false;
 				
 				var traitParams:Array<Dynamic> = Type.enumParameters(trait);
 				var intParams:Array<Dynamic> = Type.enumParameters(interestedTraitType);
