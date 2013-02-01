@@ -144,7 +144,7 @@ extends AbstractTrait
 	private var _ignoreTraitChanges:Bool;
 	
 
-	public function new(?concernedTraitType:Dynamic, ?addTraits:Array<AddTrait>, ?addType:AddType, searchSiblings:Bool=true,searchDescendants:Bool=true,searchAscendants:Bool=false) 
+	public function new(?concernedTraitType:Dynamic, ?addTraits:Array<AddTrait>, ?addType:AddType, searchSiblings:Bool=true, searchDescendants:Bool=true, searchAscendants:Bool=false, ?checkEnumParams:Array<Int>) 
 	{
 		super();
 		
@@ -161,6 +161,7 @@ extends AbstractTrait
 		this.searchSiblings = searchSiblings;
 		this.searchDescendants = searchDescendants;
 		this.searchAscendants = searchAscendants;
+		this.checkEnumParams = checkEnumParams;
 		this.concernedTraitType = concernedTraitType;
 		
 	}
