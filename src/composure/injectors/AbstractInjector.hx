@@ -30,11 +30,13 @@ class AbstractInjector implements IInjector
 	private function set_interestedTraitType(value:Dynamic):Dynamic {
 		interestedTraitType = value;
 		
-		#if cpp
-		_enumValMode = Type.enumIndex(value) != -1;
-		#else
-		_enumValMode = Type.getEnum(value) != null; // cpp returns 'Class'
-		#end
+		if(value!=null){
+			#if cpp
+			_enumValMode = Type.enumIndex(value) != -1;
+			#else
+			_enumValMode = Type.getEnum(value) != null; // cpp returns 'Class'
+			#end
+		}
 		
 		return value;
 	}
