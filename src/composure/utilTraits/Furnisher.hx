@@ -210,8 +210,29 @@ extends AbstractTrait
 		
 		_ignoreTraitChanges = false;
 	}
+	public function addFact(factory:Dynamic->Dynamic, ?unlessType:Class<Dynamic>):Void {
+		if (unlessType != null) {
+			add(TFact(factory, [UnlessHas(unlessType)]));
+		}else{
+			add(TFact(factory));
+		}
+	}
+	public function addInst(inst:Dynamic, ?unlessType:Class<Dynamic>):Void {
+		if (unlessType != null) {
+			add(TInst(inst, [UnlessHas(unlessType)]));
+		}else{
+			add(TInst(inst));
+		}
+	}
+	public function addType(type:Class<Dynamic>, ?unlessType:Class<Dynamic>):Void {
+		if (unlessType != null) {
+			add(TType(type, [UnlessHas(unlessType)]));
+		}else{
+			add(TType(type));
+		}
+	}
 	
-	public function addTrait(addTrait:AddTrait):Void {
+	public function add(addTrait:AddTrait):Void {
 		_addTraits.add(addTrait);
 		
 		if(_foundTraits!=null){
