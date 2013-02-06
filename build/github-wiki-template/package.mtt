@@ -3,11 +3,6 @@
 	<head>
 		::raw build.comment::
 		<title>Package ::name:: Type List</title>
-		<meta name="date" content="::meta.date::" />
-		::foreach kw meta.keywords::
-		<meta name="keywords" content="::kw::" />
-		::end::
-		<link rel="stylesheet" type="text/css" href="::meta.stylesheet::" />
 	</head>
 	<body>
 		<div id="types-frame" class="onepackage">

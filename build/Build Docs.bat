@@ -2,7 +2,8 @@ haxe -main composureTest.ClassIncluder -cp ../src -cp ../testSrc -lib msignal -x
 cd chxdoc
 
 rd /s /q "../../github-wiki/docs"
-chxdoc -o ../../github-wiki/docs --template=../github-wiki-template --includeOnly=composure.* ../type-desc.xml
+chxdoc -o ../../github-wiki/docs --template=../github-wiki-template --policy=deny --allow=composure.* -f ../type-desc.xml
+
 
 cd ../../github-wiki/docs
 

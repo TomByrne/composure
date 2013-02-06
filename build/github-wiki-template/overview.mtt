@@ -2,7 +2,6 @@
 <html>
 	<head>
 		<title>::config.title::</title>
-		<link rel="stylesheet" type="text/css" href="::meta.stylesheet::" />
 	</head>
 	<body>
 		<div id="overview">
