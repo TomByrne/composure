@@ -1,14 +1,11 @@
 package composure.traitCheckers;
+import composure.injectors.AbstractInjector;
 import composure.traits.ITrait;
 import haxe.Log;
 import composure.core.ComposeGroup;
 import composure.core.ComposeItem;
-import composure.injectors.Injector;
 import org.tbyrne.logging.LogMsg;
 
-/**
- * @author Tom Byrne
- */
 
 @:keep
 class GenerationChecker 
@@ -36,8 +33,8 @@ class GenerationChecker
 	 * @param relatedItem Which ComposeItem/ComposeGroup should the generations be relative to.
 	 * Defaults to the item which the trait is added.
 	 */
-	public static function create(maxGenerations:Int=1, descending:Bool=true, relatedItem:ItemType=null):ComposeItem->Dynamic->Injector->Bool {
-		return function(item:ComposeItem, trait:Dynamic, from:Injector):Bool {
+	public static function create(maxGenerations:Int=1, descending:Bool=true, relatedItem:ItemType=null):ComposeItem->Dynamic->AbstractInjector->Bool {
+		return function(item:ComposeItem, trait:Dynamic, from:AbstractInjector):Bool {
 			var compare:ComposeItem;
 			switch(relatedItem) {
 				case specific(other): compare = other;
