@@ -46,7 +46,7 @@ class PositionTrait
 		this.y = y;
 	}
 }
-class CircleTrait extends AbstractTrait, implements IUpdateOnFrameTrait
+class CircleTrait extends AbstractTrait implements IUpdateOnFrameTrait
 {
 	@inject
 	public var position:PositionTrait;
@@ -109,7 +109,7 @@ class FrameUpdater extends AbstractTrait
 interface IUpdateOnFrameTrait {
 	function update():Void;
 }
-class FPSTrait extends AbstractTrait, implements IUpdateOnFrameTrait
+class FPSTrait extends AbstractTrait implements IUpdateOnFrameTrait
 {
 	@inject({sibl:false,asc:true})
 	private var frameUpdater:FrameUpdater;

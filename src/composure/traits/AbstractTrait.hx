@@ -30,13 +30,13 @@ class AbstractTrait implements ITrait
 	 * The group to which this item is added. This is a method of convenience,
 	 * and returns the 'item' property cast as a ComposeGroup.
 	 */
-	public var group(default, null):ComposeGroup;
+	@:isVar public var group(default, null):ComposeGroup;
 	/**
 	 * The item which this trait is added to. Do not set this manually,
 	 * the ComposeItem class sets this property automatically when the 
 	 * trait is added to it.
 	 */
-	public var item(default, set_item):ComposeItem;
+	@:isVar public var item(default, set):ComposeItem;
 	private function set_item(value:ComposeItem):ComposeItem{
 		if(item!=value){
 			if (item != null) {

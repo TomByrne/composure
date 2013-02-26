@@ -1,10 +1,10 @@
 package org.tbyrne.collections;
-import haxe.FastList;
+import haxe.ds.GenericStack;
 
 class UniqueList<T> {
 	
 	public function new(?list:Iterable<T>) {
-		this.list = new FastList<T>();
+		this.list = new GenericStack<T>();
 		
 		if (list != null) {
 			for (item in list) add(item);
@@ -14,13 +14,13 @@ class UniqueList<T> {
 	public function iterator():Iterator<T> {
 		return list.iterator();
 	}
-	public var length(get_length, never):Int;
+	public var length(get, null):Int;
 	private function get_length():Int {
 		return _length;
 	}
 	
 	
-	private var list:FastList<T>;
+	private var list:GenericStack<T>;
 	
 	private var _length:Int = 0;
 	
@@ -48,7 +48,7 @@ class UniqueList<T> {
 		}
 	}
 	public function clear():Void{
-		list = new FastList<T>();
+		list = new GenericStack<T>();
 		_length = 0;
 	}
 }

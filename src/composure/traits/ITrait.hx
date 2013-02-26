@@ -20,12 +20,12 @@ interface ITrait
 	 * the ComposeItem class sets this property automatically when the 
 	 * trait is added to it.
 	 */
-	public var item(default,set_item):ComposeItem;
+	@:isVar public var item(default,set_item):ComposeItem;
 	/**
 	 * The group to which this item is added. This is a method of convenience,
 	 * and should return the 'item' property cast as a ComposeGroup.
 	 */
-	public var group(default, null):ComposeGroup;
+	@:isVar public var group(default, null):ComposeGroup;
 	
 	/**
 	 * This provides a way for this trait to gain access to other traits in the

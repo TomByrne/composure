@@ -66,7 +66,7 @@ extends AbstractTrait
 	
 	#if !macro
 	
-	public var concernedTraitType(default, set_concernedTraitType):Dynamic;
+	@:isVar public var concernedTraitType(default, set):Dynamic;
 	private function set_concernedTraitType(value:Dynamic):Dynamic {
 		if (_injectorAdded) {
 			removeInjector(_injector);
@@ -80,7 +80,7 @@ extends AbstractTrait
 		}
 		return value;
 	}
-	public var searchSiblings(default, set_searchSiblings):Bool;
+	@:isVar public var searchSiblings(default, set):Bool;
 	private function set_searchSiblings(value:Bool):Bool{
 		if (_injectorAdded) {
 			removeInjector(_injector);
@@ -92,7 +92,7 @@ extends AbstractTrait
 		}
 		return value;
 	}
-	public var searchDescendants(default, set_searchDescendants):Bool;
+	@:isVar public var searchDescendants(default, set):Bool;
 	private function set_searchDescendants(value:Bool):Bool{
 		if (_injectorAdded) {
 			removeInjector(_injector);
@@ -104,7 +104,7 @@ extends AbstractTrait
 		}
 		return value;
 	}
-	public var searchAscendants(default, set_searchAscendants):Bool;
+	@:isVar public var searchAscendants(default, set):Bool;
 	private function set_searchAscendants(value:Bool):Bool{
 		if (_injectorAdded) {
 			removeInjector(_injector);
@@ -116,7 +116,7 @@ extends AbstractTrait
 		}
 		return value;
 	}
-	public var checkEnumParams(get_checkEnumParams, set_checkEnumParams):Array<Int>;
+	public var checkEnumParams(get, set):Array<Int>;
 	public function get_checkEnumParams():Array<Int>{
 		return _injector.checkEnumParams;
 	}

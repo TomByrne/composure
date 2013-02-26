@@ -4,14 +4,15 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="testBin\HelloWorld.swf" />
+    <movie path="testBin\HelloWorld.n" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="10" />
-    <movie minorVersion="1" />
-    <movie platform="Flash Player" />
+    <movie version="1" />
+    <movie minorVersion="0" />
+    <movie platform="Neko" />
     <movie background="#FFFFFF" />
+    <movie preferredSDK="Haxe 3.0.0;3.0.0;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
@@ -23,7 +24,7 @@
   <build>
     <option directives="" />
     <option flashStrict="False" />
-    <option mainClass="composureTest.ClassIncluder" />
+    <option mainClass="composureTest.HelloWorld" />
     <option enabledebug="True" />
     <option additional="" />
   </build>
@@ -35,10 +36,6 @@
   <compileTargets>
     <!-- example: <compile path="..." /> -->
   </compileTargets>
-  <!-- Assets to embed into the output SWF -->
-  <library>
-    <!-- example: <asset path="..." id="..." update="..." glyphs="..." mode="..." place="..." sharepoint="..." /> -->
-  </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
     <!-- example: <hidden path="..." /> -->
@@ -50,7 +47,7 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Default" />
+    <option testMovie="Unknown" />
   </options>
   <!-- Plugin storage -->
   <storage />

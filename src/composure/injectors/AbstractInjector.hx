@@ -26,7 +26,7 @@ class AbstractInjector implements IInjector
 
 	public var maxMatches:Int;
 	
-	public var interestedTraitType(default, set_interestedTraitType):Dynamic;
+	@:isVar public var interestedTraitType(default, set):Dynamic;
 	private function set_interestedTraitType(value:Dynamic):Dynamic {
 		interestedTraitType = value;
 		

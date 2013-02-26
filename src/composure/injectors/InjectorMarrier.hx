@@ -12,7 +12,7 @@ import composure.traits.ITrait;
 class InjectorMarrier
 {
 
-	public var traits(get_traits, set_traits):TraitCollection;
+	public var traits(get, set):TraitCollection;
 	private function get_traits():TraitCollection{
 		return _traits;
 	}

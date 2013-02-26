@@ -8,7 +8,7 @@ import composure.core.ComposeItem;
 
 class LazyTraitMap<MatchType> 
 {
-	public var matchType(default, null):Class<MatchType>;
+	@:isVar public var matchType(default, null):Class<MatchType>;
 	
 	private var _typeCreator:TypeCreator<MatchType>;
 	

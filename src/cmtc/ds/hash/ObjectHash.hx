@@ -21,7 +21,7 @@ class ObjectHash<Key, Val>
 	private var ival:Hash<Array<Dynamic>>;
 	#end
 	
-	public var length(default, null):Int;
+	@:isVar public var length(default, null):Int;
 	
 	public function new() 
 	{

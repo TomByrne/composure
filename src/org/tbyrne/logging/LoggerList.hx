@@ -13,7 +13,7 @@ import org.tbyrne.logging.LogMsg;
 
 class LoggerList 
 {
-	public static var nativeTrace(get_nativeTrace, null):Dynamic;
+	public static var nativeTrace(get, null):Dynamic;
 	static function get_nativeTrace():Dynamic
 	{
 		return _nativeTrace;

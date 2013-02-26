@@ -7,9 +7,6 @@ import haxe.macro.Context;
 import haxe.Log;
 import msignal.Signal;
 
-/**
- * @author Tom Byrne
- */
 
 class LazyInst 
 {

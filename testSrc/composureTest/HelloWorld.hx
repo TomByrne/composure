@@ -34,7 +34,7 @@ class MessageTrait{
 class LogTrait extends AbstractTrait{
 
 	@inject
-	private var msgProvider(default, set_msgProvider):MessageTrait;
+	private var msgProvider(default, set):MessageTrait;
 	private function set_msgProvider(value:MessageTrait):MessageTrait{
 		this.msgProvider = value;
 		trace(value.msg);

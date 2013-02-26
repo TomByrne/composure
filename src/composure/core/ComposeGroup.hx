@@ -20,7 +20,7 @@ import composure.traits.ITrait;
  */
 class ComposeGroup extends ComposeItem
 {
-	public var children(get_children, null):Iterable<ComposeItem>;
+	public var children(get, null):Iterable<ComposeItem>;
 	private function get_children():Iterable<ComposeItem> {
 		return _children;
 	}

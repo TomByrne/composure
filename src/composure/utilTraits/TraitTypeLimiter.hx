@@ -22,7 +22,7 @@ import cmtc.ds.hash.ObjectHash;
 class TraitTypeLimiter extends AbstractTrait
 {
 	
-	public var maxCount(default, set_maxCount):Int;
+	@:isVar public var maxCount(default, set):Int;
 	private function set_maxCount(value:Int):Int {
 		if (maxCount != value) {
 			maxCount = value;

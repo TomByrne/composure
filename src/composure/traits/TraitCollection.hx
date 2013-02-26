@@ -27,7 +27,7 @@ class TraitCollection
 	@lazyInst
 	public var traitRemoved:Signal1<TraitPair<Dynamic>>;
 	
-	public var testSignal(get_testSignal, null):Signal1<Dynamic>;
+	public var testSignal(get, null):Signal1<Dynamic>;
 	private function get_testSignal():Signal1<Dynamic>{
 		if (_testSignal == null)_testSignal = new Signal1();
 		return _testSignal;
@@ -36,7 +36,7 @@ class TraitCollection
 	
 	private var _traitTypeCache:Hash < TraitTypeCache<Dynamic> > ;
 	
-	public var traitPairs(default, null):UniqueList<TraitPair<Dynamic>>;
+	@:isVar public var traitPairs(default, null):UniqueList<TraitPair<Dynamic>>;
 
 	public function new()
 	{
