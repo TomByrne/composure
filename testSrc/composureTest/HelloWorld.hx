@@ -3,9 +3,6 @@ import composure.core.ComposeGroup;
 import composure.core.ComposeRoot;
 import composure.traits.AbstractTrait;
 
-/**
- * @author Tom Byrne
- */
 
 class HelloWorld 
 {

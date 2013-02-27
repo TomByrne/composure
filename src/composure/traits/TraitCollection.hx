@@ -5,7 +5,7 @@ import org.tbyrne.logging.LogMsg;
 
 import org.tbyrne.collections.UniqueList;
 import composure.core.ComposeItem;
-import cmtc.ds.hash.ObjectHash;
+
 import composure.traits.ITrait;
 
 import msignal.Signal;
@@ -34,13 +34,13 @@ class TraitCollection
 	}
 	private var _testSignal:Signal1<Dynamic>;
 	
-	private var _traitTypeCache:Hash < TraitTypeCache<Dynamic> > ;
+	private var _traitTypeCache:Map<String,  TraitTypeCache<Dynamic> > ;
 	
 	@:isVar public var traitPairs(default, null):UniqueList<TraitPair<Dynamic>>;
 
 	public function new()
 	{
-		_traitTypeCache = new Hash();
+		_traitTypeCache = new Map();
 		traitPairs = new UniqueList();
 	}
 

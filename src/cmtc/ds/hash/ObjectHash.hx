@@ -7,7 +7,33 @@ package cmtc.ds.hash;
 import haxe.Serializer;
 import haxe.Unserializer;
 #if flash9
-typedef ObjectHash<Key, Val> = flash.utils.TypedDictionary<Key, Val>;
+class ObjectHash<Key, Val> extends flash.utils.Dictionary {
+
+	public inline function get( k : Key ) : Null<Val> {
+		return untyped this[k];
+	}
+
+	public inline function set( k : Key, v : Val ) {
+		untyped this[k] = v;
+	}
+
+	public inline function exists( k : Key ) {
+		return untyped this[k] != null;
+	}
+
+	public inline function delete( k : Key ) {
+		untyped __delete__(this,k);
+	}
+
+	public inline function keys() : Array<Key> {
+		return untyped __keys__(this);
+	}
+
+	public function iterator() : Iterator<Key> {
+		return keys().iterator();
+	}
+
+}
 #else
 
 class ObjectHash<Key, Val> 
@@ -16,9 +42,9 @@ class ObjectHash<Key, Val>
 	private static var clsId:Int = 0;
 
 	#if !php
-	private var ival:IntHash<Array<Dynamic>>;
+	private var ival:IntMap<String, Array<Dynamic>>;
 	#else
-	private var ival:Hash<Array<Dynamic>>;
+	private var ival:Map<String, Array<Dynamic>>;
 	#end
 	
 	@:isVar public var length(default, null):Int;
@@ -28,7 +54,7 @@ class ObjectHash<Key, Val>
 		#if !php
 		ival = new IntHash();
 		#else
-		ival = new Hash();
+		ival = new Map();
 		#end
 		
 		length = 0;

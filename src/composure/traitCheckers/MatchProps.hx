@@ -10,7 +10,7 @@ import composure.injectors.Injector;
 
 class MatchProps 
 {
-	public static function create(matchProps:Hash<Dynamic>):ComposeItem->Dynamic->Injector->Bool {
+	public static function create(matchProps:Map<String, Dynamic>):ComposeItem->Dynamic->Injector->Bool {
 		return function(item:ComposeItem, trait:Dynamic, from:Injector):Bool {
 			for (i in matchProps.keys()) {
 				if (Reflect.field(trait, i) != matchProps.get(i)) {

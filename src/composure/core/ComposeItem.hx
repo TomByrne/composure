@@ -35,11 +35,11 @@ class ComposeItem
 	 * The ComposeGroup to which this item is added, if this is the root 'parentItem' will be a self-reference.
 	 * This value is set automatically and shouldn't be manually changed.
 	 */
-	public var parentItem(getParentItem, setParentItem):ComposeGroup;
-	private function getParentItem():ComposeGroup{
+	public var parentItem(get, set):ComposeGroup;
+	private function get_parentItem():ComposeGroup{
 		return _parentItem;
 	}
-	private function setParentItem(value:ComposeGroup):ComposeGroup{
+	private function set_parentItem(value:ComposeGroup):ComposeGroup{
 		if(_parentItem!=value){
 			if(_parentItem!=null){
 				onParentRemove();
@@ -55,8 +55,8 @@ class ComposeItem
 	 * The ComposeRoot which is the top-level parent, if this is the root 'root' will be a self-reference.
 	 * This value is set automatically and shouldn't be manually changed.
 	 */
-	public var root(getRoot, null):ComposeRoot;
-	private function getRoot():ComposeRoot{
+	public var root(get, null):ComposeRoot;
+	private function get_root():ComposeRoot{
 		return _root;
 	}
 
@@ -77,8 +77,8 @@ class ComposeItem
 		_traitCollection = new TraitCollection();
 		_siblingMarrier = new InjectorMarrier(_traitCollection);
 		_parentMarrier = new InjectorMarrier(_traitCollection);
-		_traitToCast = new ObjectHash();
-		_traitToPair = new ObjectHash();
+		_traitToCast = new ObjectHash<Dynamic,ITrait>();
+		_traitToPair = new ObjectHash<Dynamic, TraitPair<Dynamic>>();
 		if(initTraits!=null)addTraits(initTraits);
 	}
 	private function setRoot(root:ComposeRoot):Void {
@@ -210,7 +210,7 @@ class ComposeItem
 		#end*/
 		
 		var traitPair:TraitPair<Dynamic> = _traitToPair.get(trait);
-		_traitToPair.delete(trait);
+		_traitToPair.remove(trait);
 		
 		var castTrait:ITrait = _traitToCast.get(trait);
 		if(castTrait!=null){
@@ -219,7 +219,7 @@ class ComposeItem
 			for(injector in castInjectors){
 				removeTraitInjector(injector);
 			}
-			_traitToCast.delete(trait);
+			_traitToCast.remove(trait);
 		}
 		
 		_traitCollection.removeTrait(traitPair);

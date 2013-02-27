@@ -3,7 +3,7 @@ import composure.core.ComposeItem;
 import composure.injectors.AbstractInjector;
 import composure.injectors.Injector;
 import composure.traits.AbstractTrait;
-import cmtc.ds.hash.ObjectHash;
+
 
 /**
  * TraitTypeLimiter is used to restrict the amount of a certain type of trait
@@ -36,8 +36,8 @@ class TraitTypeLimiter extends AbstractTrait
 	private var injector:Injector;
 	private var added:Bool;
 	
-	private var _added:ObjectHash<ComposeItem, Array<Dynamic>>;
-	private var _removed:ObjectHash < ComposeItem, Array<Dynamic> > ;
+	private var _added:Map< ComposeItem, Array<Dynamic>>;
+	private var _removed:Map < ComposeItem, Array<Dynamic> > ;
 	
 	private var _ignoreChanges:Bool;
 
@@ -49,8 +49,8 @@ class TraitTypeLimiter extends AbstractTrait
 			policy = FirstInLastOut;
 		}
 		
-		_added = new ObjectHash();
-		_removed = new ObjectHash();
+		_added = new Map();
+		_removed = new Map();
 		
 		injector = new Injector(traitType, onTraitAdded, onTraitRemoved);
 		injector.passThroughItem = true;
@@ -87,8 +87,8 @@ class TraitTypeLimiter extends AbstractTrait
 				}
 			}
 		}
-		_added = new ObjectHash();
-		_removed = new ObjectHash();
+		_added = new Map();
+		_removed = new Map();
 		_ignoreChanges = false;
 	}
 	private function checkTraits():Void {

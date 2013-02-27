@@ -33,7 +33,7 @@ class LoggerList
 	}
 	
 	private static var _nativeTrace:Dynamic;
-	private static var _loggers:Hash<Array<ILogger>>;
+	private static var _loggers:Map<String, Array<ILogger>>;
 	
 	public static var defaultTypes:Array<String>;
 	
@@ -93,7 +93,7 @@ class LoggerList
 
 	public static function addLogger( logger:ILogger , types:Array<String>):Void {
 		if (_loggers == null) {
-			_loggers = new Hash<Array<ILogger>>();
+			_loggers = new Map<String, Array<ILogger>>();
 		}
 		for (type in types) {
 			var list:Array<ILogger> = _loggers.get(type);

@@ -21,18 +21,18 @@ import haxe.macro.Compiler;
 class InjectorMacro
 {
 
-	@:macro public static function inject() : Array<Field> {
+	macro public static function inject() : Array<Field> {
         var fields:Array<Field> = Context.getBuildFields();
 		if (fields.length == 0) return fields;
 		
 		var constructor:Function;
 		var addExpr:Array<Expr>;
 		
-		var addMethods:Hash<Field>;
-		var remMethods:Hash<Field>;
-		var typePathToExpr:Hash<ExprDef>;
-		var typePathToPassItem:Hash<Bool>;
-		var typePathToPassInj:Hash<Bool>;
+		var addMethods:Map<String, Field>;
+		var remMethods:Map<String, Field>;
+		var typePathToExpr:Map<String, ExprDef>;
+		var typePathToPassItem:Map<String, Bool>;
+		var typePathToPassInj:Map<String, Bool>;
 		
 		var type:Type = Context.getLocalType();
 		var isTrait:Bool = doesTypeInherit("composure.traits.ITrait", type);
@@ -57,29 +57,29 @@ class InjectorMacro
 						var pos:Position = field.pos;
 						if (addExpr == null) addExpr = [];
 						switch(field.kind) {
-							case FVar( t , e  ):
+							case FVar( t , _  ):
 								makeAccessPublic(field);
 								createPropInjector(field.name, getTypeExpr(t, pos), false, meta, addExpr, pos, addInjectorMethod);
-							case FProp( get , set , t , e  ):
+							case FProp( get , _ , t , _  ):
 								makeAccessPublic(field);
 								createPropInjector(field.name, getTypeExpr(t, pos), (get=="null" || get=="never"), meta, addExpr, pos, addInjectorMethod);
 							default:
 								//ignore
 						}
 					}else if (meta.name == "injectAdd") {
-						if (addMethods == null) addMethods = new Hash<Field>();
+						if (addMethods == null) addMethods = new Map<String, Field>();
 						if (typePathToExpr == null) {
-							typePathToExpr = new Hash<ExprDef>();
-							typePathToPassItem = new Hash<Bool>();
-							typePathToPassInj = new Hash<Bool>();
+							typePathToExpr = new Map<String, ExprDef>();
+							typePathToPassItem = new Map<String, Bool>();
+							typePathToPassInj = new Map<String, Bool>();
 						}
 						addInjectMethod(field, addMethods, typePathToExpr, typePathToPassItem, typePathToPassInj);
 					}else if (meta.name == "injectRemove" || meta.name == "injectRem") {
-						if (remMethods == null) remMethods = new Hash<Field>();
+						if (remMethods == null) remMethods = new Map<String, Field>();
 						if (typePathToExpr == null) {
-							typePathToExpr = new Hash<ExprDef>();
-							typePathToPassItem = new Hash<Bool>();
-							typePathToPassInj = new Hash<Bool>();
+							typePathToExpr = new Map<String, ExprDef>();
+							typePathToPassItem = new Map<String, Bool>();
+							typePathToPassInj = new Map<String, Bool>();
 						}
 						addInjectMethod(field, remMethods, typePathToExpr, typePathToPassItem, typePathToPassInj);
 					}
@@ -87,7 +87,7 @@ class InjectorMacro
 			}
 		}
 		
-		var done:Hash<Bool> = new Hash<Bool>();
+		var done:Map<String, Bool> = new Map<String, Bool>();
 		if (addMethods != null) {
 			if (addExpr == null) addExpr = [];
 			
@@ -165,9 +165,9 @@ class InjectorMacro
 			case TDynamic( t ):
 				if (t == null) return false;
 				else return doesTypeInherit(classpath, t);
-			case TType( t , params ):
+			case TType( t , _ ):
 				return doesTypeInherit(classpath, t.get().type);
-			case TInst( t , params ):
+			case TInst( t , _ ):
 				return doesClassTypeInherit(classpath, t.get());
 			default:
 				return false;
@@ -183,7 +183,7 @@ class InjectorMacro
 		}
 		return false;
 	}
-	private static function addInjectMethod(field:Field, toHash:Hash<Field>, typePathToExpr:Hash<ExprDef>, typePathToPassItem:Hash<Bool>, typePathToPassInj:Hash<Bool>):Void {
+	private static function addInjectMethod(field:Field, toHash:Map<String, Field>, typePathToExpr:Map<String, ExprDef>, typePathToPassItem:Map<String, Bool>, typePathToPassInj:Map<String, Bool>):Void {
 		switch(field.kind) {
 			case FFun( f ):
 				if (f.args.length == 0)  throw new Error("Injectible functions must have a minimum of one argument.", field.pos);
@@ -294,9 +294,9 @@ class InjectorMacro
 							pack = EField( { expr : pack, pos : pos }, packStr);
 						}
 					}
-					return EType({expr:pack,pos:pos},t.name);
+					return EField({expr:pack,pos:pos},t.name);
 				}else{
-					return EConst(CType(t.name));
+					return EConst(CIdent(t.name));
 				}
 			default:
 				throw new Error("Only simple can currrently be injected", pos);

@@ -3,10 +3,11 @@ package composure.injectors;
 import org.tbyrne.collections.UniqueList;
 import composure.core.ComposeItem;
 import composure.traits.TraitCollection;
-import cmtc.ds.hash.ObjectHash;
+
 import haxe.Log;
 import org.tbyrne.logging.LogMsg;
 import composure.traits.ITrait;
+import cmtc.ds.hash.ObjectHash;
 
 
 class InjectorMarrier
@@ -30,8 +31,8 @@ class InjectorMarrier
 		}
 		return value;
 	}
-	public var traitInjectors(getTraitInjectors, null):UniqueList<IInjector>;
-	private function getTraitInjectors():UniqueList<IInjector>{
+	public var traitInjectors(get, null):UniqueList<IInjector>;
+	private function get_traitInjectors():UniqueList<IInjector>{
 		return _traitInjectors;
 	}
 
@@ -39,14 +40,14 @@ class InjectorMarrier
 	private var _traitInjectors:UniqueList<IInjector>;
 
 	// mapped injector > [traits]
-	private var _injectorLookup:ObjectHash<IInjector,UniqueList<TraitPair<Dynamic>>>;
+	private var _injectorLookup:Map<IInjector,UniqueList<TraitPair<Dynamic>>>;
 
 	// mapped trait > [injectors]
 	private var _traitLookup:ObjectHash < Dynamic, UniqueList<IInjector> > ;
 
 	public function new(traits:TraitCollection) {
 		_traitInjectors = new UniqueList<IInjector>();
-		_injectorLookup = new ObjectHash < IInjector, UniqueList<TraitPair<Dynamic>> > ();
+		_injectorLookup = new Map < IInjector, UniqueList<TraitPair<Dynamic>> > ();
 		_traitLookup = new ObjectHash < Dynamic, UniqueList<IInjector> > ();
 		this.traits = traits;
 		
@@ -93,7 +94,7 @@ class InjectorMarrier
 					traitLookup.remove(traitInjector);
 				}
 				traitPairs.clear();
-				_injectorLookup.delete(traitInjector);
+				_injectorLookup.remove(traitInjector);
 			}
 		}
 	}
@@ -114,7 +115,7 @@ class InjectorMarrier
 				injectorLookup.remove(traitPair.trait);
 			}
 			injectors.clear();
-			_traitLookup.delete(traitPair.trait);
+			_traitLookup.remove(traitPair.trait);
 		}
 	}
 

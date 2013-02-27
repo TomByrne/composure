@@ -4,13 +4,13 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="testBin\HelloWorld.n" />
+    <movie path="testBin\HelloWorld.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="1" />
+    <movie version="11" />
     <movie minorVersion="0" />
-    <movie platform="Neko" />
+    <movie platform="Flash Player" />
     <movie background="#FFFFFF" />
     <movie preferredSDK="Haxe 3.0.0;3.0.0;" />
   </output>
@@ -36,6 +36,10 @@
   <compileTargets>
     <!-- example: <compile path="..." /> -->
   </compileTargets>
+  <!-- Assets to embed into the output SWF -->
+  <library>
+    <!-- example: <asset path="..." id="..." update="..." glyphs="..." mode="..." place="..." sharepoint="..." /> -->
+  </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
     <!-- example: <hidden path="..." /> -->

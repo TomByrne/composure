@@ -12,6 +12,7 @@ import composure.core.ComposeItem;
 import composure.traits.AbstractTrait;
 import org.tbyrne.logging.LogMsg;
 import cmtc.ds.hash.ObjectHash;
+
 #end
 
 /**
@@ -43,7 +44,7 @@ extends AbstractTrait
 	/* wraps an expression in TFact(function(tag:Dynamic):Dynamic{ return ...  expr  ...  })
 	 * It will only add the return statement on the last line of your expression (if there isn't already one)
 	 */
-	@:macro public static function fact(expr:Expr):Expr {
+	macro public static function fact(expr:Expr):Expr {
 		var pos = Context.currentPos();
 		switch(expr.expr) {
 			case EReturn(e):
@@ -131,11 +132,11 @@ extends AbstractTrait
 		return ret;
 	}
 	
-	public var checkProps(get_checkProps, set_checkProps):Hash<Dynamic>;
-	private function get_checkProps():Hash<Dynamic>{
+	public var checkProps(get_checkProps, set_checkProps):Map<String, Dynamic>;
+	private function get_checkProps():Map<String, Dynamic>{
 		return _injector.checkProps;
 	}
-	private function set_checkProps(value:Hash<Dynamic>):Hash<Dynamic> {
+	private function set_checkProps(value:Map<String, Dynamic>):Map<String, Dynamic> {
 		if (_injectorAdded) {
 			removeInjector(_injector);
 		}
@@ -146,7 +147,7 @@ extends AbstractTrait
 		return ret;
 	}
 	public function setCheckProps(obj:Dynamic):Void {
-		var hash:Hash<Dynamic> = new Hash();
+		var hash:Map<String, Dynamic> = new Map();
 		var fields = Reflect.fields(obj);
 		for (i in fields) {
 			hash.set(i, Reflect.getProperty(obj, i));

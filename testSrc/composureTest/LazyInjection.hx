@@ -2,11 +2,8 @@ package composureTest;
 import composure.core.ComposeItem;
 import composure.core.ComposeRoot;
 import composure.utilTraits.LazyTraitMap;
+import composure.traits.AbstractTrait;
 
-/**
- * ...
- * @author Tom Byrne
- */
 
 class LazyInjection 
 {
@@ -31,7 +28,6 @@ class LazyClass implements ILazyInterface {
 	}
 }
 
-import composure.traits.AbstractTrait;
 class TestTrait extends AbstractTrait {
 	
 	@inject({lazy:true, asc:true})

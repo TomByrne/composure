@@ -12,7 +12,7 @@ class LazyInst
 {
 	private static var _metaName:String = "lazyInst";
 
-	@:macro public static function check() :Array<Field>
+	macro public static function check() :Array<Field>
 	{
 		var fields:Array<Field> = Context.getBuildFields();
 		var pos:Position = Context.getLocalClass().get().pos;
@@ -77,7 +77,7 @@ class LazyInst
 		}
 		return fields;
 	}
-	@:macro public static function exec(expr:Expr):Expr
+	macro public static function exec(expr:Expr):Expr
 	{
 		// The get macro adds something like this:
 		//	if (_prop != null)_prop
@@ -129,7 +129,7 @@ class LazyInst
 			case EArray( e1, e2 ):
 				findLocalReads(reads, e1, fields);
 				findLocalReads(reads, e2, fields);
-			case EBinop( op, e1, e2 ):
+			case EBinop( _, e1, e2 ):
 				findLocalReads(reads, e1, fields);
 				findLocalReads(reads, e2, fields);
 			case EField( e , field ):
@@ -157,13 +157,13 @@ class LazyInst
 				for (e in values) {
 					findLocalReads(reads, e, fields);
 				}
-			case EUnop( op, postFix, e ):
+			case EUnop( _, _, e ):
 				findLocalReads(reads, e, fields);
 			case EVars( vars ):
 				for (vari in vars) {
 					findLocalReads(reads, vari.expr, fields);
 				}
-			case EFor( it, expr ):
+			case EFor( _, expr ):
 				findLocalReads(reads, expr, fields);
 			case EIn( e1, e2 ):
 				findLocalReads(reads, e1, fields);
@@ -172,7 +172,7 @@ class LazyInst
 				findLocalReads(reads, econd, fields);
 				findLocalReads(reads, eif, fields);
 				if(eelse!=null)findLocalReads(reads, eelse, fields);
-			case EWhile( econd, e, normalWhile ):
+			case EWhile( econd, e, _ ):
 				findLocalReads(reads, econd, fields);
 				findLocalReads(reads, e, fields);
 			case ESwitch( e, cases, edef  ):
@@ -192,20 +192,16 @@ class LazyInst
 				findLocalReads(reads, e, fields);
 			case EThrow( e ):
 				findLocalReads(reads, e, fields);
-			case ECast( e, t ):
+			case ECast( e, _ ):
 				findLocalReads(reads, e, fields);
-			case EDisplay( e, isCall ):
+			case EDisplay( e, _ ):
 				findLocalReads(reads, e, fields);
 			case ETernary( econd, eif, eelse ):
 				findLocalReads(reads, econd, fields);
 				findLocalReads(reads, eif, fields);
 				findLocalReads(reads, eelse, fields);
-			case ECheckType( e, t ):
+			case ECheckType( e, _ ):
 				findLocalReads(reads, e, fields);
-			#if !haxe3
-			case EType( e, field ):
-				findLocalReads(reads, e, fields);
-			#end
 			default:
 		}
 	}

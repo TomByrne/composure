@@ -23,7 +23,7 @@ class AbstractInjector implements IInjector
 	public var stopAscendingAt:ComposeItem->Dynamic->AbstractInjector->Bool;
 	
 	public var checkEnumParams:Array<Int>;
-	public var checkProps:Hash<Dynamic>;
+	public var checkProps:Map<String, Dynamic>;
 
 	public var maxMatches:Int;
 	
@@ -162,7 +162,7 @@ class AbstractInjector implements IInjector
 					var traitVal:Dynamic = traitParams[index];
 					
 					switch(Type.typeof(intVal)) {
-						case TEnum(e):
+						case TEnum(_):
 							if (!Type.enumEq(intVal, traitVal)) return false;
 						default:
 							if (intVal!=traitVal) return false;
