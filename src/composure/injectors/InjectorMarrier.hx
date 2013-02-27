@@ -1,5 +1,6 @@
 package composure.injectors;
 
+import haxe.ds.ObjectMap;
 import org.tbyrne.collections.UniqueList;
 import composure.core.ComposeItem;
 import composure.traits.TraitCollection;
@@ -7,7 +8,6 @@ import composure.traits.TraitCollection;
 import haxe.Log;
 import org.tbyrne.logging.LogMsg;
 import composure.traits.ITrait;
-import cmtc.ds.hash.ObjectHash;
 
 
 class InjectorMarrier
@@ -43,12 +43,12 @@ class InjectorMarrier
 	private var _injectorLookup:Map<IInjector,UniqueList<TraitPair<Dynamic>>>;
 
 	// mapped trait > [injectors]
-	private var _traitLookup:ObjectHash < Dynamic, UniqueList<IInjector> > ;
+	private var _traitLookup:ObjectMap < Dynamic, UniqueList<IInjector> > ;
 
 	public function new(traits:TraitCollection) {
 		_traitInjectors = new UniqueList<IInjector>();
 		_injectorLookup = new Map < IInjector, UniqueList<TraitPair<Dynamic>> > ();
-		_traitLookup = new ObjectHash < Dynamic, UniqueList<IInjector> > ();
+		_traitLookup = new ObjectMap < Dynamic, UniqueList<IInjector> > ();
 		this.traits = traits;
 		
 	}

@@ -1,11 +1,11 @@
 package composure.core;
 
+import haxe.ds.ObjectMap;
 import org.tbyrne.collections.UniqueList;
 import composure.injectors.IInjector;
 import composure.injectors.InjectorMarrier;
 import composure.traits.ITrait;
 import composure.traits.TraitCollection;
-import cmtc.ds.hash.ObjectHash;
 
 
 /**
@@ -67,8 +67,8 @@ class ComposeItem
 	private var _parentMarrier:InjectorMarrier; // Marries traits owned by this Item to ascendants' injectors
 	private var _ascInjectors:UniqueList<IInjector>;
 	private var _uniInjectors:UniqueList<IInjector>;
-	private var _traitToCast:ObjectHash<Dynamic,ITrait>;
-	private var _traitToPair:ObjectHash<Dynamic, TraitPair<Dynamic>>;
+	private var _traitToCast:ObjectMap<Dynamic,ITrait>;
+	private var _traitToPair:ObjectMap<Dynamic, TraitPair<Dynamic>>;
 
 	/**
 	 * @param	initTraits		A list of traits to add to this ComposeItem initially.
@@ -77,8 +77,8 @@ class ComposeItem
 		_traitCollection = new TraitCollection();
 		_siblingMarrier = new InjectorMarrier(_traitCollection);
 		_parentMarrier = new InjectorMarrier(_traitCollection);
-		_traitToCast = new ObjectHash<Dynamic,ITrait>();
-		_traitToPair = new ObjectHash<Dynamic, TraitPair<Dynamic>>();
+		_traitToCast = new ObjectMap<Dynamic,ITrait>();
+		_traitToPair = new ObjectMap<Dynamic, TraitPair<Dynamic>>();
 		if(initTraits!=null)addTraits(initTraits);
 	}
 	private function setRoot(root:ComposeRoot):Void {
