@@ -117,10 +117,10 @@ extends AbstractTrait
 		return value;
 	}
 	public var checkEnumParams(get, set):Array<Int>;
-	public function get_checkEnumParams():Array<Int>{
+	private function get_checkEnumParams():Array<Int>{
 		return _injector.checkEnumParams;
 	}
-	public function set_checkEnumParams(value:Array<Int>):Array<Int> {
+	private function set_checkEnumParams(value:Array<Int>):Array<Int> {
 		if (_injectorAdded) {
 			removeInjector(_injector);
 		}
@@ -129,6 +129,29 @@ extends AbstractTrait
 			addInjector(_injector);
 		}
 		return ret;
+	}
+	
+	public var checkProps(get_checkProps, set_checkProps):Hash<Dynamic>;
+	private function get_checkProps():Hash<Dynamic>{
+		return _injector.checkProps;
+	}
+	private function set_checkProps(value:Hash<Dynamic>):Hash<Dynamic> {
+		if (_injectorAdded) {
+			removeInjector(_injector);
+		}
+		var ret = (_injector.checkProps = value);
+		if (_injectorAdded) {
+			addInjector(_injector);
+		}
+		return ret;
+	}
+	public function setCheckProps(obj:Dynamic):Void {
+		var hash:Hash<Dynamic> = new Hash();
+		var fields = Reflect.fields(obj);
+		for (i in fields) {
+			hash.set(i, Reflect.getProperty(obj, i));
+		}
+		checkProps = hash;
 	}
 	
 	private var _addType:AddType;

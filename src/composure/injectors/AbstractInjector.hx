@@ -23,6 +23,7 @@ class AbstractInjector implements IInjector
 	public var stopAscendingAt:ComposeItem->Dynamic->AbstractInjector->Bool;
 	
 	public var checkEnumParams:Array<Int>;
+	public var checkProps:Hash<Dynamic>;
 
 	public var maxMatches:Int;
 	
@@ -170,7 +171,17 @@ class AbstractInjector implements IInjector
 				return (matchTrait == null || matchTrait(item, trait, this));
 			}
 		}else {
-			return Std.is(trait, interestedTraitType) && (matchTrait == null || matchTrait(item, trait, this));
+			if(Std.is(trait, interestedTraitType) && (matchTrait == null || matchTrait(item, trait, this))){
+				if (checkProps != null) {
+					for (i in checkProps.keys()) {
+						if (Reflect.getProperty(trait, i) != checkProps.get(i)) {
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }
