@@ -11,7 +11,7 @@ import composure.core.ComposeGroup;
 import composure.core.ComposeItem;
 import composure.traits.AbstractTrait;
 import org.tbyrne.logging.LogMsg;
-import cmtc.ds.hash.ObjectHash;
+import haxe.ds.ObjectMap;
 
 #end
 
@@ -147,7 +147,7 @@ extends AbstractTrait
 		return ret;
 	}
 	public function setCheckProps(obj:Dynamic):Void {
-		var hash:Map<String, Dynamic> = new Map();
+		var hash:Map<String, Dynamic> = new Map<String, Dynamic>();
 		var fields = Reflect.fields(obj);
 		for (i in fields) {
 			hash.set(i, Reflect.getProperty(obj, i));
@@ -160,10 +160,10 @@ extends AbstractTrait
 	private var _injectorAdded:Bool;
 	private var _addTraits:UniqueList<AddTrait>;
 	private var _foundTraits:UniqueList<Dynamic>;
-	private var _addedTraits:ObjectHash<Dynamic,Array<Dynamic>>;
-	private var _traitToItems:ObjectHash<Dynamic,ComposeItem>;
-	private var _originalItems:ObjectHash<Dynamic,ComposeItem>;
-	private var _originalParents:ObjectHash<Dynamic,ComposeGroup>;
+	private var _addedTraits:ObjectMap<Dynamic,Array<Dynamic>>;
+	private var _traitToItems:ObjectMap<Dynamic,ComposeItem>;
+	private var _originalItems:ObjectMap<Dynamic,ComposeItem>;
+	private var _originalParents:ObjectMap<Dynamic,ComposeGroup>;
 	
 	private var _ignoreTraitChanges:Bool;
 	
@@ -178,7 +178,7 @@ extends AbstractTrait
 		if (addType != null)_addType = addType;
 		else _addType = AddType.traitItem;
 		
-		_addedTraits = new ObjectHash < Dynamic, Array<Dynamic> > ();
+		_addedTraits = new ObjectMap < Dynamic, Array<Dynamic> > ();
 		
 		_addTraits = new UniqueList<AddTrait>(addTraits);
 		
@@ -197,7 +197,7 @@ extends AbstractTrait
 		
 		if (_foundTraits == null) {
 			_foundTraits = new UniqueList<Dynamic>();
-			_originalItems = new ObjectHash<Dynamic,ComposeItem>();
+			_originalItems = new ObjectMap<Dynamic,ComposeItem>();
 		}
 		_foundTraits.add(trait);
 		_originalItems.set(trait, origItem);
@@ -221,14 +221,14 @@ extends AbstractTrait
 		_foundTraits.remove(trait);
 		
 		var origItem = _originalItems.get(trait);
-		_originalItems.delete(trait);
+		_originalItems.remove(trait);
 		
 		var item:ComposeItem = getItem(trait);
 		var traitsAdded:Array<Dynamic> = _addedTraits.get(trait);
 		for (otherTrait in traitsAdded) {
 			item.removeTrait(otherTrait);
 		}
-		_addedTraits.delete(trait);
+		_addedTraits.remove(trait);
 		
 		unregisterItem(trait, item, origItem);
 		
@@ -310,7 +310,7 @@ extends AbstractTrait
 	}
 	private function registerItem(trait:Dynamic, origItem:ComposeItem):ComposeItem {
 		if (_traitToItems == null) {
-			_traitToItems = new ObjectHash<Dynamic,ComposeItem>();
+			_traitToItems = new ObjectMap<Dynamic,ComposeItem>();
 		}
 		var item:ComposeItem;
 		var adoptTrait:Bool = false;
@@ -325,7 +325,7 @@ extends AbstractTrait
 				item = origItem;
 				adoptTrait = adoptMatchedTrait;
 				if (_originalParents == null) {
-					_originalParents = new ObjectHash<Dynamic,ComposeGroup>();
+					_originalParents = new ObjectMap<Dynamic,ComposeGroup>();
 				}
 				_originalParents.set(trait, origItem.parentItem);
 				if (origItem.parentItem != newParent) {
@@ -381,13 +381,13 @@ extends AbstractTrait
 			case AddType.traitSibling(adoptMatchedTrait), AddType.selfSibling(adoptMatchedTrait), AddType.traitChild(adoptMatchedTrait), AddType.selfChild(adoptMatchedTrait):
 				currItem.parentItem.removeChild(currItem);
 				adoptTrait = adoptMatchedTrait;
-			case AddType.itemChild(group, adoptMatchedTrait):
+			case AddType.itemChild(_, adoptMatchedTrait):
 				currItem.parentItem.removeChild(currItem);
 				adoptTrait = adoptMatchedTrait;
-			case AddType.itemSibling(group, adoptMatchedTrait):
+			case AddType.itemSibling(_, adoptMatchedTrait):
 				currItem.parentItem.removeChild(currItem);
 				adoptTrait = adoptMatchedTrait;
-			case AddType.adoptItem(newParent, adoptMatchedTrait):
+			case AddType.adoptItem(_, adoptMatchedTrait):
 				var oldParent:ComposeGroup = _originalParents.get(trait);
 				if (oldParent != currItem.parentItem) {
 					item.parentItem.removeChild(currItem);
@@ -396,12 +396,12 @@ extends AbstractTrait
 				adoptTrait = adoptMatchedTrait;
 			case AddType.selfItem(adoptMatchedTrait):
 				adoptTrait = adoptMatchedTrait;
-			case AddType.item(specItem, adoptMatchedTrait):
+			case AddType.item(_, adoptMatchedTrait):
 				adoptTrait = adoptMatchedTrait;
 			case AddType.traitItem:
 				adoptTrait = false;
 		}
-		_traitToItems.delete(trait);
+		_traitToItems.remove(trait);
 		
 		if (adoptTrait && origItem != currItem) {
 			currItem.removeTrait(trait);
