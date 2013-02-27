@@ -137,7 +137,8 @@ class ObjectHash<Key, Val>
 #elseif cs
 		return obj.GetHashCode();
 #else
-		UnsupportedPlatform;
+		//UnsupportedPlatform;
+		return -1; // should do this so xml compilation works
 #end
 	}
 	
