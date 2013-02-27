@@ -18,3 +18,7 @@ ren "all_classes.html" "Documentation - All Classes.md"
 for /r %%x in (*.html) do ren "%%x" *.md
 
 cd ../../build
+
+del type-desc.xml
+
+pause
