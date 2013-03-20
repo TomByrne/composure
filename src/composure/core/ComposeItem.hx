@@ -6,6 +6,7 @@ import composure.injectors.IInjector;
 import composure.injectors.InjectorMarrier;
 import composure.traits.ITrait;
 import composure.traits.TraitCollection;
+import msignal.Signal;
 
 
 /**
@@ -58,6 +59,15 @@ class ComposeItem
 	public var root(get, null):ComposeRoot;
 	private function get_root():ComposeRoot{
 		return _root;
+	}
+	
+	public var traitAdded(get_traitAdded, null):Signal1<TraitPair<Dynamic>>;
+	private function get_traitAdded():Signal1<TraitPair<Dynamic>> {
+		return _traitCollection.traitAdded;
+	}
+	public var traitRemoved(get_traitRemoved, null):Signal1<TraitPair<Dynamic>>;
+	private function get_traitRemoved():Signal1<TraitPair<Dynamic>> {
+		return _traitCollection.traitRemoved;
 	}
 
 	private var _parentItem:ComposeGroup;

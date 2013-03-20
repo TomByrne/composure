@@ -155,7 +155,15 @@ extends AbstractTrait
 		checkProps = hash;
 	}
 	
-	private var _addType:AddType;
+	@:isVar public var addItemType(default, set_addItemType):AddType;
+	private function set_addItemType(value:AddType):AddType {
+		this.addItemType = value;
+		if (item != null) {
+			throw "Cannot change 'addItemType' while added";
+		}
+		return value;
+	}
+	
 	private var _injector:Injector;
 	private var _injectorAdded:Bool;
 	private var _addTraits:UniqueList<AddTrait>;
@@ -175,8 +183,8 @@ extends AbstractTrait
 		_injector = new Injector(null, onConcernedTraitAdded, onConcernedTraitRemoved, searchSiblings, searchDescendants, searchAscendants);
 		_injector.passThroughItem = true;
 		
-		if (addType != null)_addType = addType;
-		else _addType = AddType.traitItem;
+		if (addType != null)addItemType = addType;
+		else addItemType = AddType.traitItem;
 		
 		_addedTraits = new ObjectMap < Dynamic, Array<Dynamic> > ();
 		
@@ -315,7 +323,7 @@ extends AbstractTrait
 		var item:ComposeItem;
 		var adoptTrait:Bool = false;
 		
-		switch(_addType) {
+		switch(addItemType) {
 			case AddType.selfItem(adoptMatchedTrait):
 				item = this.item;
 				adoptTrait = adoptMatchedTrait;
@@ -337,7 +345,7 @@ extends AbstractTrait
 				adoptTrait = adoptMatchedTrait;
 			default:
 				item = new ComposeGroup();
-				switch(_addType) {
+				switch(addItemType) {
 					case AddType.selfSibling(adoptMatchedTrait):
 						this.item.parentItem.addChild(item);
 						adoptTrait = adoptMatchedTrait;
@@ -377,7 +385,7 @@ extends AbstractTrait
 	}
 	private function unregisterItem(trait:Dynamic, currItem:ComposeItem, origItem:ComposeItem):Void {
 		var adoptTrait:Bool;
-		switch(_addType) {
+		switch(addItemType) {
 			case AddType.traitSibling(adoptMatchedTrait), AddType.selfSibling(adoptMatchedTrait), AddType.traitChild(adoptMatchedTrait), AddType.selfChild(adoptMatchedTrait):
 				currItem.parentItem.removeChild(currItem);
 				adoptTrait = adoptMatchedTrait;

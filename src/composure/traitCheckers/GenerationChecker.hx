@@ -36,10 +36,14 @@ class GenerationChecker
 	public static function create(maxGenerations:Int=1, descending:Bool=true, relatedItem:ItemType=null):ComposeItem->Dynamic->AbstractInjector->Bool {
 		return function(item:ComposeItem, trait:Dynamic, from:AbstractInjector):Bool {
 			var compare:ComposeItem;
-			switch(relatedItem) {
-				case specific(other): compare = other;
-				case root: compare = item.root;
-				default: compare = from.ownerTrait.item;
+			if(relatedItem!=null){
+				switch(relatedItem) {
+					case specific(other): compare = other;
+					case root: compare = item.root;
+					default: compare = from.ownerTrait.item;
+				}
+			}else {
+				compare = from.ownerTrait.item;
 			}
 			if (descending) {
 				if(Std.is(compare,ComposeGroup) && maxGenerations>0){
