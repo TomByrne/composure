@@ -37,8 +37,7 @@ class PropInjector extends AbstractInjector
 	
 	private function removeProp(trait:Dynamic):Void {
 		if(isSet && trait==setTrait){
-			setTrait = null;
-			if (Reflect.getProperty(subject, prop) != null) {
+			if (Reflect.getProperty(subject, prop) != setTrait) {
 				// this means the value has been manually set into the target
 				isSet = true;
 				return;
@@ -46,6 +45,7 @@ class PropInjector extends AbstractInjector
 				isSet = false;
 				Reflect.setProperty(subject, prop, null);
 			}
+			setTrait = null;
 		}
 	}
 }
