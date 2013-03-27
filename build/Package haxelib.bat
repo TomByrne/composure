@@ -1,2 +1,2 @@
-del composure-hx.zip
-7zG a -tzip composure-hx.zip ..\src\*
+del composure.zip
+7zG a -tzip composure.zip ..\src\*

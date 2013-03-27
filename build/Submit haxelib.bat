@@ -1,1 +1,1 @@
-haxelib submit composure-hx.zip
+haxelib submit composure.zip
