@@ -1,4 +1,4 @@
--swf9 testBin/HelloWorld.swf
+-swf ../testBin/HelloWorld.swf
 -main composureTest.HelloWorld
 -debug
 -D fdb
@@ -10,14 +10,13 @@
 
 --next
 
--swf9 ../bin/Composure.swc
+-swf ../bin/Composure.swc
 -main composureTest.ClassIncluder
 -swf-version 9
 -swf-header 100:100:60:0
 -cp ../src
 -cp ../testSrc
 -lib msignal
---dead-code-elimination
 
 --next
 
@@ -27,4 +26,3 @@
 -cp ../src
 -cp ../testSrc
 -lib msignal
---dead-code-elimination

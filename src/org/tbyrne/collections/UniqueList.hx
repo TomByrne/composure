@@ -1,6 +1,65 @@
 package org.tbyrne.collections;
 import haxe.ds.GenericStack;
+using Lambda;
 
+#if cpp
+// unil cpp fixes it's issues with compiling GenericStack, we'll have to use array
+class UniqueList<T> {
+	
+	public function new(?list:Iterable<T>) {
+		this.list = new Array<T>();
+		
+		if (list != null) {
+			for (item in list) add(item);
+		}
+	}
+	
+	public function iterator():Iterator<T> {
+		return list.iterator();
+	}
+	public var length(get, null):Int;
+	private function get_length():Int {
+		return _length;
+	}
+	
+	
+	private var list:Array<T>;
+	
+	private var _length:Int = 0;
+	
+	public function first():Null<T> {
+		return list[0];
+	}
+	
+	public function add(value:T):Bool {
+		if (!containsItem(value)) {
+			++_length;
+			list.push(value);
+			return true;
+		}
+		return false;
+	}
+	public function containsItem(value:T):Bool {
+		return list.exists(function(item):Bool { return value == item; } );
+	}
+	public function remove(value:T):Bool {
+		if (list.remove(value)) {
+			--_length;
+			return true;
+		}else {
+			return false;
+		}
+	}
+	public function clear():Void{
+		list = new Array<T>();
+		_length = 0;
+	}
+}
+
+#else
+
+import haxe.ds.GenericStack;
+	
 class UniqueList<T> {
 	
 	public function new(?list:Iterable<T>) {
@@ -52,3 +111,4 @@ class UniqueList<T> {
 		_length = 0;
 	}
 }
+#end
