@@ -1,4 +1,4 @@
-<project name="composure" url="http://github.com/TomByrne/composure" license="GPL">
+<project name="composure" url="http://github.com/TomByrne/composure" license="MIT">
     <user name="tbyrne"/>
     <tag v="cross"/>
     <tag v="utility"/>
