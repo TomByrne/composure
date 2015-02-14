@@ -22,6 +22,7 @@ import org.tbyrne.logging.LogMsg;
  * 
  * @author		Tom Byrne
  */
+@:autoBuild(composure.macro.PromiseMacro.inject())
 @:autoBuild(composure.macro.InjectorMacro.inject())
 @:autoBuild(LazyInst.check())
 class AbstractTrait implements ITrait
