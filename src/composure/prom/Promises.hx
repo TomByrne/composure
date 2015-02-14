@@ -61,7 +61,8 @@ class Promises
 			for (req in prom.requirements) {
 				switch(req) {
 					case RProp(propName):
-						if (Reflect.getProperty(target, propName) == null) {
+						var prop:Dynamic = Reflect.getProperty(target, propName);
+						if (prop == null || prop == false) {
 							isReady = false;
 							break;
 						}
