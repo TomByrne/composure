@@ -1,5 +1,7 @@
 composure
 ============
+Composure is an Entity/Component system framework for haxe.
+It supports injection and promises metadata
 
 	Composure can be installed via haxelib using the commandline:
 	haxelib install composure
