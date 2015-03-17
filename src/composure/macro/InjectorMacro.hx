@@ -35,7 +35,7 @@ class InjectorMacro
 		var typePathToPassInj:Map<String, Bool>;
 		
 		var type:Type = Context.getLocalType();
-		var isTrait:Bool = doesTypeInherit("composure.traits.ITrait", type);
+		var isTrait:Bool = MacroUtils.doesTypeInherit("composure.traits.ITrait", type);
 		
 		var addInjectorMethod:Expr;
 		if (isTrait) {
@@ -58,10 +58,10 @@ class InjectorMacro
 						if (addExpr == null) addExpr = [];
 						switch(field.kind) {
 							case FVar( t , _  ):
-								makeAccessPublic(field);
+								MacroUtils.makeAccessPublic(field);
 								createPropInjector(field.name, getTypeExpr(t, pos), false, meta, addExpr, pos, addInjectorMethod);
 							case FProp( get , _ , t , _  ):
-								makeAccessPublic(field);
+								MacroUtils.makeAccessPublic(field);
 								createPropInjector(field.name, getTypeExpr(t, pos), (get=="null" || get=="never"), meta, addExpr, pos, addInjectorMethod);
 							default:
 								//ignore
@@ -154,35 +154,6 @@ class InjectorMacro
     }
 	
 	#if macro
-	private static function makeAccessPublic(field:Field):Void {
-		field.access = [APublic];
-	}
-	private static function doesTypeInherit(classpath:String, type:Type):Bool {
-		switch(type) {
-			
-			case TMono( t ):
-				return doesTypeInherit(classpath, t.get());
-			case TDynamic( t ):
-				if (t == null) return false;
-				else return doesTypeInherit(classpath, t);
-			case TType( t , _ ):
-				return doesTypeInherit(classpath, t.get().type);
-			case TInst( t , _ ):
-				return doesClassTypeInherit(classpath, t.get());
-			default:
-				return false;
-		}
-	}
-	private static function doesClassTypeInherit(classpath:String, type:ClassType):Bool {
-		if (type.superClass != null) {
-			if (classpath == getClassTypePath(type) || doesClassTypeInherit(classpath, type.superClass.t.get())) return true;
-		}
-		for (interf in type.interfaces) {
-			var intType:ClassType = interf.t.get();
-			if (classpath == getClassTypePath(intType) || doesClassTypeInherit(classpath, intType)) return true;
-		}
-		return false;
-	}
 	private static function addInjectMethod(field:Field, toHash:Map<String, Field>, typePathToExpr:Map<String, ExprDef>, typePathToPassItem:Map<String, Bool>, typePathToPassInj:Map<String, Bool>):Void {
 		switch(field.kind) {
 			case FFun( f ):
@@ -312,13 +283,6 @@ class InjectorMacro
 				}
 			default:
 				throw new Error("Only simple can currrently be injected", pos);
-		}
-	}
-	private static function getClassTypePath(t:ClassType):String {
-		if(t.pack.length>0){
-			return t.pack.join(".") + "."+t.name;
-		}else {
-			return t.name;
 		}
 	}
 	

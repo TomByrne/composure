@@ -8,21 +8,6 @@ import haxe.macro.Compiler;
 
 class PromiseMacro
 {
-
-	/**
-	 * 
-	 * 
-	 * TODO:
-	 * - Add code to register promises for each class when first one is instantiated
-	 * - Add actual promise checking code below, alt. pass through list of props when calling below.
-	 * 
-	 * Alternatively:
-	 * - Injectors get modified to notify PromiseMacro when changing prop (remove prop/var mods below)
-	 * 
-	 * 
-	 * NEED SOMEWHERE TO STORE STATE? Is this implicit in the pre-check?
-	 * 
-	 */
 	
 	macro public static function inject() : Array<Field> {
         var fields:Array<Field> = Context.getBuildFields();

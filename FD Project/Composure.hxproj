@@ -12,7 +12,6 @@
     <movie minorVersion="0" />
     <movie platform="Flash Player" />
     <movie background="#FFFFFF" />
-    <movie preferredSDK="Haxe 3.0.0;3.0.0;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
@@ -24,7 +23,8 @@
   <build>
     <option directives="" />
     <option flashStrict="False" />
-    <option mainClass="composureTest.HelloWorld" />
+    <option noInlineOnDebug="False" />
+    <option mainClass="composureTest.PrebuildItems" />
     <option enabledebug="True" />
     <option additional="" />
   </build>
@@ -34,7 +34,8 @@
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    <!-- example: <compile path="..." /> -->
+    <compile path="..\testSrc\composureTest\Prebuild.hx" />
+    <compile path="..\testSrc\composureTest\PrebuildItems.hx" />
   </compileTargets>
   <!-- Assets to embed into the output SWF -->
   <library>
@@ -42,7 +43,7 @@
   </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
-    <!-- example: <hidden path="..." /> -->
+    <hidden path="obj" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />
@@ -52,6 +53,7 @@
   <options>
     <option showHiddenPaths="False" />
     <option testMovie="Unknown" />
+    <option testMovieCommand="" />
   </options>
   <!-- Plugin storage -->
   <storage />

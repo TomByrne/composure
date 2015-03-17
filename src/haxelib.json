@@ -4,8 +4,8 @@
   "license": "MIT",
   "tags": ["cross","utility","composition","pattern","dependency","injection"],
   "description": "A haxe library to assist coding in a composition design pattern. The library also allows for dependency injection via metadata.<br/><a href='http://www.tbyrne.org/introducing-composure-for-haxe-with-dependency-injection' target='_blank'>Intro to Composure - with Hello World</a><br/><a href='http://github.com/TomByrne/composure/wiki' target='_blank'>Composure Wiki</a><br/><a href='http://github.com/TomByrne/composure/wiki/Documentation---All-Classes' target='_blank'>Generated Documentation</a>",
-  "version": "2.2.0",
-  "releasenote": "Addition of promises, check the wiki on Github for more info.<br/><br/>Compatible with Haxe 3.00.<br/>For Haxe 2 support, use <a href='http://lib.haxe.org/legacy/p/composure'>v1.x</a>",
+  "version": "2.3.0",
+  "releasenote": "Addition of simple compile-time binding, check the wiki on Github for more info.<br/><br/>Compatible with Haxe 3.x.<br/>For Haxe 2 support, use <a href='http://lib.haxe.org/legacy/p/composure'>v1.x</a>",
   "contributors": ["tbyrne"],
   "dependencies": {
     "msignal": ""
