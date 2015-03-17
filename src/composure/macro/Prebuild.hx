@@ -8,21 +8,37 @@ import haxe.macro.TypeTools;
 
 class Prebuild
 {
+	/**
+	 * Sets whether a warning is output whenever a prebuild is defined.
+	 */
 	macro public static function setVerbose(value:Bool):Expr{
 		verbose = value;
 		return macro null;
 	}
 
-	macro public static function define(id:Expr, traitClasses:Expr, ?itemType:Expr):Expr
+	/**
+	 * Defines a Prebuild item which can be easily created with all binding between the traits already resolved at compile-time.
+	 * @param id An id string for this prebuild.
+	 * @param compileBindings An array of trait classes which will be created and bound amoung one another (including the compile-time traits). These items will not be added as traits to the item for runtime binding.
+	 * @param runtimeBindings An array of trait classes which will be created and bound amoung one another (including the runtime traits). These items are added to the item as traits and are available for runtime binding.
+	 * @param itemType An optional class reference which specifies the class used for the created item (defaults to ComposeGroup).
+	 */
+	macro public static function define(id:Expr, compileBindings:Expr, runtimeBindings:Expr, ?itemType:Expr):Expr
 	{
 		var idStr = getId(id, Context.getLocalClass().get());
-		var traitList = getArrayContents(traitClasses);
-		if (verbose) Context.warning("Defining prebuild '"+idStr+"' with "+traitList.length+" traits", Context.currentPos());
+		var compileList = getArrayContents(compileBindings);
+		var runtimeList = getArrayContents(runtimeBindings);
+		if (verbose) Context.warning("Defining prebuild '"+idStr+"' with "+compileList.length+" compile-time traits and "+runtimeList.length+" runtime traits", Context.currentPos());
 		if (isIdent(itemType, 'null')) itemType = null;
-		defined.set(idStr, { traitClasses:traitList, itemType:itemType } );
+		defined.set(idStr, { compileBindings:compileList, runtimeBindings:runtimeList, itemType:itemType } );
 		return macro null;
 	}
 
+
+	/**
+	 * Creates an instance of an item previously defined with the 'define' method.
+	 * @param id The id string of this prebuild (as specified in the 'define' call).
+	 */
 	macro public static function get(id:Expr):Expr
 	{
 		var idStr = getId(id, Context.getLocalClass().get());
@@ -32,13 +48,19 @@ class Prebuild
 		}
 		
 		var predef:PreDefined = defined.get(idStr);
-		return doMake(predef.traitClasses, predef.itemType, pos);
+		return doMake(predef.compileBindings, predef.runtimeBindings, predef.itemType, pos);
 	}
 
-	macro public static function make(traitClasses:Expr, ?itemType:Expr):Expr
+	/**
+	 * Creates a prebuild item.
+	 * @param compileBindings An array of trait classes which will be created and bound amoung one another (including the compile-time traits). These items will not be added as traits to the item for runtime binding.
+	 * @param runtimeBindings An array of trait classes which will be created and bound amoung one another (including the runtime traits). These items are added to the item as traits and are available for runtime binding.
+	 * @param itemType An optional class reference which specifies the class used for the created item (defaults to ComposeGroup).
+	 */
+	macro public static function make(compileBindings:Expr, runtimeBindings:Expr, ?itemType:Expr):Expr
 	{
 		var pos = Context.currentPos();
-		return doMake(getArrayContents(traitClasses), itemType, pos);
+		return doMake(getArrayContents(compileBindings), getArrayContents(runtimeBindings), itemType, pos);
 	}
 	
 	#if macro
@@ -60,7 +82,7 @@ class Prebuild
 	private static var PREBUILD_COUNT:Int = 0;
 	
 
-	private static function doMake(traitClasses:Array<Expr>, itemType:Expr, pos:Position):Expr
+	private static function doMake(compileTraits:Array<Expr>, runtimeTraits:Array<Expr>, itemType:Expr, pos:Position):Expr
 	{
 		var id:String = PREBUILD_ID + PREBUILD_COUNT++;
 		
@@ -72,9 +94,11 @@ class Prebuild
 		}
 		block.push( { expr : EVars([ { expr : itemType, name : id, type : null } ]), pos : pos } );
 		
+		var allTraits = compileTraits.concat(runtimeTraits);
+		
 		var traitInfos:Array<TraitInfo> = [];
 		// Create all traits
-		for (traitClass in traitClasses) {
+		for (traitClass in allTraits) {
 			var traitId:String = PREBUILD_ID + PREBUILD_COUNT++;
 			var traitInfo:TraitInfo = getTraitInfo(traitClass, pos);
 			traitInfo.localVarName = traitId;
@@ -148,8 +172,11 @@ class Prebuild
 			}
 		}
 		// Add all traits
-		for (traitInfo in traitInfos) {
-			{ expr : ECall({ expr : EField({ expr : EConst(CIdent(id)), pos : pos }, "addTrait"), pos : pos },[{ expr : EConst(CIdent(traitInfo.localVarName)), pos : pos }]), pos : pos }
+		for (i in 0...traitInfos.length) {
+			if (i >= compileTraits.length) {
+				var traitInfo = traitInfos[i];
+				block.push( { expr : ECall( { expr : EField( { expr : EConst(CIdent(id)), pos : pos }, "addTrait"), pos : pos }, [ { expr : EConst(CIdent(traitInfo.localVarName)), pos : pos } ]), pos : pos } );
+			}
 		}
 		
 		block.push( { expr : EConst(CIdent(id)), pos : pos } );
@@ -339,7 +366,8 @@ class FieldInfo {
 }
 
 typedef PreDefined = {
-	var traitClasses:Array<Expr>;
+	var compileBindings:Array<Expr>;
+	var runtimeBindings:Array<Expr>;
 	var itemType:Expr;
 }
 

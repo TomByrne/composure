@@ -13,11 +13,11 @@ class PrebuildItems
         var root:ComposeRoot = new ComposeRoot();
 		
 		// Define a prebuilt ComposeItem
-		Prebuild.define(PLAYER, [PlayerController, EntityPosition, UserInput], ComposeItem );
+		Prebuild.define(PLAYER, [PlayerController, EntityPosition], [UserInput], ComposeItem );
 		
 		// These two lines will now do the same thing
         var item:ComposeItem = Prebuild.get(PLAYER);
-        //item = Prebuild.make([PlayerController, EntityPosition, UserInput], ComposeItem);
+        //item = Prebuild.make([PlayerController, EntityPosition], [UserInput], ComposeItem);
 		
         root.addChild(item);
     }
