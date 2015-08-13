@@ -4,8 +4,8 @@
   "license": "MIT",
   "tags": ["cross","utility","composition","pattern","dependency","injection"],
   "description": "A haxe library to assist coding in a composition design pattern. The library also allows for dependency injection via metadata.<br/><a href='http://www.tbyrne.org/introducing-composure-for-haxe-with-dependency-injection' target='_blank'>Intro to Composure - with Hello World</a><br/><a href='http://github.com/TomByrne/composure/wiki' target='_blank'>Composure Wiki</a>",
-  "version": "2.3.1",
-  "releasenote": "Addition of simple compile-time binding, check the wiki on Github for more info.<br/><br/>Compatible with Haxe 3.x.<br/>For Haxe 2 support, use <a href='http://lib.haxe.org/legacy/p/composure'>v1.x</a>",
+  "version": "2.4.0",
+  "releasenote": "Change of behaviour for onItemAdd and onItemRemove to reflect whether the item is added to the root.",
   "contributors": ["tbyrne"],
   "dependencies": {
     "msignal": ""

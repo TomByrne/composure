@@ -2,8 +2,6 @@ package composureTest;
 import composure.core.ComposeRoot;
 import composure.prom.Promises.PromiseInfo;
 import composure.traits.AbstractTrait;
-import flash.geom.Point;
-import flash.utils.Dictionary;
 
 
 class Promises
@@ -12,10 +10,10 @@ class Promises
 		var root = new ComposeRoot();
 		root.addTrait(new TestTrait());
 		
-		var point = new Point();
-		root.addTrait(point);
-		root.addTrait(new Dictionary());
-		root.removeTrait(point);
+		var obj1 = new SimpleObj1();
+		root.addTrait(obj1);
+		root.addTrait(new SimpleObj2());
+		root.removeTrait(obj1);
 	}
 	
 }
@@ -26,18 +24,12 @@ class TestTrait extends TestTraitBase {
 		super();
 	}
 	
-	private override function __getPromiseInfo():Array<composure.prom.Promises.PromiseInfo> {
-		var ret:Array<composure.prom.Promises.PromiseInfo> = super.__getPromiseInfo();
-		ret.push( { methodName:"onBothInjected2", requirements:[composure.prom.Promises.PromiseReq.RProp("point"), composure.prom.Promises.PromiseReq.RProp("dictionary")] } );
-		return ret;
-	}
-	
-	@promise("point", "dictionary")
+	@promise("simpleObj1", "simpleObj2")
 	private function onBothInjected2(met:Bool):Void {
 		if (met) {
-			trace("Both point and dictionary have been injected 2: "+point+" "+dictionary);
+			trace("Both objects have been injected 2: "+simpleObj1+" "+simpleObj2);
 		}else {
-			trace("Either point or dictionary is about to be removed 2: "+point+" "+dictionary);
+			trace("One of the objects is about to be removed 2: "+simpleObj1+" "+simpleObj2);
 		}
 	}
 }
@@ -45,27 +37,33 @@ class TestTrait extends TestTraitBase {
 class TestTraitBase extends AbstractTrait {
 	
 	@inject
-	public var point:Point;
+	public var simpleObj1:SimpleObj1;
 	
 	@inject
-	public var dictionary:Dictionary;
+	public var simpleObj2:SimpleObj2;
 	
 	public function new() {
 		super();
 	}
 	
-	private function __getPromiseInfo():Array<composure.prom.Promises.PromiseInfo> {
-		var ret:Array<composure.prom.Promises.PromiseInfo> = [];
-		ret.push( { methodName:"onBothInjected", requirements:[composure.prom.Promises.PromiseReq.RProp("point"), composure.prom.Promises.PromiseReq.RProp("dictionary")] } );
-		return ret;
-	}
-	
-	@promise("point", "dictionary")
+	@promise("simpleObj1", "simpleObj2")
 	private function onBothInjected(met:Bool):Void {
 		if (met) {
-			trace("Both point and dictionary have been injected: "+point+" "+dictionary);
+			trace("Both objects have been injected: "+simpleObj1+" "+simpleObj2);
 		}else {
-			trace("Either point or dictionary is about to be removed: "+point+" "+dictionary);
+			trace("One of the objects is about to be removed: "+simpleObj1+" "+simpleObj2);
 		}
+	}
+}
+
+class SimpleObj1 {
+	public function new() {
+		
+	}
+}
+
+class SimpleObj2 {
+	public function new() {
+		
 	}
 }

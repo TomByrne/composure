@@ -184,6 +184,10 @@ class ComposeItem
 				addTraitInjector(injector);
 			}
 		}
+		
+		if (castTrait != null && _root != null) {
+			castTrait.added = true;
+		}
 	}
 
 	/**
@@ -223,7 +227,10 @@ class ComposeItem
 		_traitToPair.remove(trait);
 		
 		var castTrait:ITrait = _traitToCast.get(trait);
-		if(castTrait!=null){
+		if (castTrait != null) {
+			if(_root != null) {
+				castTrait.added = false;
+			}
 			//castTrait = cast(trait, ITrait);
 			var castInjectors:Iterable<IInjector> = castTrait.getInjectors();
 			for(injector in castInjectors){
@@ -297,12 +304,18 @@ class ComposeItem
 				_root.addUniversalInjector(injector);
 			}
 		}
+		for (castTrait in _traitToCast) {
+			castTrait.added = true;
+		}
 	}
 	private function onRootRemove():Void{
 		if(_uniInjectors!=null){
 			for(injector in _uniInjectors){
 				_root.removeUniversalInjector(injector);
 			}
+		}
+		for (castTrait in _traitToCast) {
+			castTrait.added = false;
 		}
 	}
 

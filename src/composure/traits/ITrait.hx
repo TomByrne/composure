@@ -22,6 +22,11 @@ interface ITrait
 	 */
 	@:isVar public var item(default,set_item):ComposeItem;
 	/**
+	 * Whether the item this trait is added to is added to the root.
+	 * 'item' will always be set when this is true.
+	 */
+	@:isVar public var added(default,set_added):Bool;
+	/**
 	 * The group to which this item is added. This is a method of convenience,
 	 * and should return the 'item' property cast as a ComposeGroup.
 	 */

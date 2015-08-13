@@ -51,7 +51,7 @@ class AbstractTrait implements ITrait
 						group.removeChild(trait);
 					}
 				}
-				onItemRemove();
+				if(added)onItemRemove();
 			}
 			item = value;
 			group = null;
@@ -69,7 +69,7 @@ class AbstractTrait implements ITrait
 					Log.trace(new LogMsg("Group only Trait added to non-group",LogType.devWarning));
 				}
 				#end
-				onItemAdd();
+				if(added)onItemAdd();
 				if(_siblingTraits!=null){
 					for (trait in _siblingTraits) {
 						item.addTrait(trait);
@@ -77,6 +77,20 @@ class AbstractTrait implements ITrait
 				}
 			}
 		}
+		return value;
+	}
+	
+	/**
+	 * The item which this trait is added to. Do not set this manually,
+	 * the ComposeItem class sets this property automatically when the 
+	 * trait is added to it.
+	 */
+	@:isVar public var added(default, set):Bool;
+	private function set_added(value:Bool):Bool{
+		if (added == value) return value;
+		added = value;
+		if (added) onItemAdd();
+		else onItemRemove();
 		return value;
 	}
 
